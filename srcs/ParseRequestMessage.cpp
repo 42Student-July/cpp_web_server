@@ -1,28 +1,28 @@
 #include "ParseRequestMessage.hpp"
-ParseRequestMessage::ParseRequestMessage(const char *message):message_(message){}
+ParseRequestMessage::ParseRequestMessage(const char *message)
+    : message_(message) {}
 
-ParseRequestMessage::~ParseRequestMessage(){}
+ParseRequestMessage::~ParseRequestMessage() {}
 
 // string ParseRequestMessage::GetFilename(string &exec_file){
-// 	return "";
+//  return "";
 // }
 
-string ParseRequestMessage::GetPath(){
-	string path;
-	for(size_t i = 0, space_num = 0; i < message_.size();i++){
-		if(space_num == 2){
-			return path;
-		}
-		if(space_num  == 1 && message_[i] != ' '){
-			path += message_[i];
-		}
-		if(message_[i] == ' ')
-			space_num++;
-	}
-	return "";
+string ParseRequestMessage::GetPath() {
+  string path;
+  for (size_t i = 0, space_num = 0; i < message_.size(); i++) {
+    if (space_num == 2) {
+      return path;
+    }
+    if (space_num == 1 && message_[i] != ' ') {
+      path += message_[i];
+    }
+    if (message_[i] == ' ') space_num++;
+  }
+  return "";
 }
-string ParseRequestMessage::PathAnalyzer(){
-	//string request_path = GetPath();
-	//string path_stirng;
-	return "./index.html";
+string ParseRequestMessage::PathAnalyzer() {
+  // string request_path = GetPath();
+  // string path_stirng;
+  return "./index.html";
 }

@@ -1,5 +1,5 @@
 #include "main.hpp"
-int main(){
-	Server server("9000");
-	server.Run();
+int main() {
+  Server server("9000");
+  server.Run();
 }

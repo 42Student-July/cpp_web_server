@@ -1,0 +1,9 @@
+BasedOnStyle: Google # ここを上記の別のスタイルにすることで変えられる
+
+# ここから自分の好みのオプションを指定する
+IndentWidth: 2
+AccessModifierOffset: -1
+Language: Cpp
+Standard: c++03
+TabWidth: 2
+UseTab: Never

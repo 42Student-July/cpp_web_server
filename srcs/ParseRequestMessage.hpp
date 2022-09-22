@@ -1,19 +1,19 @@
-#ifndef PARSEREQUESTMESSAGE_HPP
-#define PARSEREQUESTMESSAGE_HPP
+#ifndef SRCS_PARSEREQUESTMESSAGE_HPP_
+#define SRCS_PARSEREQUESTMESSAGE_HPP_
 #include <iostream>
 #include <string>
 #define string std::string
-class ParseRequestMessage{
-private:
-	ParseRequestMessage();
-	string message_;
-public:
-	ParseRequestMessage(const char* message);
-	~ParseRequestMessage();
-	string GetPath();
-	string GetFilename(string & exec_file);
-	string PathAnalyzer();
+class ParseRequestMessage {
+ private:
+  ParseRequestMessage();
+  string message_;
+
+ public:
+  explicit ParseRequestMessage(const char* message);
+  ~ParseRequestMessage();
+  string GetPath();
+  string GetFilename(const string& exec_file);
+  static string PathAnalyzer();
 };
 
-
-#endif //
+#endif  // SRCS_PARSEREQUESTMESSAGE_HPP_
