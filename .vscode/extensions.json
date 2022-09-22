@@ -1,0 +1,7 @@
+{
+    "recommendations": [
+        "akiramiyakoda.cppincludeguard",
+        "mine.cpplint",
+        "xaver.clang-format",
+    ]
+}

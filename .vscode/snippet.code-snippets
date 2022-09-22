@@ -1,0 +1,35 @@
+{
+    "classheader": {
+        "scope": "cpp",
+        "prefix": "canonicalheadertemplate",
+        "body": [
+            "#include \"Logging.hpp\"",
+            "class ${TM_FILENAME_BASE} {",
+            "\tpublic:",
+            "\t\t${TM_FILENAME_BASE}();",
+            "\t\t${TM_FILENAME_BASE}(${TM_FILENAME_BASE} const &other);",
+            "\t\t${TM_FILENAME_BASE} &operator=(${TM_FILENAME_BASE} const &other);",
+            "\t\t~${TM_FILENAME_BASE}();",
+            "",
+            "\tprivate:",
+            "};",
+        ],
+        "description": "クラスに対するコード スニペット"
+    },
+    "classimpl": {
+        "scope": "cpp",
+        "prefix": "canonicalimplimentationtemplate",
+        "body": [
+            "#include \"${TM_FILENAME_BASE}.hpp\"\n",
+            "${TM_FILENAME_BASE}::${TM_FILENAME_BASE}(){}\n",
+            "${TM_FILENAME_BASE}::${TM_FILENAME_BASE}(${TM_FILENAME_BASE} const &other){",
+            "\t*this = other;",
+            "}\n",
+            "${TM_FILENAME_BASE} &${TM_FILENAME_BASE}::operator=(${TM_FILENAME_BASE} const &other){",
+            "\tif (this != &other) {(void)other;}",
+            "\treturn *this;\n}\n",
+            "${TM_FILENAME_BASE}::~${TM_FILENAME_BASE}(){}",
+        ],
+        "description": "クラスに対するコード スニペット"
+    }
+}

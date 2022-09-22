@@ -1,0 +1,52 @@
+{
+    "cpplint.filters": [
+        "-legal/copyright",
+        "-build/include_subdir"
+    ],
+    "cpplint.excludes": [
+        "tests/build"
+    ],
+    "C/C++ Include Guard.Suffix": "_",
+    "C/C++ Include Guard.Macro Type": "Filepath",
+    "C/C++ Include Guard.Remove Extension": false,
+    "C/C++ Include Guard.Comment Style": "Line",
+    "C/C++ Include Guard.Spaces After Endif": 2,
+    "editor.formatOnSave": true,
+    "C_Cpp.codeAnalysis.clangTidy.checks.enabled": [
+        "readability-convert-member-functions-to-static",
+        "readability-const-return-type",
+        "readability-identifier-naming",
+        "readability-make-member-function-const",
+        "readability-non-const-parameter",
+        "readability-qualified-auto",
+        "readability-redundant-control-flow",
+        "readability-redundant-member-init",
+        "readability-else-after-return",
+        "readability-implicit-bool-conversion",
+        "readability-simplify-boolean-expr",
+        "readability-static-accessed-through-instance",
+        "cppcoreguidelines-init-variables",
+        "cppcoreguidelines-virtual-class-destructor",
+        "cppcoreguidelines-prefer-member-initializer",
+        "llvm-include-order",
+        "misc-definitions-in-headers",
+        "misc-unused-parameters",
+        "modernize-redundant-void-arg",
+        "modernize-use-bool-literals",
+        "bugprone-copy-constructor-init",
+        "bugprone-virtual-near-miss",
+        "portability-restrict-system-includes",
+        "performance-for-range-copy",
+        "performance-inefficient-vector-operation",
+        "performance-type-promotion-in-math-fn"
+    ],
+    "C_Cpp.default.includePath": [
+        "${workspaceFolder}/srcs/**",
+        "/usr/local/include"
+    ],
+    "[cpp]": {
+        "editor.defaultFormatter": "xaver.clang-format",
+        "editor.tabSize": 2,
+    },
+    "files.insertFinalNewline": true,
+}
