@@ -24,6 +24,7 @@ class Epoll {
   int Wait();
   void Del(epoll_event *ev);
   void Add(epoll_event *ev);
+  void ModOutput(epoll_event *ev);
 };
 
 #endif  // SRCS_EPOLL_HPP_

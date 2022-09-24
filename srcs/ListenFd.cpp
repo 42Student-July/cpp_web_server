@@ -24,8 +24,8 @@ ListenFd::~ListenFd() {
 }
 
 void ListenFd::GenerateConnectableFd() {
-  addrinfo *current = nullptr;
-  for (current = list_top_; current != nullptr; current = current->ai_next) {
+  addrinfo *current = NULL;
+  for (current = list_top_; current != NULL; current = current->ai_next) {
     listen_.Reset(MakeSocket(current));
     if (listen_.GetFd() < 0) continue;
     SetSocketOption();
@@ -53,8 +53,8 @@ int ListenFd::AcceptFd() const {
   sockaddr_storage client_addr;
   char hostname[max_line], client_port[max_line];
   socklen_t client_len = sizeof(sockaddr_storage);
-  int connfd = accept(listen_.GetFd(), reinterpret_cast<SA *>(&client_addr),
-                      &client_len);
+  int connfd = accept4(listen_.GetFd(), reinterpret_cast<SA *>(&client_addr),
+                       &client_len, SOCK_NONBLOCK);
   getnameinfo(reinterpret_cast<SA *>(&client_addr), client_len, hostname,
               max_line, client_port, max_line, 0);
   cout << "accepted connection from (" << hostname << ", " << client_port << ")"
@@ -62,6 +62,6 @@ int ListenFd::AcceptFd() const {
   return connfd;
 }
 
-bool ListenFd::IsConnecting(const epoll_event &event) const {
+bool ListenFd::IsNewConnection(const epoll_event &event) const {
   return event.data.fd == GetFd().GetFd();
 }

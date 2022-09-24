@@ -5,7 +5,9 @@
 #include <sys/select.h>
 
 #include <iostream>
+#include <map>
 #include <string>
+#include <vector>
 
 #include "./utils/Fd.hpp"
 #include "./utils/Result.hpp"
@@ -21,16 +23,22 @@
 class Server {
  private:
   static const int kMaxline = 8192;
+  static const int kNotDoneYet = -1;
   ListenFd listen_;
   Epoll epoll_;
-  void CommunicatingWithClient(epoll_event* ep);
-  void StartCommunicationWithClient();
+  std::map<int, std::vector<string> > requests_;
+  std::map<int, std::vector<string> > response_;
+  void AcceptNewConnections();
+  void ReceiveRequest(epoll_event *ev);
+  void SendResponse(epoll_event *ev);
+  int ReadRequest(const Fd &fd);
+  int WriteToClientFd(const Fd &connfd);
+  static void SetNonBlocking(const int &fd);
   Server();
 
  public:
   explicit Server(string port);
   ~Server();
   void Run();
-  static int Echo(const Fd& fd);
 };
-#endif  // SRCS_SERVER_HPP_
+#endif  //  SRCS_SERVER_HPP_

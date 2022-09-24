@@ -21,9 +21,15 @@ epoll_event Epoll::FindEvent(const int& n) const { return events_[n]; }
 epoll_event Epoll::Create(const Fd& connfd) {
   epoll_event new_event;
   memset(&new_event, 0, sizeof(epoll_event));
-  new_event.events = EPOLLIN | EPOLLET | EPOLLOUT;
+  new_event.events = EPOLLIN | EPOLLET;
   new_event.data.fd = connfd.GetFd();
   return new_event;
+}
+
+void Epoll::ModOutput(epoll_event* ev) {
+  ev->events = EPOLLOUT | EPOLLET;
+  if ((epoll_ctl(epoll_.GetFd(), EPOLL_CTL_MOD, ev->data.fd, ev)) < 0)
+    std::cout << "mod err " << std::endl;
 }
 void Epoll::Add(epoll_event* ev) {
   if ((epoll_ctl(epoll_.GetFd(), EPOLL_CTL_ADD, ev->data.fd, ev)) < 0)

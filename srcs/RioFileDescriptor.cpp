@@ -9,8 +9,9 @@ ssize_t RioFileDescriptor::WriteNbyte(const char *usr_buf, size_t n) {
   ssize_t written_size = 0;
   const char *buf_ptr = usr_buf;
   while (byte > 0) {
-    written_size = write(fd_.GetFd(), buf_ptr, byte);
-    // written_size = write(1, buf_ptr, byte);
+    if ((written_size = write(fd_.GetFd(), buf_ptr, byte)) == -1) {
+      return -1;
+    }
     byte -= written_size;
     buf_ptr += written_size;
   }
