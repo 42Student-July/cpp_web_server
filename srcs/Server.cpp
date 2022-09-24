@@ -7,64 +7,83 @@ Server::Server(const string p) : listen_(p) { epoll_.Init(listen_.GetFd()); }
 Server::~Server() {}
 
 void Server::Run() {
+  SetNonBlocking(listen_.GetFd().GetFd());
   while (true) {
     int num_fd = epoll_.Wait();
     for (int i = 0; i < num_fd; i++) {
       epoll_event event = epoll_.FindEvent(i);
-      if (listen_.IsConnecting(event)) {
-        StartCommunicationWithClient();
-      } else {
-        CommunicatingWithClient(&event);
+      if (listen_.IsNewConnection(event)) {
+        AcceptNewConnections();
+      } else if ((event.events & EPOLLIN) != 0u) {
+        ReceiveRequest(&event);
+      } else if ((event.events & EPOLLOUT) != 0u) {
+        SendResponse(&event);
       }
     }
   }
 }
 
-void Server::StartCommunicationWithClient() {
+void Server::AcceptNewConnections() {
   Fd connfd(listen_.AcceptFd());
+  if (connfd.GetFd() == -1) return;
   cout << "connfd :" << connfd.GetFd() << endl;
   epoll_event ev = Epoll::Create(connfd);
   epoll_.Add(&ev);
 }
-void Server::CommunicatingWithClient(epoll_event *ep) {
-  Fd connfd(ep->data.fd);
-  cout << "epofd :" << connfd.GetFd() << endl;
-  if (Echo(connfd) == 0) {
-    epoll_.Del(ep);
-    connfd.Close();
+void Server::ReceiveRequest(epoll_event *ev) {
+  int status = 0;
+  Fd fd(ev->data.fd);
+  if ((status = ReadRequest(fd)) == kNotDoneYet) {
+    return;
+    // else if (status == 0){
   }
+
+  epoll_.ModOutput(ev);
+  requests_.erase(fd.GetFd());
 }
-
-int Server::Echo(const Fd &fd) {
-  size_t n = 0;
-  char buff[kMaxline];
-  RioFileDescriptor rio(fd);
-  // n = rio.ReadLineByteEach(buff, kMaxline);
-  // cout << "server received " << std::min(n - 2, std::min(n -1, n))<< " bytes"
-  // << endl; cout << buff << endl;
-  ParseRequestMessage p(buff);
-  string index = ParseRequestMessage::PathAnalyzer();
-  Fd op_fd(open(index.c_str(), O_RDONLY));
-  RioFileDescriptor rio1(op_fd);
-  char buff1[kMaxline];
-  std::vector<string> v;
-  int body_size = 0;
-  while ((n = rio1.ReadLineByteEach(buff1, kMaxline)) != 0) {
-    body_size += n;
-    v.push_back(string(buff1));
+void Server::SendResponse(epoll_event *ev) {
+  int status = 0;
+  Fd fd(ev->data.fd);
+  response_[ev->data.fd];
+  response_[ev->data.fd] = HttpResponse::make_response200(200);
+  if ((status = WriteToClientFd(fd)) == kNotDoneYet) {
+    return;
   }
-  HttpResponse hr;
-  std::vector<string> header = HttpResponse::make_response200(body_size);
-  for (size_t i = 0; i < v.size(); i++) {
-    header.push_back(v[i]);
-  }
-  // for(size_t i = 0;i < header.size();i++){
-  //  cout <<header[i] << std::flush;
-  // }
-
-  //  cout << v[i] << std::flush;
-  for (size_t i = 0; i < header.size(); i++) {
-    rio.WriteNbyte(header[i].c_str(), header[i].size());
+  response_.erase(ev->data.fd);
+  epoll_.Del(ev);
+  fd.Close();
+}
+int Server::WriteToClientFd(const Fd &connfd) {
+  RioFileDescriptor rio(connfd);
+  const int fd = connfd.GetFd();
+  size_t response_size = response_[fd].size();
+  for (size_t i = 0; i < response_size; i++) {
+    ssize_t written_size =
+        rio.WriteNbyte(response_[fd][0].c_str(), response_[fd][0].size());
+    if (written_size == kNotDoneYet) {
+      return kNotDoneYet;
+    }
+    response_[fd].erase(response_[fd].begin());
   }
   return 0;
+}
+int Server::ReadRequest(const Fd &fd) {
+  RioFileDescriptor rio(fd);
+  char buf[kMaxline];
+  ssize_t read_size = 0;
+  // while ((read_size = rio.ReadLineByteEach(buf, kMaxline)) > 0){
+  //   requests_[fd.GetFd()].push_back(buf);
+  // }
+  read_size = rio.ReadLineByteEach(buf, kMaxline);
+  requests_[fd.GetFd()].push_back(buf);
+  for (size_t i = 0; i < requests_[fd.GetFd()].size(); i++) {
+    cout << "requests_[fd.GetFd()][i]" << requests_[fd.GetFd()][i]
+         << std::flush;
+  }
+  return read_size;
+}
+
+void Server::SetNonBlocking(const int &fd) {
+  int flag = fcntl(fd, F_GETFL, 0);
+  fcntl(fd, F_SETFL, flag | O_NONBLOCK);
 }

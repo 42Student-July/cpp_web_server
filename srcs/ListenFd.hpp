@@ -36,6 +36,6 @@ class ListenFd {
   void GenerateConnectableFd();
   Fd GetFd() const;
   int AcceptFd() const;
-  bool IsConnecting(const epoll_event &event) const;
+  bool IsNewConnection(const epoll_event &event) const;
 };
 #endif  // SRCS_LISTENFD_HPP_
