@@ -1,6 +1,6 @@
 #include "ListenFd.hpp"
 // ListenFd::ListenFd(){}
-ListenFd::ListenFd(string port) : listen_(-1) {
+ListenFd::ListenFd(std::string port) : listen_(-1) {
   addrinfo hint;
   init_hint(&hint);
   getaddrinfo(NULL, port.c_str(), &hint, &list_top_);
@@ -31,8 +31,8 @@ void ListenFd::GenerateConnectableFd() {
     SetSocketOption();
     if (CanBind(current)) break;
   }
-  if (current == nullptr) cout << "err1" << endl;
-  if (listen(listen_.GetFd(), listen_max) < 0) cout << "err2" << endl;
+  if (current == NULL) std::cout << "err1" << std::endl;
+  if (listen(listen_.GetFd(), listen_max) < 0) std::cout << "err2" << std::endl;
 }
 
 int ListenFd::MakeSocket(addrinfo *addr) {
@@ -57,8 +57,8 @@ int ListenFd::AcceptFd() const {
                        &client_len, SOCK_NONBLOCK);
   getnameinfo(reinterpret_cast<SA *>(&client_addr), client_len, hostname,
               max_line, client_port, max_line, 0);
-  cout << "accepted connection from (" << hostname << ", " << client_port << ")"
-       << endl;
+  std::cout << "accepted connection from (" << hostname << ", " << client_port
+            << ")" << std::endl;
   return connfd;
 }
 

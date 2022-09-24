@@ -1,5 +1,5 @@
-#ifndef SRCS_SERVER_HPP_
-#define SRCS_SERVER_HPP_
+#ifndef SRCS_SERVER_SERVER_HPP_
+#define SRCS_SERVER_SERVER_HPP_
 #include <fcntl.h>
 #include <stdio.h>
 #include <sys/select.h>
@@ -9,12 +9,12 @@
 #include <string>
 #include <vector>
 
-#include "./utils/Fd.hpp"
-#include "./utils/Result.hpp"
 #include "Epoll.hpp"
+#include "Fd.hpp"
 #include "HttpResponse.hpp"
 #include "ListenFd.hpp"
 #include "ParseRequestMessage.hpp"
+#include "Result.hpp"
 #include "RioFileDescriptor.hpp"
 #define string std::string
 #define cout std::cout
@@ -41,4 +41,5 @@ class Server {
   ~Server();
   void Run();
 };
-#endif  //  SRCS_SERVER_HPP_
+
+#endif  // SRCS_SERVER_SERVER_HPP_

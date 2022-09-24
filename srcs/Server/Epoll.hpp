@@ -1,12 +1,12 @@
-#ifndef SRCS_EPOLL_HPP_
-#define SRCS_EPOLL_HPP_
+#ifndef SRCS_SERVER_EPOLL_HPP_
+#define SRCS_SERVER_EPOLL_HPP_
 #include <string.h>
 #include <sys/epoll.h>
 
 #include <iostream>
 #include <vector>
 
-#include "./utils/Fd.hpp"
+#include "Fd.hpp"
 #define MAX_EVENT 100
 class Epoll {
  private:
@@ -27,4 +27,4 @@ class Epoll {
   void ModOutput(epoll_event *ev);
 };
 
-#endif  // SRCS_EPOLL_HPP_
+#endif  // SRCS_SERVER_EPOLL_HPP_

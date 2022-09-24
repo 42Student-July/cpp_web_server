@@ -1,43 +1,60 @@
-SRCS = main.cpp Server.cpp RioFileDescriptor.cpp ListenFd.cpp Epoll.cpp ParseRequestMessage.cpp HttpResponse.cpp
-UTILSSRCS = Fd.cpp
-SRCDIR = ./srcs/
-UTILSDIR = ./srcs/utils/
-ADDSRCS = $(addprefix $(SRCDIR),$(SRCS)) $(addprefix $(UTILSDIR),$(UTILSSRCS))
-HEADERS := $(wildcard $(SRCDIR)*.hpp) $(wildcard $(UTILSDIR)*.hpp)
-INCLUDES := $(addprefix -I,$(wildcard srcs/*))
-OBJS =$(ADDSRCS:.cpp=.o)
-CXX	= c++
-CXXFLAGS = -Wall -Wextra -Werror
-NAME = a.out
-RM = rm -f
+NAME = webserv
+NAME_BONUS = webserv_bonus
+CXX = c++
+CXXFLAGS = -Wall -Wextra -Werror -Wshadow -std=c++98 -pedantic -MMD -MP
+SRCS = $(wildcard srcs/*/*.cpp)
+OBJS = $(SRCS:%.cpp=%.o)
+DEPS = $(OBJS:%.o=%.d)
+HEADERS = $(wildcard srcs/*/*.hpp)
+INCS = $(addprefix -I,$(wildcard srcs/*)) 
 
-all:		$(NAME)
+ifdef DEBUG
+	CXXFLAGS += -D DEBUG=true -g -fsanitize=address
+endif
 
-$(NAME):	$(OBJS)
-			$(CXX) $(CXXFLAGS) -o $(NAME) $(OBJS)
+$(NAME): $(OBJS) ## Build webserver
+	$(CXX) $(CXXFLAGS) -o $(NAME) $(OBJS)
 
-clean:
-			$(RM) $(OBJS)
+$(NAME_BONUS): $(OBJS) ## Build webserver
+	$(CXX) $(CXXFLAGS) -o $(NAME_BONUS) $(OBJS)
 
-fclean:		clean
-			$(RM) $(NAME)
+bonus: $(NAME_BONUS)
 
-re:			fclean $(NAME)
+%.o: %.cpp
+	$(CXX) $(CXXFLAGS) $(INCS) -o $@ -c $<
 
-.PHONY:		all clean fclean re
+all: $(NAME) ## Build webserver
 
+fclean: clean ## Delete executable webserver
+	$(RM) $(NAME)
+	$(RM) $(NAME_BONUS)
+
+clean: ## Delete webserver object files
+	$(RM) $(OBJS) $(DEPS)
+
+re: fclean all ## Rebuild webserver
+
+debug: fclean ## Build in debug mode
+	make DEBUG=true
+
+.PHONY: all fclean clean re bonus
+
+-include $(DEPS)
+
+# --------- sourcecodes ---------
+
+# --------- formats ---------
 
 .PHONY: format
-format:
-	clang-format -i $(HEADERS) $(ADDSRCS) -Werror
-	clang-tidy -fix $(HEADERS) $(ADDSRCS) -- $(CXXFLANGS)
-
+format: ## Lint webserver source files
+	clang-format -i $(HEADERS) $(SRCS) -Werror
+	clang-tidy -fix $(HEADERS) $(SRCS) -- $(CXXFLAGS) $(INCS)
 
 .PHONY: lint
-lint: 
-	cpplint --root . --filter=-legal/copyright,-build/include_subdir $(HEADERS) $(ADDSRCS)
-	clang-format  $(HEADERS) $(ADDSRCS) -Werror --dry-run
-	clang-tidy $(HEADERS) $(ADDSRCS) -- $(CXXFLANGS)
+lint: ## Lint webserver source files
+	cpplint --root . --filter=-legal/copyright,-build/include_subdir $(HEADERS) $(SRCS)
+	clang-format $(HEADERS) $(SRCS) --dry-run -Werror
+	clang-tidy $(HEADERS) $(SRCS) -- $(CXXFLAGS) $(INCS)
 
 
 # ------------------------ Rules For Developer ----------------------------
@@ -46,4 +63,4 @@ lint:
 setup: ## Set up hooks for commit
 	cp ./.githooks/pre-commit ./.git/hooks/pre-commit
 	chmod +x ./.git/hooks/pre-commit
-	mkdir -p ./srcs
+

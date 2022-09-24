@@ -8,8 +8,8 @@ ParseRequestMessage::~ParseRequestMessage() {}
 //  return "";
 // }
 
-string ParseRequestMessage::GetPath() {
-  string path;
+std::string ParseRequestMessage::GetPath() {
+  std::string path;
   for (size_t i = 0, space_num = 0; i < message_.size(); i++) {
     if (space_num == 2) {
       return path;
@@ -21,7 +21,7 @@ string ParseRequestMessage::GetPath() {
   }
   return "";
 }
-string ParseRequestMessage::PathAnalyzer() {
+std::string ParseRequestMessage::PathAnalyzer() {
   // string request_path = GetPath();
   // string path_stirng;
   return "./index.html";

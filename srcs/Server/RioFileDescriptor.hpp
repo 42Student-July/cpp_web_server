@@ -1,13 +1,13 @@
-#ifndef SRCS_RIOFILEDESCRIPTOR_HPP_
-#define SRCS_RIOFILEDESCRIPTOR_HPP_
+#ifndef SRCS_SERVER_RIOFILEDESCRIPTOR_HPP_
+#define SRCS_SERVER_RIOFILEDESCRIPTOR_HPP_
 #include <string.h>
 #include <unistd.h>
 
 #include <algorithm>
 #include <iostream>
 
-#include "./utils/Fd.hpp"
-#include "./utils/Result.hpp"
+#include "Fd.hpp"
+#include "Result.hpp"
 #define RIO_BUFFER_SIZE 8192
 class RioFileDescriptor {
  private:
@@ -28,4 +28,4 @@ class RioFileDescriptor {
   ssize_t ReadLineByteEach(char *usr_buf, size_t max_len);
   ssize_t WriteNbyte(const char *usr_buf, size_t n);
 };
-#endif  // SRCS_RIOFILEDESCRIPTOR_HPP_
+#endif  // SRCS_SERVER_RIOFILEDESCRIPTOR_HPP_
