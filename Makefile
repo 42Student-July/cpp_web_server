@@ -1,4 +1,4 @@
-SRCS = main.cpp Server.cpp RioFileDescriptor.cpp ListenFd.cpp Epoll.cpp ParseRequestMessage.cpp HttpResponse.cpp
+SRCS = main.cpp Server.cpp RioFileDescriptor.cpp ListenFd.cpp Epoll.cpp ParseRequestMessage.cpp HttpResponse.cpp HttpRequset.cpp
 UTILSSRCS = Fd.cpp
 SRCDIR = ./srcs/
 UTILSDIR = ./srcs/utils/
