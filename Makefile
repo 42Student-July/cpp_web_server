@@ -7,7 +7,7 @@ HEADERS := $(wildcard $(SRCDIR)*.hpp) $(wildcard $(UTILSDIR)*.hpp)
 INCLUDES := $(addprefix -I,$(wildcard srcs/*))
 OBJS =$(ADDSRCS:.cpp=.o)
 CXX	= c++
-CXXFLAGS = -Wall -Wextra -Werror
+CXXFLAGS = -Wall -Wextra -Werror #-std=c++98
 NAME = a.out
 RM = rm -f
 
@@ -34,7 +34,7 @@ format:
 
 
 .PHONY: lint
-lint: 
+lint:
 	cpplint --root . --filter=-legal/copyright,-build/include_subdir $(HEADERS) $(ADDSRCS)
 	clang-format  $(HEADERS) $(ADDSRCS) -Werror --dry-run
 	clang-tidy $(HEADERS) $(ADDSRCS) -- $(CXXFLANGS)

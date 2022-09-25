@@ -35,7 +35,7 @@ ssize_t RioFileDescriptor::ReadLineByteEach(char *usr_buf, size_t max_len) {
     if (c == '\n') break;
   }
   *buf_ptr = '\0';
-  return len;
+  return len - 1;
 }
 
 ssize_t RioFileDescriptor::RioRead(char *usr_buf, ssize_t buf_size) {

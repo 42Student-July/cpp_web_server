@@ -31,7 +31,7 @@ void ListenFd::GenerateConnectableFd() {
     SetSocketOption();
     if (CanBind(current)) break;
   }
-  if (current == nullptr) cout << "err1" << endl;
+  if (current == NULL) cout << "err1" << endl;
   if (listen(listen_.GetFd(), listen_max) < 0) cout << "err2" << endl;
 }
 
