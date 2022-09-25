@@ -4,6 +4,9 @@
             "label": "Build",
             "type": "shell",
             "command": "make",
+            "args": [
+                "debug"
+            ],
             "group": {
                 "kind": "build",
                 "isDefault": true
