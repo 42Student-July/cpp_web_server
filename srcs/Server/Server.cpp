@@ -34,6 +34,7 @@ void Server::ReceiveRequest(epoll_event *ev) {
   int status = 0;
   Fd fd(ev->data.fd);
   if ((status = ReadRequest(fd)) == kNotDoneYet) {
+    (void)status;
     return;
     // else if (status == 0){
   }
@@ -45,8 +46,12 @@ void Server::SendResponse(epoll_event *ev) {
   int status = 0;
   Fd fd(ev->data.fd);
   response_[ev->data.fd];
-  response_[ev->data.fd] = HttpResponse::make_response200(200);
+
+  HttpResponse httpResponse;
+  httpResponse.SetHttpResponse200();
+  response_[ev->data.fd] = httpResponse.GetResponse();
   if ((status = WriteToClientFd(fd)) == kNotDoneYet) {
+    (void)status;
     return;
   }
   response_.erase(ev->data.fd);
