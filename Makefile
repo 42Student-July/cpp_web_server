@@ -40,7 +40,7 @@ debug: fclean ## Build in debug mode
 integration: re
 	make integra -C $(TESTSPATH)
 
-.PHONY: all fclean clean re bonus
+.PHONY: all fclean clean re bonus integration
 
 -include $(DEPS)
 
