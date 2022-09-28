@@ -4,6 +4,7 @@ from urllib import request, response
 import config
 import re
 import socket
+import difflib
 RESET = "\033[0m"
 
 C_BLACK = "\033[30m"
@@ -41,6 +42,7 @@ def send_request(filepath:str, addr:str, port:int)->str:
     cmd = replace_newline(lines)
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     sock.connect((addr, port))
+    #sock.connect((socket.gethostbyname(), port))
     msg = cmd.encode()
     sock.send(msg)
     data = sock.recv(4096)
@@ -67,9 +69,9 @@ def list_diff(list1:list,list2:list)->list:
 def run(test_name:str, filepath:str)->str:
     try:
         nginx_data = send_request(filepath, config.SERVER_ADDR, config.NGINX_PORT).split("\r\n")
-        #websev_data = send_request(filepath, config.SERVER_ADDR, config.WEBSERV_PORT).split("\r\n")
+        webserv_data = send_request(filepath, config.SERVER_NAME2, config.WEBSERV_PORT).split("\r\n")
         #webserv_data = send_request(filepath, config.SERVER_ADDR, config.NGINX_PORT).split("\r\n")
-        webserv_data = ["a","b"]
+        #webserv_data = ["a","b"]
     except:
         print("{}Cannot connect to the server on port {}{}".format(C_B_RED, config.SERVER_PORT, RESET))
         exit(1)
@@ -83,6 +85,12 @@ def run(test_name:str, filepath:str)->str:
         char =  "❌"
     print(r"{}{:40}{} {}{} {}".format(C_B_GRAY,test_name,RESET, color, char , RESET))
     if len(res) != 0:
-        print("{}disaccord{}\n".format(C_B_YELLOW,RESET))
-        for line in res:
+        diff(nginx_data,webserv_data)
+
+def diff(l1:list,l2:list)->None:
+    print("{}disaccord{}\n".format(C_B_YELLOW,RESET))
+    res = difflib.Differ().compare(l1,l2)
+    
+    for line in res:
+        if line[0:1] in ['+','-']:
             print(line)

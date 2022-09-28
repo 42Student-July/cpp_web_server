@@ -1,6 +1,6 @@
 SERVER_ADDR = "127.0.0.1"
 NGINX_PORT = 8080
-WEBSERV_PORT = 8081
+WEBSERV_PORT = 9000
 SERVER_NAME = "default_server"
 SERVER_NAME2 = "localhost"
 SERVER_NAME3 = "google.com"

@@ -6,3 +6,9 @@ services:
       dockerfile: ./tests/docker/nginx/.
     ports:
       - 8080:80
+  webserv:
+    build:
+      context: ../../
+      dockerfile: ./tests/docker/ws/.
+    ports:
+      - 9000:9000
