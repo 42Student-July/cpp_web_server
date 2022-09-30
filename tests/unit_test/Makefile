@@ -1,9 +1,10 @@
-SRCS = sample.cc sample_test.cc
+TESTSRCS = RioFdTest.cc
+SRCS = RioFileDescriptor.cpp
 UTILSSRCS = Fd.cpp
-SRCDIR = ./echo_epoll/
-UTILSDIR = ./utils/
-ADDSRCS =
-OBJS =$(SRCS:.cc=.o) #$(SRCS:.cpp=.o)
+SRCDIR = ../../srcs/
+UTILSDIR = ../../srcs/utils/
+ADDSRCS = $(addprefix $(SRCDIR),$(SRCS)) $(addprefix $(UTILSDIR),$(UTILSSRCS))
+OBJS =$(TESTSRCS:.cc=.o) $(ADDSRCS:.cpp=.o)
 CXX	= g++
 CXXFLAGS = -std=c++11
 NAME = a.out

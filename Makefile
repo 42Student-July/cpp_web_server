@@ -6,8 +6,8 @@ SRCS = $(wildcard srcs/*/*.cpp)
 OBJS = $(SRCS:%.cpp=%.o)
 DEPS = $(OBJS:%.o=%.d)
 HEADERS = $(wildcard srcs/*/*.hpp)
-INCS = $(addprefix -I,$(wildcard srcs/*)) 
-
+INCS = $(addprefix -I,$(wildcard srcs/*))
+TESTSPATH = ./tests
 ifdef DEBUG
 	CXXFLAGS += -D DEBUG=true -g -fsanitize=address
 endif
@@ -37,7 +37,10 @@ re: fclean all ## Rebuild webserver
 debug: fclean ## Build in debug mode
 	make DEBUG=true
 
-.PHONY: all fclean clean re bonus
+integration: re
+	make integra -C $(TESTSPATH)
+
+.PHONY: all fclean clean re bonus integration
 
 -include $(DEPS)
 

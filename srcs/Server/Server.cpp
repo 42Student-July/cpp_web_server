@@ -58,9 +58,9 @@ void Server::SendResponse(epoll_event *ev) {
   epoll_.Del(ev);
   fd.Close();
 }
-int Server::WriteToClientFd(const Fd &connfd) {
-  RioFileDescriptor rio(connfd);
-  const int fd = connfd.GetFd();
+int Server::WriteToClientFd(const Fd &conn) {
+  RioFileDescriptor rio(conn);
+  const int fd = conn.GetFd();
   size_t response_size = response_[fd].size();
   for (size_t i = 0; i < response_size; i++) {
     ssize_t written_size =
@@ -72,17 +72,18 @@ int Server::WriteToClientFd(const Fd &connfd) {
   }
   return 0;
 }
-int Server::ReadRequest(const Fd &fd) {
-  RioFileDescriptor rio(fd);
+int Server::ReadRequest(const Fd &conn) {
+  RioFileDescriptor rio(conn);
   char buf[kMaxline];
   ssize_t read_size = 0;
-  // while ((read_size = rio.ReadLineByteEach(buf, kMaxline)) > 0){
-  //   requests_[fd.GetFd()].push_back(buf);
-  // }
-  read_size = rio.ReadLineByteEach(buf, kMaxline);
-  requests_[fd.GetFd()].push_back(buf);
-  for (size_t i = 0; i < requests_[fd.GetFd()].size(); i++) {
-    cout << "requests_[fd.GetFd()][i]" << requests_[fd.GetFd()][i]
+  while ((read_size = rio.ReadLineByteEach(buf, kMaxline)) > 0) {
+    requests_[conn.GetFd()].push_back(buf);
+    if ((requests_[conn.GetFd()].end() - 1)->find("\r\n") != string::npos)
+      break;
+  }
+  if (read_size == kNotDoneYet) return kNotDoneYet;
+  for (size_t i = 0; i < requests_[conn.GetFd()].size(); i++) {
+    cout << "requests_[fd.GetFd()][i] " << requests_[conn.GetFd()][i]
          << std::flush;
   }
   return read_size;

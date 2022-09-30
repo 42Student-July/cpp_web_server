@@ -1,0 +1,4 @@
+nginxとwebservのレスポンスを比較をする
+testcase dirに送りたいリクエストファイルを書く
+main.pyにtest関数を呼んで引数にtestname, testfileを書く
+webserv dirでmake integration でテストできる
