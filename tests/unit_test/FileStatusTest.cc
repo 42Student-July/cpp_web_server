@@ -2,10 +2,10 @@
 #include <gtest/gtest.h>
 #include <fcntl.h>
 #define maxline 8000
-TEST(fileStatus,cantRead){
-	File f("./text/read_perm.txt");
-	EXPECT_EQ(f.READ_PERMISSION,f.Status());
-}
+// TEST(fileStatus,cantRead){
+// 	File f("./text/read_perm.txt");
+// 	EXPECT_EQ(f.READ_PERMISSION,f.Status());
+// }
 TEST(fileStatus,isdir){
 	File f("./text/is_dir");
 	EXPECT_EQ(f.IS_DIR,f.Status());
