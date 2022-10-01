@@ -10,12 +10,11 @@ public:
 		NOT_FOUND,
 		IS_DIR,
 		EXEC_PERMISSION,
-		READ_PERMISSION,
-
+		READ_PERMISSION
 	};
 	File(std::string filename);
 	~File();
-	const int Status()const;
+	int Status()const;
 };
 
 

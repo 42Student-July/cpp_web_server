@@ -8,6 +8,7 @@ DEPS = $(OBJS:%.o=%.d)
 HEADERS = $(wildcard srcs/*/*.hpp)
 INCS = $(addprefix -I,$(wildcard srcs/*))
 TESTSPATH = ./tests
+UNIT_TEST_NAME = unit_test
 ifdef DEBUG
 	CXXFLAGS += -D DEBUG=true -g -fsanitize=address
 endif
@@ -39,8 +40,11 @@ debug: fclean ## Build in debug mode
 
 integration: re
 	make integra -C $(TESTSPATH)
+unit:
+	make unittest -C $(TESTSPATH)
+	make fclean
 
-.PHONY: all fclean clean re bonus integration
+.PHONY: all fclean clean re bonus integration unit
 
 -include $(DEPS)
 
