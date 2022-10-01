@@ -38,17 +38,17 @@ bool isValidRequestLine(std::string *line, HttpRequestLine *rl) {
   std::size_t pos = 0;
 
   for (size_t i = 0; i < 3; i++) {
-    pos = (*line).find(" ");
+    pos = line->find(" ");
     switch (i) {
       case 0:
         rl->m = ConvertMethod((*line).substr(0, pos));
       case 1:
-        rl->path = (*line).substr(0, pos);
+        rl->path = line->substr(0, pos);
       case 2:
-        rl->version = (*line).substr(0, pos);
+        rl->version = line->substr(0, pos);
     }
     while ((*line)[pos] == ' ') pos++;
-    (*line).erase(0, pos);
+    line->erase(0, pos);
   }
   return (rl->m != ERROR);
 }
