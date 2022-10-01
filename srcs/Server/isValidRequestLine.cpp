@@ -41,7 +41,7 @@ bool isValidRequestLine(std::string *line, HttpRequestLine *rl) {
     pos = line->find(" ");
     switch (i) {
       case 0:
-        rl->m = ConvertMethod((*line).substr(0, pos));
+        rl->m = ConvertMethod(line->substr(0, pos));
       case 1:
         rl->path = line->substr(0, pos);
       case 2:
