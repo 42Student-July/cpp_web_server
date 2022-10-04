@@ -1,6 +1,8 @@
 #include "File.hpp"
 #include <gtest/gtest.h>
 #include <fcntl.h>
+#include <vector>
+#include <string>
 #define maxline 8000
 // TEST(fileStatus,cantRead){
 // 	File f("./text/read_perm.txt");
@@ -17,4 +19,19 @@ TEST(fileStatus,notFound){
 TEST(fileStatus,ok){
 	File f("./text/ok.txt");
 	EXPECT_EQ(f.OK,f.Status());
+}
+TEST(fileRead,normal){
+	File f("./text/normal.txt");
+	std::string a = "aaa\nbbb\nccc";
+	EXPECT_EQ(a,f.ReadFileLines());
+}
+TEST(fileRead,empty){
+	File f("./text/empty.txt");
+	std::string str;
+	EXPECT_EQ(str,f.ReadFileLines());
+}
+TEST(fileRead,newline){
+	File f("./text/newline.txt");
+	std::string str = "\n";
+	EXPECT_EQ(str,f.ReadFileLines());
 }

@@ -1,5 +1,5 @@
-#ifndef SRCS_SERVER_MAIN_HPP_
-#define SRCS_SERVER_MAIN_HPP_
+#ifndef SRCS_MAIN_MAIN_HPP_
+#define SRCS_MAIN_MAIN_HPP_
 #include <iostream>
 
 #include "RioFileDescriptor.hpp"
@@ -9,4 +9,4 @@
 #define cout std::cout
 #define endl std::endl
 
-#endif  // SRCS_SERVER_MAIN_HPP_
+#endif  // SRCS_MAIN_MAIN_HPP_
