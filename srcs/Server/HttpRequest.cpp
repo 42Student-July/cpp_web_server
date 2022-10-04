@@ -5,10 +5,11 @@ HttpRequest::HttpRequest() {
   status_code_ = 500;
 }
 
-HttpRequest::HttpRequest(std::vector<std::string> *rec) {
+HttpRequest::HttpRequest(std::vector<std::string> *rec,
+                         const HttpRequestLine &rl) {
   method_ = ERROR;
   status_code_ = 500;
-  this->PerseHttpRequest(rec);
+  this->PerseHttpRequest(rec, rl);
 }
 
 HttpRequest::~HttpRequest() {}
@@ -44,22 +45,23 @@ std::vector<std::string> PerseRequestLine(std::string *rec) {
   return rl;
 }
 
-method ConvertMethod(const std::string &s) {
-  int i = static_cast<int>(s == "GET") | static_cast<int>(s == "DELETE") * 2 |
-          static_cast<int>(s == "POST") * 3;
+// method ConvertMethod(const std::string &s) {
+//   int i = static_cast<int>(s == "GET") | static_cast<int>(s == "DELETE") * 2
+//   |
+//           static_cast<int>(s == "POST") * 3;
 
-  switch (i) {
-    case 1:
-      return (GET);
-    case 2:
-      return (DELETE);
-    case 3:
-      return (POST);
-    default:
-      return (ERROR);
-  }
-  return (ERROR);
-}
+//   switch (i) {
+//     case 1:
+//       return (GET);
+//     case 2:
+//       return (DELETE);
+//     case 3:
+//       return (POST);
+//     default:
+//       return (ERROR);
+//   }
+//   return (ERROR);
+// }
 
 size_t FindEmptyIndex(const std::vector<std::string> &rec) {
   for (size_t i = 0; i < rec.size(); i++) {
@@ -93,15 +95,18 @@ HEADER PerseRequestHeader(std::vector<std::string> *rec, size_t end) {
   return header;
 }
 
-void HttpRequest::PerseHttpRequest(std::vector<std::string> *rec) {
+void HttpRequest::PerseHttpRequest(std::vector<std::string> *rec,
+                                   const HttpRequestLine &rl) {
   std::vector<std::string> rline;
   size_t empty = 0;
 
   rline = PerseRequestLine(&(*rec)[0]);
   (*rec).erase((*rec).begin());
-  method_ = ConvertMethod(rline[0]);
-  request_path_ = rline[1];
-  version_ = rline[2];
+
+  method_ = rl.m;
+  request_path_ = rl.path;
+  version_ = rl.version;
+
   empty = FindEmptyIndex(*rec);
   PerseRequestHeader(rec, empty);
   for (size_t i = empty + 1; i < (*rec).size(); i++) request_body_ += (*rec)[i];

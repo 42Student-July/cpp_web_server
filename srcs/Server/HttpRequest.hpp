@@ -7,7 +7,23 @@
 
 #define HEADER std::vector<std::pair<std::string, std::string> >
 
-enum method { ERROR = -1, GET, DELETE, POST };
+enum method {
+  ERROR = -1,
+  CONNECT,
+  DELETE,
+  GET,
+  HEAD,
+  OPTIONS,
+  POST,
+  PUT,
+  TRACE
+};
+
+struct HttpRequestLine {
+  method m;
+  std::string path;
+  std::string version;
+};
 
 class HttpRequest {
  private:
@@ -20,9 +36,11 @@ class HttpRequest {
 
  public:
   HttpRequest();
-  explicit HttpRequest(std::vector<std::string> *rec);
+  explicit HttpRequest(std::vector<std::string> *rec,
+                       const HttpRequestLine &rl);
   ~HttpRequest();
-  void PerseHttpRequest(std::vector<std::string> *rec);
+  void PerseHttpRequest(std::vector<std::string> *rec,
+                        const HttpRequestLine &rl);
   void SetStatusCode(const int &s);
   method GetMethod();
   std::string GetVersion();
