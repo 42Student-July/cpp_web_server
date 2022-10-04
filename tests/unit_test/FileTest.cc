@@ -35,3 +35,26 @@ TEST(fileRead,newline){
 	std::string str = "\n";
 	EXPECT_EQ(str,f.ReadFileLines());
 }
+TEST(fileReadVec,normal){
+	File f("./text/normal.txt");
+	std::string a = "aaa\n";
+	std::string b = "bbb\n";
+	std::string c = "ccc";
+	std::vector<std::string> v;
+	v.push_back(a);
+	v.push_back(b);
+	v.push_back(c);
+	EXPECT_EQ(v,f.StoreFileLinesInVec());
+}
+TEST(fileReadVec,empty){
+	File f("./text/empty.txt");
+	std::vector<std::string> v;
+	EXPECT_EQ(v,f.StoreFileLinesInVec());
+}
+TEST(fileReadVec,newline){
+	File f("./text/newline.txt");
+	std::string str = "\n";
+	std::vector<std::string> v;
+	v.push_back(str);
+	EXPECT_EQ(v,f.StoreFileLinesInVec());
+}

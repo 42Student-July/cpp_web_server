@@ -42,3 +42,22 @@ std::string File::ReadFileLines() const {
   reading_file.close();
   return lines;
 }
+
+std::vector<std::string> File::StoreFileLinesInVec() const {
+  std::vector<std::string> lines;
+  if (Status() != OK) return lines;
+  std::fstream reading_file;
+  std::string reading_line;
+  reading_file.open(filename_.c_str(), std::ios::in);
+  while (true) {
+    std::getline(reading_file, reading_line);
+    if (reading_file.eof()) {
+      break;
+    }
+    reading_line += "\n";
+    lines.push_back(reading_line);
+  }
+  if (!reading_line.empty()) lines.push_back(reading_line);
+  reading_file.close();
+  return lines;
+}

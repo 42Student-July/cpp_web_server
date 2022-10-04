@@ -14,6 +14,7 @@ class File {
   ~File();
   int Status() const;
   std::string ReadFileLines() const;
+  std::vector<std::string> StoreFileLinesInVec() const;
 };
 
 #endif  // SRCS_UTILS_FILE_HPP_
