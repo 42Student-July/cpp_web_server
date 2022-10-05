@@ -5,7 +5,8 @@
 #include <string>
 #include <vector>
 class LocationContext {
- private:
+  // private:
+ public:
   std::string location_;
   std::string root_;
   bool auto_index_;

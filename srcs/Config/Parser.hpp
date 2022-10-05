@@ -10,6 +10,7 @@ class Parser {
  public:
   Parser();
   ~Parser();
+  std::vector<ServerContext> GetSetting();
 };
 
 #endif  // SRCS_CONFIG_PARSER_HPP_

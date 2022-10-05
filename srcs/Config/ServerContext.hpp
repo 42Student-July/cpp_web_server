@@ -9,9 +9,9 @@
 #include "LocationContext.hpp"
 
 class ServerContext {
- private:
-  // const static int klisten_ = 0;
-  // const static size_t kclient_body_size_ = 0;
+ public:
+  int listen_;
+  size_t client_body_size_;
   std::string host_;
   std::vector<std::string> server_name_;
   std::pair<std::set<int>, std::string> error_page_;
