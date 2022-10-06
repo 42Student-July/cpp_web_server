@@ -1,9 +1,9 @@
-#include "../../srcs/RioFileDescriptor.hpp"
+#include "RioFileDescriptor.hpp"
 #include <gtest/gtest.h>
 #include <fcntl.h>
 #define maxline 8000
 TEST(RioFd,Readnormal){
-	Fd fd(open("./text/nornal.txt",O_RDONLY));
+	Fd fd(open("./text/normal.txt",O_RDONLY));
 	RioFileDescriptor rio(fd);
 	char buf[maxline];
 	EXPECT_EQ(3, rio.ReadLineByteEach(buf,maxline));
