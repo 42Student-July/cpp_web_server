@@ -1,7 +1,4 @@
-#include <iostream>
-#include <string>
-
-#include "HttpRequest.hpp"
+#include "isValidRequestLine.hpp"
 
 method ConvertMethod(const std::string &method) {
   int i = static_cast<int>(method == "CONNECT") |
@@ -42,10 +39,13 @@ bool isValidRequestLine(std::string *line, HttpRequestLine *rl) {
     switch (i) {
       case 0:
         rl->m = ConvertMethod(line->substr(0, pos));
+        break;
       case 1:
         rl->path = line->substr(0, pos);
+        break;
       case 2:
         rl->version = line->substr(0, pos);
+        break;
     }
     while ((*line)[pos] == ' ') pos++;
     line->erase(0, pos);
