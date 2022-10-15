@@ -33,3 +33,6 @@ jobs:
       - name: make
         shell: bash
         run: docker compose -f ./docker/webserv/docker-compose.yaml exec -T webserv make re
+      - name: unittest
+        shell: bash
+        run: docker compose -f ./docker/webserv/docker-compose.yaml exec -T webserv make unit
