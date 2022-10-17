@@ -29,10 +29,10 @@ jobs:
         run: make dc-up
       - name: lint
         shell: bash
-        run: docker compose -f ./docker/webserv/docker-compose.yaml exec -T webserv make lint
+        run: docker compose -f ./docker/webserv/docker-compose.yaml exec webserv make lint
       - name: make
         shell: bash
-        run: docker compose -f ./docker/webserv/docker-compose.yaml exec -T webserv make re
+        run: docker compose -f ./docker/webserv/docker-compose.yaml exec webserv make re
       - name: unittest
         shell: bash
-        run: docker compose -f ./docker/webserv/docker-compose.yaml exec -T webserv make unit
+        run: docker compose -f ./docker/webserv/docker-compose.yaml exec webserv make unit
