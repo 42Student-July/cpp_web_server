@@ -12,3 +12,8 @@ integra:
 unittest:
 	@make -C $(UNIT_TEST_PATH)
 	@make fclean -C $(UNIT_TEST_PATH)
+
+
+.PHONY: lint
+lint:
+	@make lint -C $(WEBSERVDIR)	

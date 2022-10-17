@@ -12,3 +12,5 @@ services:
       dockerfile: ./tests/docker/ws/.
     ports:
       - 9000:9000
+    volumes:
+      - ../..:/app
