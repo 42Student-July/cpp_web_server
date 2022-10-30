@@ -6,8 +6,14 @@
 #include <fstream>
 #include <iostream>
 File::File(std::string filename) : filename_(filename) {}
+File::File() {}
 File::~File() {}
-
+File::File(const File &file) { *this = file; }
+File &File::operator=(const File &file) {
+  if (this == &file) return *this;
+  filename_ = file.filename_;
+  return *this;
+}
 int File::Status() const {
   struct stat st;
   if (stat(filename_.c_str(), &st) < 0) {
@@ -54,7 +60,7 @@ std::vector<std::string> File::StoreFileLinesInVec() const {
     if (reading_file.eof()) {
       break;
     }
-    reading_line += "\n";
+    // reading_line += "\n";
     lines.push_back(reading_line);
   }
   if (!reading_line.empty()) lines.push_back(reading_line);

@@ -22,4 +22,27 @@ int Atoi(const std::string &s) {
   }
   return n;
 }
+
+long StrToLong(const std::string &str) {
+  char *end = NULL;
+  errno = 0;
+  long ret = strtol(str.c_str(), &end, 10);
+  if (errno == ERANGE || (*end != '\0')) return -1;
+  return ret;
+}
+std::vector<std::string> SplitWithMultipleSpecifier(
+    const std::string &str, const std::string &separators) {
+  std::vector<std::string> elements;
+  std::string item;
+  for (size_t i = 0; i < str.size(); i++) {
+    if (separators.find(str[i]) != std::string::npos) {
+      if (!item.empty()) elements.push_back(item);
+      item.clear();
+    } else {
+      item += str[i];
+    }
+  }
+  if (!item.empty()) elements.push_back(item);
+  return elements;
+}
 }  // namespace utils

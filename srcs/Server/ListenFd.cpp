@@ -1,6 +1,6 @@
 #include "ListenFd.hpp"
 // ListenFd::ListenFd(){}
-ListenFd::ListenFd(std::string port) : listen_(-1) {
+ListenFd::ListenFd(std::string port) : listen_fd_(-1) {
   addrinfo hint;
   init_hint(&hint);
   getaddrinfo(NULL, port.c_str(), &hint, &list_top_);
@@ -20,19 +20,24 @@ void ListenFd::init_hint(addrinfo *hint) {
 
 ListenFd::~ListenFd() {
   freeaddrinfo(list_top_);
-  listen_.Reset(-1);
+  close(listen_fd_);
 }
+
+// int ListenFd::SetupSocket() {
+// }
 
 void ListenFd::GenerateConnectableFd() {
   addrinfo *current = NULL;
   for (current = list_top_; current != NULL; current = current->ai_next) {
-    listen_.Reset(MakeSocket(current));
-    if (listen_.GetFd() < 0) continue;
+    listen_fd_ = MakeSocket(current);
+    if (listen_fd_ < 0) continue;
     SetSocketOption();
     if (CanBind(current)) break;
+    close(listen_fd_);
   }
   if (current == NULL) std::cout << "err1" << std::endl;
-  if (listen(listen_.GetFd(), listen_max) < 0) std::cout << "err2" << std::endl;
+  if (listen(listen_fd_, listen_max) < 0)
+    throw std::runtime_error("listen error");
 }
 
 int ListenFd::MakeSocket(addrinfo *addr) {
@@ -41,19 +46,19 @@ int ListenFd::MakeSocket(addrinfo *addr) {
 
 void ListenFd::SetSocketOption() const {
   int optval = 1;
-  setsockopt(listen_.GetFd(), SOL_SOCKET, SO_REUSEADDR, (const void *)&optval,
+  setsockopt(listen_fd_, SOL_SOCKET, SO_REUSEADDR, (const void *)&optval,
              sizeof(int));
 }
 
 bool ListenFd::CanBind(addrinfo *addr) const {
-  return bind(listen_.GetFd(), addr->ai_addr, addr->ai_addrlen) == 0;
+  return bind(listen_fd_, addr->ai_addr, addr->ai_addrlen) == 0;
 }
-Fd ListenFd::GetFd() const { return listen_; }
+int ListenFd::GetFd() const { return listen_fd_; }
 int ListenFd::AcceptFd() const {
   sockaddr_storage client_addr;
   char hostname[max_line], client_port[max_line];
   socklen_t client_len = sizeof(sockaddr_storage);
-  int connfd = accept4(listen_.GetFd(), reinterpret_cast<SA *>(&client_addr),
+  int connfd = accept4(listen_fd_, reinterpret_cast<SA *>(&client_addr),
                        &client_len, SOCK_NONBLOCK);
   getnameinfo(reinterpret_cast<SA *>(&client_addr), client_len, hostname,
               max_line, client_port, max_line, 0);
@@ -63,5 +68,5 @@ int ListenFd::AcceptFd() const {
 }
 
 bool ListenFd::IsNewConnection(const epoll_event &event) const {
-  return event.data.fd == GetFd().GetFd();
+  return event.data.fd == listen_fd_;
 }

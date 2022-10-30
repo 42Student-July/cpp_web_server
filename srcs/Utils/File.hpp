@@ -1,16 +1,19 @@
 #ifndef SRCS_UTILS_FILE_HPP_
 #define SRCS_UTILS_FILE_HPP_
+#include <stdexcept>
 #include <string>
 #include <vector>
-
-#include "RioFileDescriptor.hpp"
+enum { OK, NOT_FOUND, IS_DIR, EXEC_PERMISSION, READ_PERMISSION };
 class File {
  private:
-  const std::string filename_;
+  std::string filename_;
 
  public:
-  enum { OK, NOT_FOUND, IS_DIR, EXEC_PERMISSION, READ_PERMISSION };
+  File();
   explicit File(const std::string filename);
+  File(const File &file);
+  File &operator=(const File &file);
+
   ~File();
   int Status() const;
   std::string ReadFileLines() const;
