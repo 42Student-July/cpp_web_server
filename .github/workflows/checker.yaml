@@ -22,26 +22,14 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: setup
-        shell: bash
-        run: |
-          sudo apt-get install -y \
-            cmake \
-            make \
-            gcc \
-            googletest \
-            g++ \
-            python3-pip \
-            valgrind \
-            clang-format \
-            clang-tidy && \
-          pip install cpplint && \
-            (cd /usr/src/googletest && pwd && cmake . && echo 'hoge' && cmake --build . --target install)
+      - name: compose up
+        run: make dc-unittest -C tests
 
       - name: lint
-        shell: bash
-        run: make lint -C tests
+        run: docker compose -f ./tests/docker/docker-compose.yml exec unittest make lint
 
-      - name: unit test
-        shell: bash
-        run: make unittest -C tests
+      - name: make
+        run: docker compose -f ./tests/docker/docker-compose.yml exec unittest make re
+
+      - name: unittest
+        run: docker compose -f ./tests/docker/docker-compose.yml exec unittest make unit
