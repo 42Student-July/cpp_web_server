@@ -6,11 +6,11 @@
 #include <sys/types.h>
 #include <unistd.h>
 
+#include <exception>
 #include <iostream>
 #include <string>
 
 #include "Epoll.hpp"
-#include "Fd.hpp"
 #include "Result.hpp"
 class ListenFd {
  private:
@@ -19,10 +19,11 @@ class ListenFd {
   typedef struct sockaddr_storage sockaddr_storage;
   static const int listen_max = 1024;
   static const int max_line = 8192;
-  Fd listen_;
+  int listen_fd_;
   addrinfo *list_top_;
   static void init_hint(addrinfo *hint);
   static int MakeSocket(addrinfo *addr);
+  int SetupSocket();
   void SetSocketOption() const;
   bool CanBind(addrinfo *addr) const;
   ListenFd();
@@ -31,7 +32,7 @@ class ListenFd {
   explicit ListenFd(std::string port);
   ~ListenFd();
   void GenerateConnectableFd();
-  Fd GetFd() const;
+  int GetFd() const;
   int AcceptFd() const;
   bool IsNewConnection(const epoll_event &event) const;
 };

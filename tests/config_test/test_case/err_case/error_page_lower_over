@@ -1,0 +1,4 @@
+server {
+	listen 80;
+	error_page 299 405 abc;
+}

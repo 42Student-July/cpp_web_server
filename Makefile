@@ -59,7 +59,7 @@ format: ## Lint webserver source files
 
 .PHONY: lint
 lint: ## Lint webserver source files
-	cpplint --root . --filter=-legal/copyright,-build/include_subdir $(HEADERS) $(SRCS)
+	cpplint --root . --filter=-legal/copyright,-build/include_subdir,-runtime/int $(HEADERS) $(SRCS)
 	clang-format $(HEADERS) $(SRCS) --dry-run -Werror
 	clang-tidy $(HEADERS) $(SRCS) -- $(CXXFLAGS) $(INCS)
 

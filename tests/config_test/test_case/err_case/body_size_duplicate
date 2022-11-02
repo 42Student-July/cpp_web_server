@@ -1,0 +1,5 @@
+server {
+	listen 80;
+	client_max_body_size  9223372036854775807;
+    client_max_body_size  9223372036854775807;
+}

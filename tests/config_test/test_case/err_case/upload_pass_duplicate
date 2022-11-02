@@ -1,0 +1,7 @@
+server {
+	listen 80;
+	location a{
+		upload_pass a;
+		upload_pass a;
+	}
+}

@@ -2,7 +2,6 @@
 #define SRCS_MAIN_MAIN_HPP_
 #include <iostream>
 
-#include "RioFileDescriptor.hpp"
 #include "Server.hpp"
 
 #define string std::string

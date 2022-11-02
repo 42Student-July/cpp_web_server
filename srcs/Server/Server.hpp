@@ -10,34 +10,32 @@
 #include <vector>
 
 #include "Epoll.hpp"
-#include "Fd.hpp"
 #include "HttpResponse.hpp"
 #include "ListenFd.hpp"
 #include "ParseRequestMessage.hpp"
 #include "Result.hpp"
-#include "RioFileDescriptor.hpp"
-#define string std::string
-#define cout std::cout
-#define endl std::endl
 // namespace ft{
 class Server {
  private:
+  enum { line, header, body, eof };
   static const int kMaxline = 8192;
   static const int kNotDoneYet = -1;
+
   ListenFd listen_;
   Epoll epoll_;
-  std::map<int, std::vector<string> > requests_;
-  std::map<int, std::vector<string> > response_;
+  std::map<int, std::vector<std::string> > response_;
+  void ReadFromBuffer();
+  void IOEvents();
   void AcceptNewConnections();
-  void ReceiveRequest(epoll_event *ev);
+  void AddMonitorToRequest(epoll_event *fd);
+  static void ReceiveRequest(epoll_event *ev);
   void SendResponse(epoll_event *ev);
-  int ReadRequest(const Fd &fd);
-  int WriteToClientFd(const Fd &connfd);
-  static void SetNonBlocking(const int &fd);
+  // int ReadRequest(const Fd &fd);
+  int WriteToClientFd(const int connfd);
   Server();
 
  public:
-  explicit Server(string port);
+  explicit Server(std::string port);
   ~Server();
   void Run();
 };

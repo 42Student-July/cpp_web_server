@@ -1,0 +1,15 @@
+server {
+	listen 192.0.2.1:80;
+	client_max_body_size  10000;
+	server_name abc.com cde.com;
+	error_page 404 403 /ab;
+	location /{
+		limit_except DELETE POST GET;
+		return 404 404err;
+		root abcfile;
+		autoindex on;
+		index abb ddd;
+		cgi_extension .py .cgi;
+		upload_pass /up_pass;
+	}
+}
