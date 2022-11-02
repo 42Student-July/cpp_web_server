@@ -34,8 +34,3 @@ re:			fclean $(NAME)
 sample: sample.cc sample_test.cc
 		$(CXX) $(CXXFLAGS) -o a.out sample.cc sample_test.cc -L/usr/local/lib -lgtest -lgtest_main -pthread
 .PHONY:		all clean fclean re
-
-.PHONY: lint
-lint:
-	@make lint -C ../../
-
