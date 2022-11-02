@@ -3,12 +3,20 @@ services:
   nginx:
     build:
       context: ../../
-      dockerfile: ./tests/docker/nginx/.
+      dockerfile: ./tests/docker/nginx/Dockerfile
     ports:
       - 8080:80
   webserv:
     build:
       context: ../../
-      dockerfile: ./tests/docker/ws/.
+      dockerfile: ./tests/docker/ws/Dockerfile
     ports:
       - 9000:9000
+    volumes:
+      - ../..:/app
+  unittest:
+    build:
+      context: ../../
+      dockerfile: ./tests/docker/unittest/Dockerfile
+    volumes:
+      - ../..:/app
