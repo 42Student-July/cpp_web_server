@@ -1,37 +1,66 @@
 #include "Server.hpp"
-
-#include <vector>
-
-Server::Server(const std::string p) : listen_(p) {
-  epoll_.Init(listen_.GetFd());
+Server::Server(const std::vector<ServerContext> &contexts) {
+  InitListenSocket(contexts);
+  AddListenSocketsToEvents();
 }
-Server::~Server() {}
+Server::~Server() {
+  for (; sockets_.begin() != sockets_.end();) {
+    DelSocket(sockets_.begin()->second);
+  }
+}
+void Server::InitListenSocket(const std::vector<ServerContext> &contexts) {
+  for (size_t i = 0; i < contexts.size(); i++) {
+    Listen listen(contexts[i].GetHost(), contexts[i].GetPort());
+    const int fd = listen.GenerateConnectableFd();
+    sockets_.insert(std::make_pair(fd, new ListenSocket(fd, contexts[i])));
+  }
+}
+void Server::AddListenSocketsToEvents() {
+  for (std::map<int, Socket *>::iterator it = sockets_.begin();
+       it != sockets_.end(); it++) {
+    epoll_event event = Epoll::Create(it->second->GetFd(), EPOLLIN | EPOLLET);
+    epoll_.Add(&event);
+  }
+}
+void Server::DelSocket(const Socket *sock) {
+  sockets_.erase(sock->GetFd());
+  delete sock;
+}
 
 void Server::Run() {
   while (true) {
-    IOEvents();
-  }
-}
-
-void Server::IOEvents() {
-  int num_fd = epoll_.Wait();
-  for (int i = 0; i < num_fd; i++) {
-    epoll_event event = epoll_.FindEvent(i);
-    if (listen_.IsNewConnection(event)) {
-      AcceptNewConnections();
-    } else if ((event.events & EPOLLIN) != 0u) {
-      ReceiveRequest(&event);
-    } else if ((event.events & EPOLLOUT) != 0u) {
-      SendResponse(&event);
+    int num_fd = epoll_.Wait();
+    for (int i = 0; i < num_fd; i++) {
+      epoll_event ev = epoll_.FindEvent(i);
+      IOEvents(&ev);
     }
   }
 }
-void Server::AcceptNewConnections() {
-  int conn = listen_.AcceptFd();
-  if (conn == -1) return;
-  std::cout << "connfd :" << conn << std::endl;
-  epoll_event ev = Epoll::Create(conn);
-  epoll_.Add(&ev);
+void Server::IOEvents(epoll_event *ev) {
+  switch (sockets_[ev->data.fd]->GetSockType()) {
+    case LISTEN:
+      AcceptNewConnections(ev);
+      break;
+    case CONNECTING:
+      ConnectingEvent(ev);
+      break;
+  }
+}
+
+void Server::ConnectingEvent(epoll_event *ev) {
+  if ((ev->events & EPOLLIN) != 0u) {
+    ReceiveRequest(ev);
+  } else if ((ev->events & EPOLLOUT) != 0u) {
+    SendResponse(ev);
+  }
+}
+void Server::AcceptNewConnections(epoll_event *ev) {
+  ListenSocket *sock = dynamic_cast<ListenSocket *>(sockets_[ev->data.fd]);
+  int conn_fd = sock->Accept();
+  Socket *connsock = new ConnectingSocket(conn_fd, sock->GetContext());
+  sockets_.insert(std::make_pair(conn_fd, connsock));
+  epoll_event new_ev = Epoll::Create(conn_fd, EPOLLIN | EPOLLET);
+  epoll_.Add(&new_ev);
 }
 void Server::ReceiveRequest(epoll_event *ev) { (void)ev; }
 

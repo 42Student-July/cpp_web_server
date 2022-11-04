@@ -35,7 +35,7 @@ class Parser {
   explicit Parser(const Lexer &lexer);
   ~Parser();
   void Parse();
-  std::vector<ServerContext> GetSetting() const;
+  const std::vector<ServerContext> &ConfigSetting() const;
 
  private:
   void StoreServDirectives();
@@ -59,6 +59,8 @@ class Parser {
   static std::string ParseListen(Token tkn);
   static std::string ParseHost(Token tkn);
 
+  static void SetTokenIfEmpty(std::string *str, const Token &tkn,
+                              std::string err_msg);
   void ThrowExceptionIfMatch(Token tkn, std::string str, std::string err_msg);
   void ThrowExceptionIfNotMatch(Token tkn, std::string str,
                                 std::string err_msg);
@@ -67,10 +69,15 @@ class Parser {
     return m.find(key) == m.end();
   }
 };
-class ConfigErrException : public std::runtime_error {
+class ConfigErrException {
+ private:
+  std::string err_msg_;
+
  public:
-  static std::string Err(std::string msg, const Token &tkn) throw();
-  static std::string Err(std::string msg) throw();
+  ConfigErrException(std::string msg, const Token &tkn);
+  explicit ConfigErrException(std::string msg);
+  ~ConfigErrException();
+  std::string msg() const throw();
 };
 
 #endif  // SRCS_CONFIG_PARSER_HPP_

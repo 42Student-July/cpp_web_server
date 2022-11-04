@@ -14,17 +14,18 @@ Parser::Parser(const Lexer &lexer) : tkns_(lexer.GetTokens()) {
   location_directive_case_["upload_pass"] = &Parser::StoreUploadPass;
 }
 Parser::~Parser() {}
-std::vector<ServerContext> Parser::GetSetting() const { return contexts_; }
+const std::vector<ServerContext> &Parser::ConfigSetting() const {
+  return contexts_;
+}
 
 void Parser::Parse() {
-  if (tkns_.Empty()) throw ConfigErrException::Err("config file empty");
+  if (tkns_.Empty()) throw ConfigErrException("config file empty");
   while (!tkns_.End()) {
     if (!TokenManager::Equal(tkns_.Current(), "server"))
-      throw ConfigErrException::Err("`server` not found", tkns_.Current());
+      throw ConfigErrException("`server` not found", tkns_.Current());
     tkns_.Next();
     if (!TokenManager::Equal(tkns_.Current(), "{"))
-      throw ConfigErrException::Err("parentheses `{` not found",
-                                    tkns_.Current());
+      throw ConfigErrException("parentheses `{` not found", tkns_.Current());
     StoreServDirectives();
     tkns_.Increment();
   }
@@ -34,7 +35,7 @@ void Parser::StoreServDirectives() {
   ServerContext sc;
   while (!TokenManager::Equal(tkns_.Next(), "}")) {
     if (IsUnknownDirective(server_directive_case_, tkns_.Data()))
-      throw ConfigErrException::Err("unknown directive", tkns_.Current());
+      throw ConfigErrException("unknown directive", tkns_.Current());
     (this->*server_directive_case_[tkns_.Data()])(&sc);
   }
   contexts_.push_back(sc);
@@ -44,18 +45,19 @@ LocationContext Parser::MakeLocationDirectives() {
   LocationContext lc;
   while (!TokenManager::Equal(tkns_.Next(), "}")) {
     if (IsUnknownDirective(location_directive_case_, tkns_.Data()))
-      throw ConfigErrException::Err("unknown directive", tkns_.Current());
+      throw ConfigErrException("unknown directive", tkns_.Current());
     (this->*location_directive_case_[tkns_.Data()])(&lc);
   }
   return lc;
 }
 void Parser::StoreListen(ServerContext *sc) {
-  Token tkn = tkns_.Next();
-  std::pair<std::string, std::string> listen;
-  listen.first = ParseListen(tkn);
-  listen.second = ParseHost(tkn);
-  if (!sc->listen.insert(listen).second)
-    throw ConfigErrException::Err("duplicate listen", tkn);
+  if (!sc->listen.first.empty() || !sc->listen.first.empty())
+    throw ConfigErrException("listen directive duplicate", tkns_.Current());
+  tkns_.Next();
+  std::string listen = ParseListen(tkns_.Current());
+  std::string host = ParseHost(tkns_.Current());
+  sc->listen.first = listen;
+  sc->listen.second = host;
   ThrowExceptionIfNotMatch(tkns_.Next(), ";", "semicolon `;` not found");
 }
 
@@ -67,7 +69,7 @@ std::string Parser::ParseListen(Token tkn) {
   }
   long listen = utils::StrToLong(listen_str);
   if (kport_min > listen || listen > kport_max)
-    throw ConfigErrException::Err("listen invalid value", tkn);
+    throw ConfigErrException("listen invalid value", tkn);
   return listen_str;
 }
 
@@ -78,36 +80,28 @@ std::string Parser::ParseHost(Token tkn) {
     host = tkn.GetData().substr(0, colon_pos);
     in_addr addr;
     int res = inet_aton(host.c_str(), &addr);
-    if (res == 0) throw ConfigErrException::Err("host invalid value", tkn);
+    if (res == 0) throw ConfigErrException("host invalid value", tkn);
   }
   return host;
 }
 void Parser::StoreClientBodySize(ServerContext *sc) {
+  if (sc->client_body_size != -1)
+    throw ConfigErrException("`client_max_body_size` directive duplicate",
+                             tkns_.Current());
   tkns_.Next();
-  if (sc->client_body_size.second)
-    throw ConfigErrException::Err("`client_max_body_size` directive duplicate",
-                                  tkns_.Current());
   long size = utils::StrToLong(tkns_.Data().c_str());
   if (size < 0)
-    throw ConfigErrException::Err(
-        "`client_max_body_size` directive invalid value", tkns_.Current());
-  if (size == 0)
-    sc->client_body_size.first = std::numeric_limits<long>::max();
-  else
-    sc->client_body_size.first = size;
-  sc->client_body_size.second = true;
+    throw ConfigErrException("`client_max_body_size` directive invalid value",
+                             tkns_.Current());
+  sc->client_body_size = size;
   ThrowExceptionIfNotMatch(tkns_.Next(), ";", "semicolon `;` not found");
 }
 void Parser::StoreServerName(ServerContext *sc) {
   ThrowExceptionIfMatch(tkns_.Next(), ";{}",
                         "invalid arguments in `server_name` directive");
-  while (!TokenManager::Equal(tkns_.Current(), ";")) {
-    ThrowExceptionIfMatch(tkns_.Current(), "{}",
-                          "invalid arguments in `server_name` directive");
-    sc->server_name.insert(tkns_.Data());
-    tkns_.Next();
-  }
-  ThrowExceptionIfNotMatch(tkns_.Current(), ";", "semicolon `;` not found");
+  SetTokenIfEmpty(&sc->server_name, tkns_.Current(),
+                  "server_name directive duplicate");
+  ThrowExceptionIfNotMatch(tkns_.Next(), ";", "semicolon `;` not found");
 }
 void Parser::StoreErrorPage(ServerContext *sc) {
   Token current = tkns_.Next();
@@ -119,7 +113,7 @@ void Parser::StoreErrorPage(ServerContext *sc) {
                           "invalid arguments in `error_page` directive");
     long err_num = utils::StrToLong(current.GetData().c_str());
     if (err_num < kstatus_code_min || kstatus_code_max < err_num)
-      throw ConfigErrException::Err(
+      throw ConfigErrException(
           "error_page directive value must be between 300 and 599", current);
     sc->error_page.insert(std::make_pair(err_num, ""));
     current = next;
@@ -140,11 +134,10 @@ void Parser::StoreLocation(ServerContext *sc) {
   ThrowExceptionIfMatch(tkn_location, "{};",
                         "invalid arguments in `location` directive");
   if (sc->locations.find(tkn_location.GetData()) != sc->locations.end())
-    throw ConfigErrException::Err("`location` directive duplicate",
-                                  tkn_location);
+    throw ConfigErrException("`location` directive duplicate", tkn_location);
   tkns_.Next();
   if (!TokenManager::Equal(tkns_.Current(), "{"))
-    throw ConfigErrException::Err("parentheses `{` not found", tkns_.Current());
+    throw ConfigErrException("parentheses `{` not found", tkns_.Current());
   sc->locations.insert(
       std::make_pair(tkn_location.GetData(), MakeLocationDirectives()));
 }
@@ -155,55 +148,45 @@ void Parser::StoreLimitExcept(LocationContext *lc) {
     if (tkn.GetData() == "DELETE" || tkn.GetData() == "GET" ||
         tkn.GetData() == "POST") {
       if (lc->limit_except.find(tkn.GetData()) != lc->limit_except.end())
-        throw ConfigErrException::Err("`limit_except` directive is duplicate",
-                                      tkn);
+        throw ConfigErrException("`limit_except` directive is duplicate", tkn);
       lc->limit_except.insert(tkn.GetData());
     } else {
-      throw ConfigErrException::Err("`limit_except` directive invalid method",
-                                    tkn);
+      throw ConfigErrException("`limit_except` directive invalid method", tkn);
     }
     tkn = tkns_.Next();
   } while (!TokenManager::Equal(tkn, ";"));
   ThrowExceptionIfNotMatch(tkns_.Current(), ";", "semicolon `;` not found");
 }
 void Parser::StoreRedirect(LocationContext *lc) {
-  if (lc->redirect.first)
-    throw ConfigErrException::Err("return directive duplicate",
-                                  tkns_.Current());
+  if (lc->redirect.first != -1)
+    throw ConfigErrException("return directive duplicate", tkns_.Current());
   long code = utils::StrToLong(tkns_.Next().GetData());
   if (999 < code || code < 0)
-    throw ConfigErrException::Err("invalid return code ", tkns_.Current());
+    throw ConfigErrException("invalid return code ", tkns_.Current());
   ThrowExceptionIfMatch(tkns_.Next(), "{}", "return directive invalid value");
   if (TokenManager::Equal(tkns_.Current(), ";")) {
-    lc->redirect.first = true;
-    lc->redirect.second.first = code;
+    lc->redirect.first = code;
   } else {
-    lc->redirect.first = true;
-    lc->redirect.second.first = code;
-    lc->redirect.second.second = tkns_.Current().GetData();
+    lc->redirect.first = code;
+    lc->redirect.second = tkns_.Data();
     ThrowExceptionIfNotMatch(tkns_.Next(), ";", "semicolon `;` not found");
   }
 }
 void Parser::StoreRoot(LocationContext *lc) {
-  Token tkn = tkns_.Next();
-  ThrowExceptionIfMatch(tkn, ";{}", "invalid arguments in `root` directive");
-  if (lc->root.first)
-    throw ConfigErrException::Err("`root` directive is duplicate", tkn);
-  lc->root.second = tkn.GetData();
-  lc->root.first = true;
+  tkns_.Next();
+  ThrowExceptionIfMatch(tkns_.Current(), ";{}",
+                        "invalid arguments in `root` directive");
+  SetTokenIfEmpty(&lc->root, tkns_.Current(), "`root` directive is duplicate");
   ThrowExceptionIfNotMatch(tkns_.Next(), ";", "semicolon `;` not found");
 }
 void Parser::StoreAutoIndex(LocationContext *lc) {
   tkns_.Next();
   if (tkns_.Data() != "off" && tkns_.Data() != "on")
-    throw ConfigErrException::Err(
+    throw ConfigErrException(
         "invalid value in `autoindex` directive, it must be `on` or `off`",
         tkns_.Current());
-  if (lc->auto_index.first)
-    throw ConfigErrException::Err("`autoindex` directive is duplicate`",
-                                  tkns_.Current());
-  lc->auto_index.first = true;
-  lc->auto_index.second = tkns_.Data() != "off";
+  SetTokenIfEmpty(&lc->auto_index, tkns_.Current(),
+                  "`autoindex` directive is duplicate`");
   ThrowExceptionIfNotMatch(tkns_.Next(), ";", "semicolon `;` not found");
 }
 void Parser::StoreIndex(LocationContext *lc) {
@@ -223,8 +206,8 @@ void Parser::StoreCgiExtension(LocationContext *lc) {
   while (!TokenManager::Equal(tkns_.Current(), ";")) {
     size_t pos = 0;
     if ((pos = tkns_.Data().find_last_of(".")) == std::string::npos || pos != 0)
-      throw ConfigErrException::Err(
-          "invalid arguments in `cgi_extension` directive", tkns_.Current());
+      throw ConfigErrException("invalid arguments in `cgi_extension` directive",
+                               tkns_.Current());
     lc->cgi_extension.push_back(tkns_.Data());
     tkns_.Next();
   }
@@ -233,29 +216,32 @@ void Parser::StoreCgiExtension(LocationContext *lc) {
 void Parser::StoreUploadPass(LocationContext *lc) {
   ThrowExceptionIfMatch(tkns_.Next(), ";{}",
                         "invalid arguments in `upload_pass` directive");
-  if (lc->upload_pass.first)
-    throw ConfigErrException::Err(" duplicate `upload_pass` directive",
-                                  tkns_.Current());
-  lc->upload_pass.first = true;
-  lc->upload_pass.second = tkns_.Data();
+  SetTokenIfEmpty(&lc->upload_pass, tkns_.Current(),
+                  "duplicate `upload_pass` directive");
   ThrowExceptionIfNotMatch(tkns_.Next(), ";", "semicolon `;` not found");
 }
 void Parser::ThrowExceptionIfMatch(Token tkn, std::string str,
                                    std::string err_msg) {
   if (tkns_.Data().find_first_of(str) != std::string::npos)
-    throw ConfigErrException::Err(err_msg, tkn);
+    throw ConfigErrException(err_msg, tkn);
 }
 void Parser::ThrowExceptionIfNotMatch(Token tkn, std::string str,
                                       std::string err_msg) {
   if (tkns_.Data().find_first_of(str) == std::string::npos)
-    throw ConfigErrException::Err(err_msg, tkn);
+    throw ConfigErrException(err_msg, tkn);
 }
 
-std::string ConfigErrException::Err(std::string msg, const Token &tkn) throw() {
+void Parser::SetTokenIfEmpty(std::string *str, const Token &tkn,
+                             std::string err_msg) {
+  if (!str->empty()) throw ConfigErrException(err_msg, tkn);
+  *str = tkn.GetData();
+}
+ConfigErrException::~ConfigErrException() {}
+std::string ConfigErrException::msg() const throw() { return err_msg_; }
+ConfigErrException::ConfigErrException(std::string msg, const Token &tkn) {
   std::ostringstream oss;
   oss << tkn.GetLine() + 1;
-  std::string ret = " `" + tkn.GetData() + "` :" + oss.str() + " line Error";
-  return msg + ret;
+  msg += " `" + tkn.GetData() + "` :" + oss.str() + " line Error";
+  err_msg_ = msg;
 }
-
-std::string ConfigErrException::Err(std::string msg) throw() { return msg; }
+ConfigErrException::ConfigErrException(std::string msg) { err_msg_ = msg; }
