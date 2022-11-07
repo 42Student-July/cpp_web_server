@@ -17,23 +17,23 @@ File &File::operator=(const File &file) {
 int File::Status() const {
   struct stat st;
   if (stat(filename_.c_str(), &st) < 0) {
-    return NOT_FOUND;
+    return file_status::NOT_FOUND;
   }
   if (S_ISDIR(st.st_mode)) {
-    return IS_DIR;
+    return file_status::IS_DIR;
   }
   if (!S_ISREG(st.st_mode) || ((S_IRUSR & st.st_mode) == 0u)) {
-    return READ_PERMISSION;
+    return file_status::READ_PERMISSION;
   }
   // if(! S_ISREG(st.st_mode) || !(S_IXUSR & st.st_mode)){
   //   return EXEC_PERMISSION;
   // }
-  return OK;
+  return file_status::OK;
 }
 
 std::string File::ReadFileLines() const {
   std::string lines;
-  if (Status() != OK) return lines;
+  if (Status() != file_status::OK) return lines;
   std::fstream reading_file;
   std::string reading_line;
   reading_file.open(filename_.c_str(), std::ios::in);
@@ -51,7 +51,7 @@ std::string File::ReadFileLines() const {
 
 std::vector<std::string> File::StoreFileLinesInVec() const {
   std::vector<std::string> lines;
-  if (Status() != OK) return lines;
+  if (Status() != file_status::OK) return lines;
   std::fstream reading_file;
   std::string reading_line;
   reading_file.open(filename_.c_str(), std::ios::in);
