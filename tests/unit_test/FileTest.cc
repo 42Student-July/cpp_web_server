@@ -10,15 +10,15 @@
 // }
 TEST(fileStatus,isdir){
 	File f("./text/is_dir");
-	EXPECT_EQ(f.IS_DIR,f.Status());
+	EXPECT_EQ(IS_DIR,f.Status());
 }
 TEST(fileStatus,notFound){
 	File f("./text/a");
-	EXPECT_EQ(f.NOT_FOUND,f.Status());
+	EXPECT_EQ(NOT_FOUND,f.Status());
 }
 TEST(fileStatus,ok){
 	File f("./text/ok.txt");
-	EXPECT_EQ(f.OK,f.Status());
+	EXPECT_EQ(OK,f.Status());
 }
 TEST(fileRead,normal){
 	File f("./text/normal.txt");
@@ -37,8 +37,8 @@ TEST(fileRead,newline){
 }
 TEST(fileReadVec,normal){
 	File f("./text/normal.txt");
-	std::string a = "aaa\n";
-	std::string b = "bbb\n";
+	std::string a = "aaa";
+	std::string b = "bbb";
 	std::string c = "ccc";
 	std::vector<std::string> v;
 	v.push_back(a);
@@ -53,7 +53,7 @@ TEST(fileReadVec,empty){
 }
 TEST(fileReadVec,newline){
 	File f("./text/newline.txt");
-	std::string str = "\n";
+	std::string str;
 	std::vector<std::string> v;
 	v.push_back(str);
 	EXPECT_EQ(v,f.StoreFileLinesInVec());

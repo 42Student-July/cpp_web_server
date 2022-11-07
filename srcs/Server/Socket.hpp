@@ -3,7 +3,7 @@
 #include "Fd.hpp"
 #include "ServerContext.hpp"
 enum SockType { LISTEN, CONNECTING };
-enum SockStatus { READ, WRITE, DELETE };
+enum SockStatus { READ, WRITE };
 class Socket : public Fd {
  private:
   ServerContext context_;

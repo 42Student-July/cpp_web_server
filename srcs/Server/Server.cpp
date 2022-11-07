@@ -29,8 +29,8 @@ void Server::DelSocket(const Socket *sock) {
 
 void Server::Run() {
   while (true) {
-    int num_fd = epoll_.Wait();
-    for (int i = 0; i < num_fd; i++) {
+    int num_event = epoll_.Wait();
+    for (int i = 0; i < num_event; i++) {
       epoll_event ev = epoll_.FindEvent(i);
       IOEvents(&ev);
     }
@@ -62,7 +62,14 @@ void Server::AcceptNewConnections(epoll_event *ev) {
   epoll_event new_ev = Epoll::Create(conn_fd, EPOLLIN | EPOLLET);
   epoll_.Add(&new_ev);
 }
-void Server::ReceiveRequest(epoll_event *ev) { (void)ev; }
+void Server::ReceiveRequest(epoll_event *ev) {
+  // ConnectingSocket *sock = dynamic_cast<ConnectingSocket *>(sockets_[ev->data.fd]);
+  // parsed_request pr = sock->GetParsedRequest();
+  // read_stat st = receive_request_.ReadHttpRequest(sock->GetFd(),&pr);
+  // sock->SetParsedRequest(pr);
+  // if(st == )
+  (void)ev;
+}
 
 void Server::SendResponse(epoll_event *ev) {
   int status = 0;

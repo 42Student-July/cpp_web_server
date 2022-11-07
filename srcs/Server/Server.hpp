@@ -20,12 +20,15 @@
 #include "Result.hpp"
 #include "ServerContext.hpp"
 #include "Socket.hpp"
+#include "ReceiveHttpRequest.hpp"
 class Server {
  private:
   static const int kNotDoneYet = -1;
   std::map<int, Socket *> sockets_;
   Epoll epoll_;
+  ReceiveHttpRequest receive_request_;
   std::map<int, std::vector<std::string> > response_;
+
 
   void IOEvents(epoll_event *ev);
   void AcceptNewConnections(epoll_event *ev);
