@@ -73,7 +73,6 @@ std::vector<std::string> File::StoreFileLinesInVec() const {
     if (reading_file.eof()) {
       break;
     }
-    // reading_line += "\n";
     lines.push_back(reading_line);
   }
   if (!reading_line.empty()) lines.push_back(reading_line);
