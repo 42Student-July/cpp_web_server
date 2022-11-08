@@ -60,4 +60,3 @@ TEST(fileReadVec,newline){
 	v.push_back(str);
 	EXPECT_EQ(v,f.StoreFileLinesInVec());
 }
-
