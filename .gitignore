@@ -1,5 +1,5 @@
 *.pdf
-webserv
+/webserv
 
 # Prerequisites
 *.d

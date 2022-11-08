@@ -71,3 +71,23 @@ setup: ## Set up hooks for commit
 	cp ./.githooks/pre-commit ./.git/hooks/pre-commit
 	chmod +x ./.git/hooks/pre-commit
 
+
+# ------------------------- Rules For Docker ------------------------------
+
+CONTAINER = webserv
+DOCKER_COMPOSE_FILE = ./docker/$(CONTAINER)/docker-compose.yaml
+
+.PHONY: dc-build
+dc-build: ## Build docker container
+	docker compose -f $(DOCKER_COMPOSE_FILE) build 
+
+.PHONY: dc-up
+dc-up: ## Run docker container
+	docker compose -f $(DOCKER_COMPOSE_FILE) up -d
+
+.PHONY: dc-down
+dc-down: ## Down docker container
+	docker compose -f $(DOCKER_COMPOSE_FILE) down --timeout 1
+
+.PHONY: dc-re
+dc-re: dc-down dc-build dc-up ## Rebuild docker image and run container

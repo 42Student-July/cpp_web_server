@@ -3,7 +3,11 @@
 #include <stdexcept>
 #include <string>
 #include <vector>
+
+namespace file_status {
 enum { OK, NOT_FOUND, IS_DIR, EXEC_PERMISSION, READ_PERMISSION };
+}  // namespace file_status
+
 class File {
  private:
   std::string filename_;
