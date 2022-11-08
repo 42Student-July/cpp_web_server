@@ -63,7 +63,8 @@ void Server::AcceptNewConnections(epoll_event *ev) {
   epoll_.Add(&new_ev);
 }
 void Server::ReceiveRequest(epoll_event *ev) {
-  // ConnectingSocket *sock = dynamic_cast<ConnectingSocket *>(sockets_[ev->data.fd]);
+  // ConnectingSocket *sock =
+  // dynamic_cast<ConnectingSocket *>(sockets_[ev->data.fd]);
   // parsed_request pr = sock->GetParsedRequest();
   // read_stat st = receive_request_.ReadHttpRequest(sock->GetFd(),&pr);
   // sock->SetParsedRequest(pr);

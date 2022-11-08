@@ -16,9 +16,9 @@ std::string ConnectingSocket::Read() {
   std::string ret(buf);
   return ret;
 }
-parsed_request ConnectingSocket::GetParsedRequest()const{
+parsed_request ConnectingSocket::GetParsedRequest() const {
   return parsed_request_;
 }
-void ConnectingSocket::SetParsedRequest(const parsed_request &pr){
+void ConnectingSocket::SetParsedRequest(const parsed_request& pr) {
   parsed_request_ = pr;
 }

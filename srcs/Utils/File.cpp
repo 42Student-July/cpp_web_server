@@ -14,26 +14,39 @@ File &File::operator=(const File &file) {
   filename_ = file.filename_;
   return *this;
 }
-int File::Status() const {
+
+bool File::IsExist() const {
   struct stat st;
-  if (stat(filename_.c_str(), &st) < 0) {
-    return NOT_FOUND;
-  }
-  if (S_ISDIR(st.st_mode)) {
-    return IS_DIR;
-  }
-  if (!S_ISREG(st.st_mode) || ((S_IRUSR & st.st_mode) == 0u)) {
-    return READ_PERMISSION;
-  }
-  // if(! S_ISREG(st.st_mode) || !(S_IXUSR & st.st_mode)){
-  //   return EXEC_PERMISSION;
-  // }
-  return OK;
+  return stat(filename_.c_str(), &st) == 0;
 }
+bool File::IsDir() const {
+  struct stat st;
+  return (stat(filename_.c_str(), &st) == 0 && S_ISDIR(st.st_mode));
+}
+bool File::IsFile() const {
+  struct stat st;
+  return (stat(filename_.c_str(), &st) == 0 && S_ISREG(st.st_mode));
+}
+bool File::CanRead() const {
+  struct stat st;
+  return (stat(filename_.c_str(), &st) == 0 && S_ISREG(st.st_mode) &&
+          (S_IRUSR & st.st_mode) != 0u);
+}
+bool File::CanWrite() const {
+  struct stat st;
+  return (stat(filename_.c_str(), &st) == 0 && S_ISREG(st.st_mode) &&
+          (S_IWUSR & st.st_mode) != 0u);
+}
+bool File::CanExec() const {
+  struct stat st;
+  return (stat(filename_.c_str(), &st) == 0 && S_ISREG(st.st_mode) &&
+          (S_IXUSR & st.st_mode) != 0u);
+}
+void File::SetFileName(const std::string &filename) { filename_ = filename; }
 
 std::string File::ReadFileLines() const {
   std::string lines;
-  if (Status() != OK) return lines;
+  if (!CanRead()) return lines;
   std::fstream reading_file;
   std::string reading_line;
   reading_file.open(filename_.c_str(), std::ios::in);
@@ -51,7 +64,7 @@ std::string File::ReadFileLines() const {
 
 std::vector<std::string> File::StoreFileLinesInVec() const {
   std::vector<std::string> lines;
-  if (Status() != OK) return lines;
+  if (!CanRead()) return lines;
   std::fstream reading_file;
   std::string reading_line;
   reading_file.open(filename_.c_str(), std::ios::in);

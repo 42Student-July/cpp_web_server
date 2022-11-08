@@ -10,15 +10,15 @@
 // }
 TEST(fileStatus,isdir){
 	File f("./text/is_dir");
-	EXPECT_EQ(IS_DIR,f.Status());
+	EXPECT_EQ(true,f.IsDir());
 }
 TEST(fileStatus,notFound){
 	File f("./text/a");
-	EXPECT_EQ(NOT_FOUND,f.Status());
+	EXPECT_EQ(false,f.IsExist());
 }
 TEST(fileStatus,ok){
 	File f("./text/ok.txt");
-	EXPECT_EQ(OK,f.Status());
+	EXPECT_EQ(true,f.CanRead());
 }
 TEST(fileRead,normal){
 	File f("./text/normal.txt");
