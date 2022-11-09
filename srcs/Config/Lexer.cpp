@@ -3,13 +3,7 @@
 #include "Parser.hpp"
 Lexer::Lexer(std::string file_name)
     : space_(" \t\n"), separators_(";{}"), file_(file_name) {
-  if (file_.Status() == file_status::NOT_FOUND)
-    throw ConfigErrException::Err("file not found");
-  if (file_.Status() == file_status::IS_DIR)
-    throw ConfigErrException::Err("file is dir");
-  if (file_.Status() == file_status::READ_PERMISSION)
-    throw ConfigErrException::Err("file cant read");
-  // parentheses_cnt_.push(true);
+  if (!file_.CanRead()) throw ConfigErrException("file err");
 }
 Lexer::~Lexer() {}
 Lexer::Lexer(const Lexer &l) { *this = l; }

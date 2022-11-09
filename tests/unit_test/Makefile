@@ -1,4 +1,4 @@
-SRCS = $(wildcard ../../srcs/Utils/*.cpp) $(wildcard ../../srcs/Server/*.cpp)
+SRCS = $(wildcard ../../srcs/Utils/*.cpp) $(wildcard ../../srcs/Server/*.cpp) $(wildcard ../../srcs/Config/*.cpp)
 OBJS = $(SRCS:%.cpp=%.o)
 
 HEADERS = $(wildcard ../../srcs/*/*.hpp)

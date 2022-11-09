@@ -4,10 +4,6 @@
 #include <string>
 #include <vector>
 
-namespace file_status {
-enum { OK, NOT_FOUND, IS_DIR, EXEC_PERMISSION, READ_PERMISSION };
-}  // namespace file_status
-
 class File {
  private:
   std::string filename_;
@@ -19,9 +15,17 @@ class File {
   File &operator=(const File &file);
 
   ~File();
-  int Status() const;
   std::string ReadFileLines() const;
   std::vector<std::string> StoreFileLinesInVec() const;
+
+  bool IsExist() const;
+  bool IsDir() const;
+  bool IsFile() const;
+  bool CanRead() const;
+  bool CanWrite() const;
+  bool CanExec() const;
+
+  void SetFileName(const std::string &name);
 };
 
 #endif  // SRCS_UTILS_FILE_HPP_

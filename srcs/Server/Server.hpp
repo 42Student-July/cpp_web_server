@@ -7,35 +7,43 @@
 #include <iostream>
 #include <map>
 #include <string>
+#include <utility>
 #include <vector>
 
+#include "ConnectingSocket.hpp"
 #include "Epoll.hpp"
 #include "HttpResponse.hpp"
-#include "ListenFd.hpp"
+#include "Listen.hpp"
+#include "ListenSocket.hpp"
 #include "ParseRequestMessage.hpp"
+#include "Parser.hpp"
+#include "ReceiveHttpRequest.hpp"
 #include "Result.hpp"
-// namespace ft{
+#include "ServerContext.hpp"
+#include "Socket.hpp"
 class Server {
  private:
-  enum { line, header, body, eof };
-  static const int kMaxline = 8192;
   static const int kNotDoneYet = -1;
-
-  ListenFd listen_;
+  std::map<int, Socket *> sockets_;
   Epoll epoll_;
+  ReceiveHttpRequest receive_request_;
   std::map<int, std::vector<std::string> > response_;
-  void ReadFromBuffer();
-  void IOEvents();
-  void AcceptNewConnections();
+
+  void IOEvents(epoll_event *ev);
+  void AcceptNewConnections(epoll_event *ev);
+  void ConnectingEvent(epoll_event *ev);
   void AddMonitorToRequest(epoll_event *fd);
   static void ReceiveRequest(epoll_event *ev);
   void SendResponse(epoll_event *ev);
   // int ReadRequest(const Fd &fd);
   int WriteToClientFd(const int connfd);
   Server();
+  void DelSocket(const Socket *sock);
+  void InitListenSocket(const std::vector<ServerContext> &contexts);
+  void AddListenSocketsToEvents();
 
  public:
-  explicit Server(std::string port);
+  explicit Server(const std::vector<ServerContext> &contexts);
   ~Server();
   void Run();
 };

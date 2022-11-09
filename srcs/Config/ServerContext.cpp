@@ -1,8 +1,5 @@
 #include "ServerContext.hpp"
-ServerContext::ServerContext() {
-  client_body_size.first = 1024;
-  client_body_size.second = false;
-}
+ServerContext::ServerContext() : client_body_size(-1) {}
 ServerContext::~ServerContext() {}
 ServerContext::ServerContext(const ServerContext &sc) { *this = sc; }
 ServerContext &ServerContext::operator=(const ServerContext &sc) {
@@ -14,3 +11,6 @@ ServerContext &ServerContext::operator=(const ServerContext &sc) {
   locations = sc.locations;
   return *this;
 }
+
+std::string ServerContext::GetHost() const { return listen.first; }
+std::string ServerContext::GetPort() const { return listen.second; }

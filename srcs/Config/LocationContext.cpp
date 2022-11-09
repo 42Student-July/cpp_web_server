@@ -1,5 +1,5 @@
 #include "LocationContext.hpp"
-LocationContext::LocationContext() {}
+LocationContext::LocationContext() : redirect(-1, "") {}
 LocationContext::~LocationContext() {}
 
 LocationContext::LocationContext(const LocationContext &lc) { *this = lc; }

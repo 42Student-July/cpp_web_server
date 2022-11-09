@@ -7,20 +7,19 @@
 #include <iostream>
 #include <vector>
 
+#include "Fd.hpp"
 #define MAX_EVENT 100
-class Epoll {
+class Epoll : public Fd {
  private:
-  // static const int max_event = 100;
-  int epoll_fd_;
   epoll_event events_[MAX_EVENT];
 
  public:
   Epoll();
   ~Epoll();
   void Create();
-  void Init(const int connfd);
+  void Init();
   epoll_event FindEvent(const int &n) const;
-  static epoll_event Create(const int connfd);
+  static epoll_event Create(const int connfd, uint32_t flags);
   int Wait();
   void Del(epoll_event *ev) const;
   void Add(epoll_event *ev) const;

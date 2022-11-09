@@ -10,12 +10,12 @@
 class LocationContext {
  public:
   std::set<std::string> limit_except;
-  std::pair<bool, std::pair<long, std::string> > redirect;  // return
-  std::pair<bool, std::string> root;
-  std::pair<bool, bool> auto_index;
+  std::pair<long, std::string> redirect;  // return
+  std::string root;
+  std::string auto_index;
   std::vector<std::string> index;
   std::vector<std::string> cgi_extension;
-  std::pair<bool, std::string> upload_pass;
+  std::string upload_pass;
 
  public:
   LocationContext();
