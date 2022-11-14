@@ -8,7 +8,7 @@ std::string UIntToString(size_t num) {
   return oss.str();
 }
 
-std::string ConfivErrMessage(const std::string &msg, const Token &tkn) {
+std::string ConfigErrMessage(const std::string &msg, const Token &tkn) {
   size_t lineNum = tkn.GetLine() + 1;
   return msg + " `" + tkn.GetData() + "` :" + UIntToString(lineNum) +
          " line Error";
@@ -255,6 +255,6 @@ void Parser::SetTokenIfEmpty(std::string *str, const Token &tkn,
 ConfigErrException::~ConfigErrException() {}
 std::string ConfigErrException::msg() const throw() { return err_msg_; }
 ConfigErrException::ConfigErrException(std::string msg, const Token &tkn)
-    : err_msg_(ConfivErrMessage(msg, tkn)) {}
+    : err_msg_(ConfigErrMessage(msg, tkn)) {}
 
 ConfigErrException::ConfigErrException(std::string msg) : err_msg_(msg) {}
