@@ -17,7 +17,6 @@
 #include "ListenSocket.hpp"
 #include "ParseRequestMessage.hpp"
 #include "Parser.hpp"
-#include "ReceiveHttpRequest.hpp"
 #include "Result.hpp"
 #include "ServerContext.hpp"
 #include "Socket.hpp"
@@ -26,7 +25,7 @@ class Server {
   static const int kNotDoneYet = -1;
   std::map<int, Socket *> sockets_;
   Epoll epoll_;
-  ReceiveHttpRequest receive_request_;
+  // ReceiveHttpRequest receive_request_;
   std::map<int, std::vector<std::string> > response_;
 
   void IOEvents(epoll_event *ev);

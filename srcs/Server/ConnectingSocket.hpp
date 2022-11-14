@@ -3,7 +3,6 @@
 
 #include <string>
 
-#include "ReceiveHttpRequest.hpp"
 #include "Socket.hpp"
 class ConnectingSocket : public Socket {
  private:
