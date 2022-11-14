@@ -1,5 +1,9 @@
 #ifndef SRCS_SERVER_SOCKET_HPP_
 #define SRCS_SERVER_SOCKET_HPP_
+#include <string>
+#include <utility>
+#include <vector>
+
 #include "Fd.hpp"
 #include "ServerContext.hpp"
 

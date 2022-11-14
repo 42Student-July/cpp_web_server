@@ -71,17 +71,15 @@ std::pair<std::string, std::string> SplitRequestHeaderLine(
     const std::string &line) {
   std::string key;
   std::string value;
-  size_t pos = 0;
-  size_t key_pos;
-  size_t val_pos;
+  size_t key_pos = 0;
+  size_t val_pos = 0;
 
-  pos = line.find(':');
-  key_pos = pos;
-  val_pos = pos;
-  while (isspace(line[key_pos])) {
+  key_pos = line.find(':');
+  val_pos = key_pos;
+  while (isspace(line[key_pos]) != 0 && key_pos > 0) {
     key_pos--;
   }
-  while (isspace(line[val_pos + 1])) {
+  while (isspace(line[val_pos + 1]) != 0) {
     val_pos++;
   }
   key = line.substr(0, key_pos);
@@ -151,9 +149,9 @@ read_stat Socket::ReadHttpRequest(int fd) {
     pos = hd_.buf.find(NL);
     if (std::string::npos != pos) {
       pr_.request_body = TrimByPos(&hd_.buf, pos, 2);
-    }
-    else
+    } else {
       hd_.s = WAIT_BODY;
+    }
   }
   return READ_COMPLETE;
 }
