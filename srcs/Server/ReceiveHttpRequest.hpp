@@ -46,11 +46,9 @@ struct httprequest_data {
   struct parsed_request pr;
 };
 
-typedef std::map<int, httprequest_data> FDMAP;
-
 class ReceiveHttpRequest {
  private:
-  FDMAP fd_map_;
+  httprequest_data fd_data_;
 
  public:
   ReceiveHttpRequest();
@@ -59,7 +57,7 @@ class ReceiveHttpRequest {
   ~ReceiveHttpRequest();
   read_stat ReadHttpRequest(const int &fd, parsed_request *pr);
   void ShowParsedRequest(const int &fd);
-  void EraseData(const int &fd);
+  const std::string GetBuf();
 };
 
 #endif  // SRCS_SERVER_RECEIVEHTTPREQUEST_HPP_

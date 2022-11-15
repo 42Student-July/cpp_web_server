@@ -1,6 +1,9 @@
 #include "ReceiveHttpRequest.hpp"
-
-ReceiveHttpRequest::ReceiveHttpRequest() {}
+ReceiveHttpRequest::ReceiveHttpRequest() {
+  fd_data_.s = UNREAD;
+  fd_data_.pr.m = ERROR;
+  fd_data_.pr.status_code = 0;
+}
 
 ReceiveHttpRequest::ReceiveHttpRequest(ReceiveHttpRequest const &other) {
   *this = other;
@@ -98,10 +101,20 @@ std::pair<std::string, std::string> SplitRequestHeaderLine(
   std::string key;
   std::string value;
   size_t pos = 0;
+  size_t key_pos;
+  size_t val_pos;
 
   pos = line.find(':');
-  key = line.substr(0, pos);
-  value = line.substr(pos + 1);
+  key_pos = pos;
+  val_pos = pos;
+  while (isspace(line[key_pos])) {
+    key_pos--;
+  }
+  while (isspace(line[val_pos + 1])) {
+    val_pos++;
+  }
+  key = line.substr(0, key_pos);
+  value = line.substr(val_pos + 1);
 
   return std::make_pair(key, value);
 }
@@ -126,74 +139,67 @@ HEADER ParseRequestHeader(const std::string &header_line) {
 }
 
 read_stat ReceiveHttpRequest::ReadHttpRequest(const int &fd,
-                                              parsed_request *request) {
-  FDMAP::iterator itr;
+                                              parsed_request *pr) {
   size_t pos = 0;
+  ssize_t read_ret = 0;
+  char buf[BUFFER_SIZE];
 
-  itr = fd_map_.find(fd);
-  if (itr == fd_map_.end()) {
-    fd_map_[fd].buf = "";
-    fd_map_[fd].request_line = "";
-    fd_map_[fd].request_header = "";
-    fd_map_[fd].message_body = "";
-    fd_map_[fd].s = UNREAD;
-  }
-  if (LoopRead(fd, &fd_map_[fd].buf) == -1) {
-    this->EraseData(fd);
+  read_ret = read(fd, buf, BUFFER_SIZE);
+  if (read_ret == -1) {
     return READ_ERROR;
   }
-
-  if (fd_map_[fd].s == UNREAD || fd_map_[fd].s == WAIT_REQUEST) {
-    pos = fd_map_[fd].buf.find(NL);
+  buf[read_ret] = '\0';
+  fd_data_.buf += buf;
+  if (fd_data_.s == UNREAD || fd_data_.s == WAIT_REQUEST) {
+    pos = fd_data_.buf.find(NL);
     if (std::string::npos != pos) {
-      fd_map_[fd].request_line = TrimByPos(&fd_map_[fd].buf, pos, 2);
-      if (InputHttpRequestLine(fd_map_[fd].request_line, &fd_map_[fd].pr) ==
-          ERROR)
-        fd_map_[fd].s = ERROR_REQUEST;
-      else
-        fd_map_[fd].s = WAIT_HEADER;
+      fd_data_.request_line = TrimByPos(&fd_data_.buf, pos, 2);
+      if (InputHttpRequestLine(fd_data_.request_line, &fd_data_.pr) == ERROR)
+        fd_data_.s = ERROR_REQUEST;
+      else {
+        fd_data_.s = WAIT_HEADER;
+      }
+    } else {
+      fd_data_.s = WAIT_REQUEST;
+      *pr = fd_data_.pr;
+      return WAIT_REQUEST;
     }
-  } else {
-    fd_map_[fd].s = WAIT_REQUEST;
-    *request = fd_map_[fd].pr;
-    return WAIT_REQUEST;
   }
 
-  if (fd_map_[fd].s == WAIT_HEADER) {
-    pos = fd_map_[fd].buf.find(NLNL);
+  if (fd_data_.s == WAIT_HEADER) {
+    pos = fd_data_.buf.find(NLNL);
     if (std::string::npos != pos) {
-      fd_map_[fd].request_header = TrimByPos(&fd_map_[fd].buf, pos, 4);
-      fd_map_[fd].pr.request_header =
-          ParseRequestHeader(fd_map_[fd].request_header);
-      fd_map_[fd].s = WAIT_BODY;
+      fd_data_.request_header = TrimByPos(&fd_data_.buf, pos, 4);
+      fd_data_.pr.request_header = ParseRequestHeader(fd_data_.request_header);
+      fd_data_.s = WAIT_BODY;
     } else {
-      fd_map_[fd].s = WAIT_HEADER;
-      *request = fd_map_[fd].pr;
+      fd_data_.s = WAIT_HEADER;
+      *pr = fd_data_.pr;
       return WAIT_HEADER;
     }
   }
 
-  if (fd_map_[fd].s == WAIT_BODY) {
-    fd_map_[fd].pr.request_body = fd_map_[fd].buf;
+  if (fd_data_.s == WAIT_BODY) {
+    pos = fd_data_.buf.find(NL);
+    fd_data_.pr.request_body = TrimByPos(&fd_data_.buf, pos, 2);
   }
-
-  *request = fd_map_[fd].pr;
+  *pr = fd_data_.pr;
   return READ_COMPLETE;
 }
 
-void ReceiveHttpRequest::EraseData(const int &fd) { fd_map_.erase(fd); }
+// void ReceiveHttpRequest::ShowParsedRequest(const int &fd) {
+//   parsed_request req = fd_data_.pr;
+//   const std::string me[9] = {"ERROR",   "CONNECT", "DELETE", "GET",  "HEAD",
+//                              "OPTIONS", "POST",    "PUT",    "TRACE"};
 
-void ReceiveHttpRequest::ShowParsedRequest(const int &fd) {
-  parsed_request req = fd_map_[fd].pr;
-  const std::string me[9] = {"ERROR",   "CONNECT", "DELETE", "GET",  "HEAD",
-                             "OPTIONS", "POST",    "PUT",    "TRACE"};
+//   std::cout << me[req.m] << std::endl;
+//   std::cout << req.request_path << std::endl;
+//   std::cout << req.version << std::endl;
+//   for (size_t i = 0; i < req.request_header.size(); ++i) {
+//     std::cout << req.request_header[i].first << ":"
+//               << req.request_header[i].second << "\n";
+//   }
+//   std::cout << req.request_body << std::endl;
+// }
 
-  std::cout << me[req.m] << std::endl;
-  std::cout << req.request_path << std::endl;
-  std::cout << req.version << std::endl;
-  for (size_t i = 0; i < req.request_header.size(); ++i) {
-    std::cout << req.request_header[i].first << ":"
-              << req.request_header[i].second << "\n";
-  }
-  std::cout << req.request_body << std::endl;
-}
+const std::string ReceiveHttpRequest::GetBuf() { return (fd_data_.buf); }
