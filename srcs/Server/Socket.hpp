@@ -1,8 +1,8 @@
 #ifndef SRCS_SERVER_SOCKET_HPP_
 #define SRCS_SERVER_SOCKET_HPP_
 #include "Fd.hpp"
-#include "ServerContext.hpp"
 #include "ReceiveHttpRequest.hpp"
+#include "ServerContext.hpp"
 enum SockType { LISTEN, CONNECTING };
 enum SockStatus { READ, WRITE };
 class Socket : public Fd {

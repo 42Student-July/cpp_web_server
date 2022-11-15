@@ -100,17 +100,15 @@ std::pair<std::string, std::string> SplitRequestHeaderLine(
     const std::string &line) {
   std::string key;
   std::string value;
-  size_t pos = 0;
-  size_t key_pos;
-  size_t val_pos;
+  size_t key_pos = 0;
+  size_t val_pos = 0;
 
-  pos = line.find(':');
-  key_pos = pos;
-  val_pos = pos;
-  while (isspace(line[key_pos])) {
+  key_pos = line.find(':');
+  val_pos = key_pos;
+  while (isspace(line[key_pos]) != 0 && key_pos > 0) {
     key_pos--;
   }
-  while (isspace(line[val_pos + 1])) {
+  while (isspace(line[val_pos + 1]) != 0) {
     val_pos++;
   }
   key = line.substr(0, key_pos);
@@ -154,9 +152,9 @@ read_stat ReceiveHttpRequest::ReadHttpRequest(const int &fd,
     pos = fd_data_.buf.find(NL);
     if (std::string::npos != pos) {
       fd_data_.request_line = TrimByPos(&fd_data_.buf, pos, 2);
-      if (InputHttpRequestLine(fd_data_.request_line, &fd_data_.pr) == ERROR)
+      if (InputHttpRequestLine(fd_data_.request_line, &fd_data_.pr) == ERROR) {
         fd_data_.s = ERROR_REQUEST;
-      else {
+      } else {
         fd_data_.s = WAIT_HEADER;
       }
     } else {
@@ -202,4 +200,4 @@ read_stat ReceiveHttpRequest::ReadHttpRequest(const int &fd,
 //   std::cout << req.request_body << std::endl;
 // }
 
-const std::string ReceiveHttpRequest::GetBuf() { return (fd_data_.buf); }
+std::string ReceiveHttpRequest::GetBuf() { return (fd_data_.buf); }
