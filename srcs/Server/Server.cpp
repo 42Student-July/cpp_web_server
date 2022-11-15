@@ -60,6 +60,8 @@ void Server::AcceptNewConnections(epoll_event *ev) {
   Event *connsock = new Connecting(conn_fd, sock->GetContext());
   AddEventToMonitored(connsock, EPOLLIN);
 }
+
+// [FIXME]
 void Server::ReceiveRequest(epoll_event *ev) {
   // ConnectingEvent *sock =
   // dynamic_cast<ConnectingEvent *>(Events_[ev->data.fd]);
