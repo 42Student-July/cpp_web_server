@@ -63,13 +63,13 @@ void Server::AcceptNewConnections(epoll_event *ev) {
 
 // [FIXME]
 void Server::ReceiveRequest(epoll_event *ev) {
-  // ConnectingEvent *sock =
-  // dynamic_cast<ConnectingEvent *>(Events_[ev->data.fd]);
-  // parsed_request pr = sock->GetParsedRequest();
-  // read_stat st = receive_request_.ReadHttpRequest(sock->GetFd(),&pr);
-  // sock->SetParsedRequest(pr);
-  // if(st == )
-  (void)ev;
+  Connecting *connecting_event =
+      dynamic_cast<Connecting *>(this->events_[ev->data.fd]);
+  parsed_request pr = connecting_event->GetParsedRequest();
+  read_stat st =
+      receive_request_.ReadHttpRequest(connecting_event->GetFd(), &pr);
+  (void)st;
+  connecting_event->SetParsedRequest(pr);
 }
 void Server::AddEventToMonitored(Event *sock, uint32_t event_flag) {
   events_.insert(std::make_pair(sock->GetFd(), sock));
