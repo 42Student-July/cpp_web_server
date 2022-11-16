@@ -24,7 +24,6 @@ class HttpResponse {
   std::string GetRequestLine() const;
   std::vector<std::string> GetResponse() const;
   void SetHttpResponse200();
-  std::string GetStatusMessage() const;
   std::vector<std::string> GetResponseHeaders() const;
 
  private:
@@ -33,6 +32,8 @@ class HttpResponse {
   std::map<std::string, std::string> headers_;
   std::string version_;
   std::string body_;
+
+  std::string GetStatusMessage() const;
 };
 
 #endif  // SRCS_SERVER_HTTPRESPONSE_HPP_
