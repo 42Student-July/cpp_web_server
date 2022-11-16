@@ -7,12 +7,13 @@
 #include "ReceiveHttpRequest.hpp"
 class Connecting : public Event {
  private:
-  parsed_request parsed_request_;
-
+  ReceiveHttpRequest hr_;
+  parsed_request pr_;
  public:
   Connecting(const int fd, const ServerContext& context);
   ~Connecting();
   parsed_request GetParsedRequest() const;
   void SetParsedRequest(const parsed_request& pr);
+  read_stat ReadRequest();
 };
 #endif  // SRCS_SERVER_CONNECTING_HPP_
