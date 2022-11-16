@@ -1,29 +1,23 @@
 #include "Server.hpp"
 Server::Server(const std::vector<ServerContext> &contexts) {
-  InitListenSocket(contexts);
-  AddListenSocketsToEvents();
+  InitListenEvent(contexts);
 }
 Server::~Server() {
-  for (; sockets_.begin() != sockets_.end();) {
-    DelSocket(sockets_.begin()->second);
+  for (; events_.begin() != events_.end();) {
+    DelEvent(events_.begin()->second, NULL);
   }
 }
-void Server::InitListenSocket(const std::vector<ServerContext> &contexts) {
+void Server::InitListenEvent(const std::vector<ServerContext> &contexts) {
   for (size_t i = 0; i < contexts.size(); i++) {
     Listen listen(contexts[i].GetHost(), contexts[i].GetPort());
     const int fd = listen.GenerateConnectableFd();
-    sockets_.insert(std::make_pair(fd, new ListenSocket(fd, contexts[i])));
+    Event *sock = new ListenEvent(fd, contexts[i]);
+    AddEventToMonitored(sock, EPOLLIN);
   }
 }
-void Server::AddListenSocketsToEvents() {
-  for (std::map<int, Socket *>::iterator it = sockets_.begin();
-       it != sockets_.end(); it++) {
-    epoll_event event = Epoll::Create(it->second->GetFd(), EPOLLIN | EPOLLET);
-    epoll_.Add(&event);
-  }
-}
-void Server::DelSocket(const Socket *sock) {
-  sockets_.erase(sock->GetFd());
+void Server::DelEvent(const Event *sock, epoll_event *ev) {
+  if (ev != 0) epoll_.Del(ev);
+  events_.erase(sock->GetFd());
   delete sock;
 }
 
@@ -32,17 +26,23 @@ void Server::Run() {
     int num_event = epoll_.Wait();
     for (int i = 0; i < num_event; i++) {
       epoll_event ev = epoll_.FindEvent(i);
-      IOEvents(&ev);
+      ExecEvents(&ev);
+      if (events_[ev.data.fd]->GetEventStatus() == DEL)
+        DelEvent(events_[ev.data.fd], &ev);
     }
   }
 }
-void Server::IOEvents(epoll_event *ev) {
-  switch (sockets_[ev->data.fd]->GetSockType()) {
+
+void Server::ExecEvents(epoll_event *ev) {
+  switch (events_[ev->data.fd]->GetEventType()) {
     case LISTEN:
       AcceptNewConnections(ev);
       break;
     case CONNECTING:
       ConnectingEvent(ev);
+      break;
+    case CGI:
+      CgiEvent(ev);
       break;
   }
 }
@@ -55,21 +55,24 @@ void Server::ConnectingEvent(epoll_event *ev) {
   }
 }
 void Server::AcceptNewConnections(epoll_event *ev) {
-  ListenSocket *sock = dynamic_cast<ListenSocket *>(sockets_[ev->data.fd]);
+  ListenEvent *sock = dynamic_cast<ListenEvent *>(events_[ev->data.fd]);
   int conn_fd = sock->Accept();
-  Socket *connsock = new ConnectingSocket(conn_fd, sock->GetContext());
-  sockets_.insert(std::make_pair(conn_fd, connsock));
-  epoll_event new_ev = Epoll::Create(conn_fd, EPOLLIN | EPOLLET);
-  epoll_.Add(&new_ev);
+  Event *connsock = new Connecting(conn_fd, sock->GetContext());
+  AddEventToMonitored(connsock, EPOLLIN);
 }
 void Server::ReceiveRequest(epoll_event *ev) {
-  // ConnectingSocket *sock =
-  // dynamic_cast<ConnectingSocket *>(sockets_[ev->data.fd]);
+  // ConnectingEvent *sock =
+  // dynamic_cast<ConnectingEvent *>(Events_[ev->data.fd]);
   // parsed_request pr = sock->GetParsedRequest();
   // read_stat st = receive_request_.ReadHttpRequest(sock->GetFd(),&pr);
   // sock->SetParsedRequest(pr);
   // if(st == )
   (void)ev;
+}
+void Server::AddEventToMonitored(Event *sock, uint32_t event_flag) {
+  events_.insert(std::make_pair(sock->GetFd(), sock));
+  epoll_event new_ev = Epoll::Create(sock->GetFd(), event_flag);
+  epoll_.Add(&new_ev);
 }
 
 void Server::SendResponse(epoll_event *ev) {
@@ -85,6 +88,22 @@ void Server::SendResponse(epoll_event *ev) {
   response_.erase(ev->data.fd);
   epoll_.Del(ev);
   close(ev->data.fd);
+}
+
+void Server::CgiRun(epoll_event *ev) {
+  // Event *sock = new Cgi(fd[1]);
+  // Events_.insert(std::make_pair(sock->GetFd(),sock));
+  // epoll_event new_ev = Epoll::Create(sock->GetFd(), EPOLLIN);
+  // epoll_.Mod(ev, 0);
+  (void)ev;
+}
+void Server::CgiEvent(epoll_event *ev) {
+  (void)ev;
+  // Cgi *sock = dynamic_cast<Cgi *>(events_[ev->data.fd]);
+  // sock->SetChunked(sock->Read());
+  // 無限にプリント　→　時間でタイムアウト
+  // 無限ループ　→　read byteが0だったらキルする
+  // cgi読み込み終了したらcgi呼び出したEventのepoll writeに変更
 }
 
 int Server::WriteToClientFd(const int conn) {
