@@ -4,7 +4,7 @@ Connecting::Connecting(const int fd, const ServerContext& context)
 Connecting::~Connecting() {}
 
 parsed_request Connecting::GetParsedRequest() const { return pr_; }
-void Connecting::SetParsedRequest(const parsed_request& pr) {
-  pr_ = pr;
+void Connecting::SetParsedRequest(const parsed_request& pr) { pr_ = pr; }
+read_stat Connecting::ReadRequest() {
+  return (hr_.ReadHttpRequest(GetFd(), &pr_));
 }
-read_stat Connecting::ReadRequest() { return (hr_.ReadHttpRequest(GetFd(), &pr_)); }

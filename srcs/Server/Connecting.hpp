@@ -9,6 +9,7 @@ class Connecting : public Event {
  private:
   ReceiveHttpRequest hr_;
   parsed_request pr_;
+
  public:
   Connecting(const int fd, const ServerContext& context);
   ~Connecting();
