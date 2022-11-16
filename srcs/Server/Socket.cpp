@@ -6,3 +6,4 @@ void Socket::SetSockStatus(SockStatus status) { status_ = status; }
 int Socket::GetSockStatus() const { return status_; }
 int Socket::GetSockType() const { return type_; }
 const ServerContext& Socket::GetContext() const { return context_; }
+read_stat Socket::ReadRequest() { return (hr_.ReadHttpRequest(GetFd(), &pr_)); }
