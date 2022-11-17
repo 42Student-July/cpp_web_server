@@ -60,16 +60,15 @@ void Server::AcceptNewConnections(epoll_event *ev) {
   Event *connsock = new Connecting(conn_fd, sock->GetContext());
   AddEventToMonitored(connsock, EPOLLIN);
 }
-
-// [FIXME]
-void Server::ReceiveRequest(epoll_event *ev) {
-  Connecting *connecting_event =
-      dynamic_cast<Connecting *>(this->events_[ev->data.fd]);
-  parsed_request pr = connecting_event->GetParsedRequest();
-  read_stat st =
-      receive_request_.ReadHttpRequest(connecting_event->GetFd(), &pr);
-  (void)st;
-  connecting_event->SetParsedRequest(pr);
+void Server::ReceiveRequest(epoll_event *epo_ev) {
+  // Connecting *event = dynamic_cast<Connecting *>(events_[epo_ev->data.fd]);
+  // read_stat stat = event->ReadRequest();
+  // if(stat == )
+  // read_stat st = receive_request_.ReadHttpRequest(sock->GetFd(),&pr);
+  // sock->SetParsedRequest(pr);
+  // if(st == )
+  (void)this->events_;
+  (void)epo_ev;
 }
 void Server::AddEventToMonitored(Event *sock, uint32_t event_flag) {
   events_.insert(std::make_pair(sock->GetFd(), sock));
