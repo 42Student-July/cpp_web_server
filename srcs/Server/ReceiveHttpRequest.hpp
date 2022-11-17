@@ -2,6 +2,7 @@
 #define SRCS_SERVER_RECEIVEHTTPREQUEST_HPP_
 #include <unistd.h>
 
+#include <algorithm>
 #include <iostream>
 #include <map>
 #include <string>
@@ -43,12 +44,12 @@ struct httprequest_data {
   std::string request_line;
   std::string request_header;
   std::string message_body;
-  struct parsed_request pr;
 };
 
 class ReceiveHttpRequest {
  private:
   httprequest_data fd_data_;
+  parsed_request pr_;
 
  public:
   ReceiveHttpRequest();

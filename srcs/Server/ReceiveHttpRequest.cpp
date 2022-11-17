@@ -1,8 +1,8 @@
 #include "ReceiveHttpRequest.hpp"
 ReceiveHttpRequest::ReceiveHttpRequest() {
   fd_data_.s = UNREAD;
-  fd_data_.pr.m = ERROR;
-  fd_data_.pr.status_code = 0;
+  pr_.m = ERROR;
+  pr_.status_code = 0;
 }
 
 ReceiveHttpRequest::ReceiveHttpRequest(ReceiveHttpRequest const &other) {
@@ -18,25 +18,6 @@ ReceiveHttpRequest &ReceiveHttpRequest::operator=(
 }
 
 ReceiveHttpRequest::~ReceiveHttpRequest() {}
-
-ssize_t LoopRead(const int &fd, std::string *str) {
-  ssize_t buffer_remaining = 0;
-  std::string strbuf = "";
-
-  char buf[BUFFER_SIZE];
-  for (;;) {
-    buffer_remaining = read(fd, buf, BUFFER_SIZE);
-    if (buffer_remaining == -1) {
-      return -1;
-    }
-    strbuf = buf;
-    *str += strbuf;
-    if (buffer_remaining < BUFFER_SIZE) {
-      break;
-    }
-  }
-  return 0;
-}
 
 static std::string TrimByPos(std::string *buf, const size_t &pos,
                              const size_t &size) {
@@ -152,14 +133,14 @@ read_stat ReceiveHttpRequest::ReadHttpRequest(const int &fd,
     pos = fd_data_.buf.find(NL);
     if (std::string::npos != pos) {
       fd_data_.request_line = TrimByPos(&fd_data_.buf, pos, 2);
-      if (InputHttpRequestLine(fd_data_.request_line, &fd_data_.pr) == ERROR) {
+      if (InputHttpRequestLine(fd_data_.request_line, &pr_) == ERROR) {
         fd_data_.s = ERROR_REQUEST;
       } else {
         fd_data_.s = WAIT_HEADER;
       }
     } else {
       fd_data_.s = WAIT_REQUEST;
-      *pr = fd_data_.pr;
+      *pr = pr_;
       return WAIT_REQUEST;
     }
   }
@@ -168,36 +149,21 @@ read_stat ReceiveHttpRequest::ReadHttpRequest(const int &fd,
     pos = fd_data_.buf.find(NLNL);
     if (std::string::npos != pos) {
       fd_data_.request_header = TrimByPos(&fd_data_.buf, pos, 4);
-      fd_data_.pr.request_header = ParseRequestHeader(fd_data_.request_header);
+      pr_.request_header = ParseRequestHeader(fd_data_.request_header);
       fd_data_.s = WAIT_BODY;
     } else {
       fd_data_.s = WAIT_HEADER;
-      *pr = fd_data_.pr;
+      *pr = pr_;
       return WAIT_HEADER;
     }
   }
 
   if (fd_data_.s == WAIT_BODY) {
     pos = fd_data_.buf.find(NL);
-    fd_data_.pr.request_body = TrimByPos(&fd_data_.buf, pos, 2);
+    pr_.request_body = TrimByPos(&fd_data_.buf, pos, 2);
   }
-  *pr = fd_data_.pr;
+  *pr = pr_;
   return READ_COMPLETE;
 }
-
-// void ReceiveHttpRequest::ShowParsedRequest(const int &fd) {
-//   parsed_request req = fd_data_.pr;
-//   const std::string me[9] = {"ERROR",   "CONNECT", "DELETE", "GET",  "HEAD",
-//                              "OPTIONS", "POST",    "PUT",    "TRACE"};
-
-//   std::cout << me[req.m] << std::endl;
-//   std::cout << req.request_path << std::endl;
-//   std::cout << req.version << std::endl;
-//   for (size_t i = 0; i < req.request_header.size(); ++i) {
-//     std::cout << req.request_header[i].first << ":"
-//               << req.request_header[i].second << "\n";
-//   }
-//   std::cout << req.request_body << std::endl;
-// }
 
 std::string ReceiveHttpRequest::GetBuf() { return (fd_data_.buf); }
