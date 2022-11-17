@@ -12,11 +12,11 @@
 #define NLNL "\r\n\r\n"
 #define BUFFER_SIZE 8192
 
-typedef std::vector<std::pair<std::string, std::string> > HEADER;
+typedef std::vector<std::pair<std::string, std::string> > Header;
 
 enum method { ERROR, CONNECT, DELETE, GET, HEAD, OPTIONS, POST, PUT, TRACE };
 
-enum read_stat {
+enum ReadStat {
   UNREAD,
   WAIT_REQUEST,
   ERROR_REQUEST,
@@ -33,12 +33,12 @@ struct ParsedRequest {
   std::string version;
   int status_code;
   std::string request_path;
-  HEADER request_header;
+  Header request_header;
   std::string request_body;
 };
 
 struct HttpRequestData {
-  read_stat s;
+  ReadStat s;
   std::string buf;
   std::string request_line;
   std::string request_header;
@@ -55,7 +55,7 @@ class ReceiveHttpRequest {
   ReceiveHttpRequest(ReceiveHttpRequest const &other);
   ReceiveHttpRequest &operator=(ReceiveHttpRequest const &other);
   ~ReceiveHttpRequest();
-  read_stat ReadHttpRequest(const int &fd, ParsedRequest *pr);
+  ReadStat ReadHttpRequest(const int &fd, ParsedRequest *pr);
   void ShowParsedRequest(const int &fd);
   std::string GetBuf();
 };

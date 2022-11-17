@@ -4,7 +4,7 @@
 #include <gtest/gtest.h>
 #define DIR "./text/ReceiveHttpRequest/"
 
-HEADER expected_full = {{"Host", "hoge.com"},
+Header expected_full = {{"Host", "hoge.com"},
                         {"Connection", "keep-alive"},
                         {"Content-Length", "38"},
                         {"Cache-Control", "max-age=0"},
@@ -33,7 +33,7 @@ void copy_fd(int dst, const char *src) {
   close(srcfd);
 }
 
-void compare_header(HEADER header, HEADER expected_header) {
+void compare_header(Header header, Header expected_header) {
   for (size_t i = 0; i < header.size(); i++) {
     EXPECT_EQ(header.at(i).first, expected_header.at(i).first);
     EXPECT_EQ(header.at(i).second, expected_header.at(i).second);
@@ -43,7 +43,7 @@ void compare_header(HEADER header, HEADER expected_header) {
 TEST(ReceiveHttpRequest, full) {
   ReceiveHttpRequest rhr;
   ParsedRequest pr;
-  read_stat rs;
+  ReadStat rs;
   int fd = open("./text/ReceiveHttpRequest/ReceiveHttpRequest.txt", O_RDWR);
   copy_fd(fd, "FullRequest");
   rs = rhr.ReadHttpRequest(fd, &pr);
@@ -60,7 +60,7 @@ TEST(ReceiveHttpRequest, full) {
 TEST(ReceiveHttpRequest, empty_then_full) {
   ReceiveHttpRequest rhr;
   ParsedRequest pr;
-  read_stat rs;
+  ReadStat rs;
 
   int fd = open("./text/ReceiveHttpRequest/ReceiveHttpRequest.txt",
                 O_RDWR | O_TRUNC);
@@ -85,7 +85,7 @@ TEST(ReceiveHttpRequest, empty_then_full) {
 TEST(ReceiveHttpRequest, only_request_line) {
   ReceiveHttpRequest rhr;
   ParsedRequest pr;
-  read_stat rs;
+  ReadStat rs;
   int fd = open("./text/ReceiveHttpRequest/ReceiveHttpRequest.txt",
                 O_RDWR | O_TRUNC);
 
@@ -102,7 +102,7 @@ TEST(ReceiveHttpRequest, only_request_line) {
 TEST(ReceiveHttpRequest, half_then_half) {
   ReceiveHttpRequest rhr;
   ParsedRequest pr;
-  read_stat rs;
+  ReadStat rs;
   int fd = open("./text/ReceiveHttpRequest/ReceiveHttpRequest.txt",
                 O_RDWR | O_TRUNC);
   copy_fd(fd, "HalfRequestLine");

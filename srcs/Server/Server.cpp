@@ -64,7 +64,7 @@ void Server::ReceiveRequest(epoll_event *ev) {
   // ConnectingEvent *sock =
   // dynamic_cast<ConnectingEvent *>(Events_[ev->data.fd]);
   // ParsedRequest pr = sock->GetParsedRequest();
-  // read_stat st = receive_request_.ReadHttpRequest(sock->GetFd(),&pr);
+  // ReadStat st = receive_request_.ReadHttpRequest(sock->GetFd(),&pr);
   // sock->SetParsedRequest(pr);
   // if(st == )
   (void)ev;

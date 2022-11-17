@@ -117,8 +117,8 @@ std::pair<std::string, std::string> SplitRequestHeaderLine(
   return std::make_pair(key, value);
 }
 
-HEADER ParseRequestHeader(const std::string &header_line) {
-  HEADER header;
+Header ParseRequestHeader(const std::string &header_line) {
+  Header header;
   size_t top = 0;
   size_t pos = 0;
   std::string trim;
@@ -136,8 +136,7 @@ HEADER ParseRequestHeader(const std::string &header_line) {
   return header;
 }
 
-read_stat ReceiveHttpRequest::ReadHttpRequest(const int &fd,
-                                              ParsedRequest *pr) {
+ReadStat ReceiveHttpRequest::ReadHttpRequest(const int &fd, ParsedRequest *pr) {
   size_t pos = 0;
   ssize_t read_ret = 0;
   char buf[BUFFER_SIZE];

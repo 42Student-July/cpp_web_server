@@ -15,6 +15,6 @@ class Connecting : public Event {
   ~Connecting();
   ParsedRequest GetParsedRequest() const;
   void SetParsedRequest(const ParsedRequest& pr);
-  read_stat ReadRequest();
+  ReadStat ReadRequest();
 };
 #endif  // SRCS_SERVER_CONNECTING_HPP_
