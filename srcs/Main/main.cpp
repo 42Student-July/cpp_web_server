@@ -6,6 +6,7 @@ int main(int ac, char **av) {
   }
   try {
     Lexer lexer(av[1]);
+    lexer.Tokenize();
     Parser parser(lexer);
     Server server(parser.ConfigSetting());
     server.Run();
