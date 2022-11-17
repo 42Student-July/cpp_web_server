@@ -21,7 +21,7 @@ class HttpResponse {
 
   int GetStatusCode() const;
   std::string const &GetBody() const;
-  std::string GetRequestLine() const;
+  std::string GetStatusLine() const;
   std::vector<std::string> GetResponse() const;
   void SetHttpResponse200();
   std::vector<std::string> GetResponseHeaders() const;

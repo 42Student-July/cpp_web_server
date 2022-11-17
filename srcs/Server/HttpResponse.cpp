@@ -38,7 +38,13 @@ int HttpResponse::GetStatusCode() const { return this->statusCode_; }
 
 std::string const &HttpResponse::GetBody() const { return this->body_; }
 
-std::string HttpResponse::GetRequestLine() const {
+/*
+HTTP start-line: https://httpwg.org/specs/rfc9112.html#message.format
+
+  start-line     = request-line / status-line
+  status-line = HTTP-version SP status-code SP [ reason-phrase ]
+*/
+std::string HttpResponse::GetStatusLine() const {
   return this->version_ + " " + utils::Itoa(this->statusCode_) + " " +
          this->GetStatusMessage() + kCRLF;
 }
@@ -78,10 +84,18 @@ std::string HttpResponse::GetStatusMessage() const {
   }
 }
 
+/*
+HTTP message: https://httpwg.org/specs/rfc9112.html#message.format
+
+  HTTP-message   = start-line CRLF
+                   *( field-line CRLF )
+                   CRLF
+                   [ message-body ]
+*/
 std::vector<std::string> HttpResponse::GetResponse() const {
   std::vector<std::string> response;
 
-  response.push_back(this->GetRequestLine());
+  response.push_back(this->GetStatusLine());
 
   std::vector<std::string> headers = this->GetResponseHeaders();
   response.insert(response.end(), headers.begin(), headers.end());

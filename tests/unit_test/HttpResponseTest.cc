@@ -65,7 +65,7 @@ TEST(HttpResponseTest_Default, RequestLine) {
   res.SetStatusCode(200);
   std::string expected = "HTTP/1.1 200 OK\r\n";
 
-  EXPECT_EQ(expected, res.GetRequestLine());
+  EXPECT_EQ(expected, res.GetStatusLine());
 }
 
 TEST(HttpResponseTest_Default, RequestLine_400) {
@@ -73,7 +73,7 @@ TEST(HttpResponseTest_Default, RequestLine_400) {
   res.SetStatusCode(400);
   std::string expected = "HTTP/1.1 400 Bad Request\r\n";
 
-  EXPECT_EQ(expected, res.GetRequestLine());
+  EXPECT_EQ(expected, res.GetStatusLine());
 }
 
 TEST(HttpResponseTest_Default, RequestLine_500) {
@@ -81,7 +81,7 @@ TEST(HttpResponseTest_Default, RequestLine_500) {
   res.SetStatusCode(500);
   std::string expected = "HTTP/1.1 500 Internal Server Error\r\n";
 
-  EXPECT_EQ(expected, res.GetRequestLine());
+  EXPECT_EQ(expected, res.GetStatusLine());
 }
 
 TEST(HttpResponseTest_Default, GetResponse) {
