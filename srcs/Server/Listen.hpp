@@ -17,7 +17,7 @@
 #include "ServerContext.hpp"
 class Listen {
  private:
-  static const int klisten_max = 1024;
+  static const int kListenMax = 1024;
   struct addrinfo hint_;
   struct addrinfo *address_;
   std::string host_;

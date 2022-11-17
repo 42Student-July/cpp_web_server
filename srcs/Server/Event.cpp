@@ -13,8 +13,8 @@ ssize_t Event::Write(const char* str, size_t size) const {
   return written_size;
 }
 std::string Event::Read() const {
-  char buf[Kbuffer_size_];
-  ssize_t read_size = read(GetFd(), buf, Kbuffer_size_);
+  char buf[kBufferSize];
+  ssize_t read_size = read(GetFd(), buf, kBufferSize);
   if (read_size == -1) throw std::runtime_error("read err");
   buf[read_size] = '\0';
   std::string ret(buf);

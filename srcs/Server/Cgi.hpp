@@ -47,7 +47,7 @@ class Cgi : public Event {
   static void DelPtr(char **ptr);
 
  public:
-  Cgi(const ServerContext &context, const parsed_request &pr, method m);
+  Cgi(const ServerContext &context, const ParsedRequest &pr, method m);
   ~Cgi();
   void Run();
   int GetOutFd() const;

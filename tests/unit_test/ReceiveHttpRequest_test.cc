@@ -42,7 +42,7 @@ void compare_header(HEADER header, HEADER expected_header) {
 
 TEST(ReceiveHttpRequest, full) {
   ReceiveHttpRequest rhr;
-  parsed_request pr;
+  ParsedRequest pr;
   read_stat rs;
   int fd = open("./text/ReceiveHttpRequest/ReceiveHttpRequest.txt", O_RDWR);
   copy_fd(fd, "FullRequest");
@@ -59,7 +59,7 @@ TEST(ReceiveHttpRequest, full) {
 
 TEST(ReceiveHttpRequest, empty_then_full) {
   ReceiveHttpRequest rhr;
-  parsed_request pr;
+  ParsedRequest pr;
   read_stat rs;
 
   int fd = open("./text/ReceiveHttpRequest/ReceiveHttpRequest.txt",
@@ -84,7 +84,7 @@ TEST(ReceiveHttpRequest, empty_then_full) {
 
 TEST(ReceiveHttpRequest, only_request_line) {
   ReceiveHttpRequest rhr;
-  parsed_request pr;
+  ParsedRequest pr;
   read_stat rs;
   int fd = open("./text/ReceiveHttpRequest/ReceiveHttpRequest.txt",
                 O_RDWR | O_TRUNC);
@@ -101,7 +101,7 @@ TEST(ReceiveHttpRequest, only_request_line) {
 
 TEST(ReceiveHttpRequest, half_then_half) {
   ReceiveHttpRequest rhr;
-  parsed_request pr;
+  ParsedRequest pr;
   read_stat rs;
   int fd = open("./text/ReceiveHttpRequest/ReceiveHttpRequest.txt",
                 O_RDWR | O_TRUNC);

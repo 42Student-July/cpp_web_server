@@ -63,7 +63,7 @@ void Server::AcceptNewConnections(epoll_event *ev) {
 void Server::ReceiveRequest(epoll_event *ev) {
   // ConnectingEvent *sock =
   // dynamic_cast<ConnectingEvent *>(Events_[ev->data.fd]);
-  // parsed_request pr = sock->GetParsedRequest();
+  // ParsedRequest pr = sock->GetParsedRequest();
   // read_stat st = receive_request_.ReadHttpRequest(sock->GetFd(),&pr);
   // sock->SetParsedRequest(pr);
   // if(st == )
@@ -78,9 +78,9 @@ void Server::AddEventToMonitored(Event *sock, uint32_t event_flag) {
 void Server::SendResponse(epoll_event *ev) {
   int status = 0;
   response_[ev->data.fd];
-  HttpResponse httpResponse;
-  httpResponse.SetHttpResponse200();
-  response_[ev->data.fd] = httpResponse.GetResponse();
+  HttpResponse http_response;
+  http_response.SetHttpResponse200();
+  response_[ev->data.fd] = http_response.GetResponse();
   if ((status = WriteToClientFd(ev->data.fd)) == kNotDoneYet) {
     (void)status;
     return;

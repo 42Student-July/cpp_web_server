@@ -1,5 +1,5 @@
 #include "Cgi.hpp"
-Cgi::Cgi(const ServerContext &context, const parsed_request &pr, method m)
+Cgi::Cgi(const ServerContext &context, const ParsedRequest &pr, method m)
     : Event(-1, context, CGI), method_(m) {
   // set up
   (void)pr;
@@ -170,13 +170,13 @@ void Cgi::Run() {
 // location
 // status
 
-static const char EncodeTable[16] = {'0', '1', '2', '3', '4', '5', '6', '7',
-                                     '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'};
+static const char kEncodeTable[16] = {'0', '1', '2', '3', '4', '5', '6', '7',
+                                      '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'};
 
 bool IsSafe(char c) {
   return (std::isalnum(c) != 0) || c == '.' || c == '-' || c == '_' || c == '~';
 }
-static const char DecodeTable[128] = {
+static const char kDecodeTable[128] = {
     -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
     -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
     -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 0,  1,  2,  3,  4,  5,  6,  7,  8,
@@ -191,8 +191,8 @@ std::string Encode(const std::string &str) {
       encode += str[i];
     } else {
       encode += '%';
-      encode += EncodeTable[(str[i] & 0xf0) >> 4];
-      encode += EncodeTable[str[i] & 0x0f];
+      encode += kEncodeTable[(str[i] & 0xf0) >> 4];
+      encode += kEncodeTable[str[i] & 0x0f];
     }
   }
   return encode;
@@ -202,11 +202,11 @@ std::string Decode(const std::string &str) {
   for (size_t i = 0; i < str.size(); i++) {
     if (str[i] == '%') {
       if (str.size() <= i + 2 ||
-          DecodeTable[static_cast<unsigned char>(str[i + 1])] == -1 ||
-          DecodeTable[static_cast<unsigned char>(str[i + 2])] == -1)
+          kDecodeTable[static_cast<unsigned char>(str[i + 1])] == -1 ||
+          kDecodeTable[static_cast<unsigned char>(str[i + 2])] == -1)
         continue;
-      decode += (DecodeTable[static_cast<unsigned char>(str[i + 1])] << 4) +
-                DecodeTable[static_cast<unsigned char>(str[i + 2])];
+      decode += (kDecodeTable[static_cast<unsigned char>(str[i + 1])] << 4) +
+                kDecodeTable[static_cast<unsigned char>(str[i + 2])];
       i += 2;
     } else if (str[i] == '+') {
       decode += ' ';

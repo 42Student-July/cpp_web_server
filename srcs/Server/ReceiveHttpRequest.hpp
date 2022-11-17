@@ -28,7 +28,7 @@ enum read_stat {
   READ_ERROR
 };
 
-struct parsed_request {
+struct ParsedRequest {
   method m;
   std::string version;
   int status_code;
@@ -37,25 +37,25 @@ struct parsed_request {
   std::string request_body;
 };
 
-struct httprequest_data {
+struct HttpRequestData {
   read_stat s;
   std::string buf;
   std::string request_line;
   std::string request_header;
   std::string message_body;
-  struct parsed_request pr;
+  struct ParsedRequest pr;
 };
 
 class ReceiveHttpRequest {
  private:
-  httprequest_data fd_data_;
+  HttpRequestData fd_data_;
 
  public:
   ReceiveHttpRequest();
   ReceiveHttpRequest(ReceiveHttpRequest const &other);
   ReceiveHttpRequest &operator=(ReceiveHttpRequest const &other);
   ~ReceiveHttpRequest();
-  read_stat ReadHttpRequest(const int &fd, parsed_request *pr);
+  read_stat ReadHttpRequest(const int &fd, ParsedRequest *pr);
   void ShowParsedRequest(const int &fd);
   std::string GetBuf();
 };

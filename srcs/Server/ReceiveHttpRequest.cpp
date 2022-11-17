@@ -77,7 +77,7 @@ method ConvertMethod(const std::string &method) {
   }
 }
 
-method InputHttpRequestLine(const std::string &line, parsed_request *pr) {
+method InputHttpRequestLine(const std::string &line, ParsedRequest *pr) {
   std::size_t pos = 0;
   std::size_t top = 0;
 
@@ -137,7 +137,7 @@ HEADER ParseRequestHeader(const std::string &header_line) {
 }
 
 read_stat ReceiveHttpRequest::ReadHttpRequest(const int &fd,
-                                              parsed_request *pr) {
+                                              ParsedRequest *pr) {
   size_t pos = 0;
   ssize_t read_ret = 0;
   char buf[BUFFER_SIZE];
@@ -186,7 +186,7 @@ read_stat ReceiveHttpRequest::ReadHttpRequest(const int &fd,
 }
 
 // void ReceiveHttpRequest::ShowParsedRequest(const int &fd) {
-//   parsed_request req = fd_data_.pr;
+//   ParsedRequest req = fd_data_.pr;
 //   const std::string me[9] = {"ERROR",   "CONNECT", "DELETE", "GET",  "HEAD",
 //                              "OPTIONS", "POST",    "PUT",    "TRACE"};
 

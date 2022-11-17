@@ -54,7 +54,7 @@ TEST(MessageTest, CopyConstructor) {
 
 // Tests constructing a Message from a C-string.
 TEST(MessageTest, ConstructsFromCString) {
-  Message msg("Hello");
+  Message Msg("Hello");
   EXPECT_EQ("Hello", msg.GetString());
 }
 
@@ -144,7 +144,7 @@ TEST(MessageTest, GetString) {
 
 // Tests streaming a Message object to an ostream.
 TEST(MessageTest, StreamsToOStream) {
-  Message msg("Hello");
+  Message Msg("Hello");
   ::std::stringstream ss;
   ss << msg;
   EXPECT_EQ("Hello", testing::internal::StringStreamToString(&ss));

@@ -12,7 +12,7 @@ int main(int ac, char **av) {
   } catch (std::runtime_error &e) {
     std::cout << e.what() << std::endl;
   } catch (ConfigErrException &e) {
-    std::cout << e.msg() << std::endl;
+    std::cout << e.Msg() << std::endl;
   }
   return 0;
 }
