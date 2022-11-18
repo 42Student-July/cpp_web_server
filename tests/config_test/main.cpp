@@ -208,6 +208,11 @@ void parser_ok_case(){
 	std::cout <<"parser ok case" <<std::endl;
 	std::string path = "./test_case/ok_case/";
 	parser_run(path + "all","all", 0);
+	parser_run(path + "multipleserverdirective","multipleserverdirective", 0);
+	parser_run(path + "multipleserverdirective","multipleserverdirective", 0);
+	parser_run(path + "nonewlinenospace","nonewlinenospace", 0);
+	
+	parser_run(path + "normalcase","normalcase", 0);
 }
 void parser_test(){
 	std::cout <<"parsr" <<std::endl;
