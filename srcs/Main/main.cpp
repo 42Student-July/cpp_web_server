@@ -8,6 +8,7 @@ int main(int ac, char **av) {
     Lexer lexer(av[1]);
     lexer.Tokenize();
     Parser parser(lexer);
+    parser.Parse();
     Server server(parser.ConfigSetting());
     server.Run();
   } catch (std::runtime_error &e) {
