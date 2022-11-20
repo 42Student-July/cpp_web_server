@@ -5,8 +5,8 @@
 
 #include "Fd.hpp"
 #include "ServerContext.hpp"
-enum EventType { LISTEN, CONNECTING, CGI };
-enum EventStatus { READ, WRITE, WAIT, DEL };
+enum EventType { kListen, kConnecting, kCgi };
+enum EventStatus { kRead, kWrite, kWait, kDel };
 class Event : public Fd {
  private:
   ServerContext context_;

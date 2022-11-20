@@ -14,22 +14,32 @@
 
 typedef std::vector<std::pair<std::string, std::string> > Header;
 
-enum method { ERROR, CONNECT, DELETE, GET, HEAD, OPTIONS, POST, PUT, TRACE };
+enum Method {
+  kError,
+  kConnect,
+  kDelete,
+  kGet,
+  kHead,
+  kOptions,
+  kPost,
+  kPut,
+  kTrace
+};
 
 enum ReadStat {
-  UNREAD,
-  WAIT_REQUEST,
-  ERROR_REQUEST,
-  WAIT_HEADER,
-  ERROR_HEADER,
-  WAIT_BODY,
-  ERROR_BODY,
-  READ_COMPLETE,
-  READ_ERROR
+  kUnread,
+  kWaitRequest,
+  kErrorRequest,
+  kWaitHeader,
+  kErrorHeader,
+  kWaitBody,
+  kErrorBody,
+  kReadComplete,
+  kReadError
 };
 
 struct ParsedRequest {
-  method m;
+  Method m;
   std::string version;
   int status_code;
   std::string request_path;

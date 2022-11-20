@@ -1,6 +1,6 @@
 #include "Cgi.hpp"
-Cgi::Cgi(const ServerContext &context, const ParsedRequest &pr, method m)
-    : Event(-1, context, CGI), method_(m) {
+Cgi::Cgi(const ServerContext &context, const ParsedRequest &pr, Method m)
+    : Event(-1, context, kCgi), method_(m) {
   // set up
   (void)pr;
   ParseArgv();
@@ -8,7 +8,7 @@ Cgi::Cgi(const ServerContext &context, const ParsedRequest &pr, method m)
   SetEnv();
   EnvMapToCharPtr();
   // post
-  // if(type == POST)
+  // if(type == kPost)
   // PipeIn();
   // else{
   PipeOut();
@@ -119,11 +119,11 @@ void Cgi::Fork() {
 // }
 // }
 void Cgi::Dup2() {
-  // if(type_ == GET){
+  // if(type_ == kGet){
   if (dup2(pipe_out_[1], STDOUT_FILENO) == -1)
     throw std::runtime_error("dup2 err");
   // }
-  // else if(type_ == POST){
+  // else if(type_ == kPost){
   // if(dup2(pipe_in_[0], STDIN_FILENO) == -1)
   // throw std::runtime_error("dup2 err");
   // }
@@ -131,7 +131,7 @@ void Cgi::Dup2() {
 void Cgi::Run() {
   Fork();
   if (chilid_process_ == 0) {
-    // if(type_ == GET)
+    // if(type_ == kGet)
     // close(pipe_out_[0]);
     // else
     close(pipe_out_[1]);
@@ -145,7 +145,7 @@ void Cgi::Run() {
   } else {
     DelPtr(env_ptr_);
     DelPtr(argv_ptr_);
-    // if(type_ == GET)
+    // if(type_ == kGet)
     // close(pipe_out_[1]);
     // else
     // close(pipe_out_[0]);
