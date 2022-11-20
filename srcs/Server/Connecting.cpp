@@ -5,6 +5,7 @@ Connecting::~Connecting() {}
 
 ParsedRequest Connecting::GetParsedRequest() const { return pr_; }
 void Connecting::SetParsedRequest(const ParsedRequest& pr) { pr_ = pr; }
+
 ReadStat Connecting::ReadRequest() {
   return (hr_.ReadHttpRequest(GetFd(), &pr_));
 }

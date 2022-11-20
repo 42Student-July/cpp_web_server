@@ -52,12 +52,8 @@ void print_vec(std::vector<T> s, std::string msg){
 		std::cout << msg << *it << std::endl;
 	}
 }
-void print_listen(std::set<std::pair<std::string, std::string>> s){
-	std::set<std::pair<std::string, std::string>>::iterator it = s.begin();
-	while(it != s.end()){
-		std::cout << "host:listen: " << (*it).second<<":"<<(*it).first << std::endl;
-		it++;
-	}
+void print_listen(std::pair<std::string, std::string> s){
+		std::cout << "host:listen: " << s.second<<":"<<s.first << std::endl;
 }
 template<typename T1, typename T2>
 void print_map(std::map<T1, T2> m, std::string msg){
@@ -83,17 +79,17 @@ void print_location_context(std::map<std::string, LocationContext> l){
 		std::cout << "==============limit_except==============" << std::endl;
 		print_set(it->second.limit_except, "limit_except :");
 		std::cout << "==============redirect==============" << std::endl;
-		std::cout << "redirect num:file :" << it->second.redirect.second.first << ":" << "`" << it->second.redirect.second.second<< "`" <<  std::endl;
+		std::cout << "redirect num:file :" << it->second.redirect.first << ":" << "`" << it->second.redirect.second<< "`" <<  std::endl;
 		std::cout << "=============root==============" << std::endl;
-		std::cout << "root: "<<it->second.root.second << std::endl;
+		std::cout << "root: "<<it->second.root << std::endl;
 		std::cout << "==============auto_index==============" << std::endl;
-		std::cout << "auto index :" << (it->second.auto_index.second ? "on":"off") << std::endl;
+		std::cout << "auto index :" << it->second.auto_index << std::endl;
 		std::cout << "==============index==============" << std::endl;
 		print_vec(it->second.index,"index: ");
 		std::cout << "==============cgi_extension==============" << std::endl;
 		print_vec(it->second.cgi_extension,"cgi_extension :");
 		std::cout << "==============upload_pass==============" << std::endl;
-		std::cout << "upload_pass second:" << it->second.upload_pass.second << std::endl;
+		std::cout << "upload_pass second:" << it->second.upload_pass<< std::endl;
 		std::cout <<"======location num: " << i + 1 << " end============"<< std::endl;
 	}
 }
@@ -103,9 +99,9 @@ void print_serv_context(const std::vector<ServerContext> &c){
 		std::cout << "==============listen ==============" << std::endl;
 		print_listen(c[i].listen);
 		std::cout << "==============client body size==============" << std::endl;
-		std::cout << "client_body_size: " << c[i].client_body_size.first << std::endl;
+		std::cout << "client_body_size: " << c[i].client_body_size << std::endl;
 		std::cout << "==============server name==============" << std::endl;
-		print_set(c[i].server_name,"server name :");
+		std::cout << "server name :" << c[i].server_name << std::endl;
 		std::cout << "==============erro page==============" << std::endl;
 		print_map(c[i].error_page , "[error page num:error_page]");
 		std::cout << "==============locations==============" << std::endl;
@@ -124,8 +120,8 @@ void parser_run(std::string filename, std::string msg , bool flg){
 			Parser p1(l1);
 			p1.Parse();
 			std::cout << "✗" << std::endl;
-		}catch(std::runtime_error &e){
-			std::cout << e.what() << std::endl;
+		}catch(ConfigErrException &e){
+			std::cout << e.msg() << std::endl;
 			std::cout << "OK" << std::endl;
 		}catch(std::string str){
 			std::cout << str << std::endl;
@@ -138,10 +134,10 @@ void parser_run(std::string filename, std::string msg , bool flg){
 			//l1.DebugPrint();
 			Parser p1(l1);
 			p1.Parse();
-			print_serv_context(p1.GetSetting());
+			print_serv_context(p1.ConfigSetting());
 			std::cout << "OK" << std::endl;
-		}catch(std::string str){
-			std::cout << str << std::endl;
+		}catch(ConfigErrException &str){
+			std::cout << str.msg() << std::endl;
 			std::cout << "✗" << std::endl;
 		}
 	}
@@ -212,6 +208,11 @@ void parser_ok_case(){
 	std::cout <<"parser ok case" <<std::endl;
 	std::string path = "./test_case/ok_case/";
 	parser_run(path + "all","all", 0);
+	parser_run(path + "multipleserverdirective","multipleserverdirective", 0);
+	parser_run(path + "multipleserverdirective","multipleserverdirective", 0);
+	parser_run(path + "nonewlinenospace","nonewlinenospace", 0);
+	
+	parser_run(path + "normalcase","normalcase", 0);
 }
 void parser_test(){
 	std::cout <<"parsr" <<std::endl;

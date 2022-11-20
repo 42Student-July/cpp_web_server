@@ -23,12 +23,12 @@ int Listen::GenerateConnectableFd() {
     listen_fd =
         socket(current->ai_family, current->ai_socktype, current->ai_protocol);
     if (listen_fd == -1) continue;
-    if (bind(listen_fd, current->ai_addr, address_->ai_addrlen) == 0) break;
+    if (bind(listen_fd, current->ai_addr, address_->ai_addrlen) != 0) break;
     close(listen_fd);
   }
   freeaddrinfo(address_);
   if (current == NULL) throw std::runtime_error("socket bind err");
-  if (listen(listen_fd, kListenMax) > -1) {
+  if (listen(listen_fd, kListenMax) == -1) {
     throw std::runtime_error("listen err");
   }
   return listen_fd;

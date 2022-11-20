@@ -70,10 +70,8 @@ void Parser::StoreListen(ServerContext *sc) {
   if (!sc->listen.first.empty() || !sc->listen.first.empty())
     throw ConfigErrException("listen directive duplicate", tkns_.Current());
   tkns_.Next();
-  std::string listen = ParseListen(tkns_.Current());
-  std::string host = ParseHost(tkns_.Current());
-  sc->listen.first = listen;
-  sc->listen.second = host;
+  sc->listen.first = ParseHost(tkns_.Current());
+  sc->listen.second = ParseListen(tkns_.Current());
   ThrowExceptionIfNotMatch(tkns_.Next(), ";", "semicolon `;` not found");
 }
 
