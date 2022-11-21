@@ -1,7 +1,7 @@
 #include "ReceiveHttpRequest.hpp"
 ReceiveHttpRequest::ReceiveHttpRequest() {
-  fd_data_.s = UNREAD;
-  fd_data_.pr.m = ERROR;
+  fd_data_.s = kUnread;
+  fd_data_.pr.m = kError;
   fd_data_.pr.status_code = 0;
 }
 
@@ -46,7 +46,7 @@ static std::string TrimByPos(std::string *buf, const size_t &pos,
   return trim;
 }
 
-method ConvertMethod(const std::string &method) {
+Method ConvertMethod(const std::string &method) {
   int i = static_cast<int>(method == "CONNECT") |
           static_cast<int>(method == "DELETE") * 2 |
           static_cast<int>(method == "GET") * 3 |
@@ -57,27 +57,27 @@ method ConvertMethod(const std::string &method) {
           static_cast<int>(method == "TRACE") * 8;
   switch (i) {
     case 1:
-      return (CONNECT);
+      return (kConnect);
     case 2:
-      return (DELETE);
+      return (kDelete);
     case 3:
-      return (GET);
+      return (kGet);
     case 4:
-      return (HEAD);
+      return (kHead);
     case 5:
-      return (OPTIONS);
+      return (kOptions);
     case 6:
-      return (POST);
+      return (kPost);
     case 7:
-      return (PUT);
+      return (kPut);
     case 8:
-      return (TRACE);
+      return (kTrace);
     default:
-      return (ERROR);
+      return (kError);
   }
 }
 
-method InputHttpRequestLine(const std::string &line, parsed_request *pr) {
+Method InputHttpRequestLine(const std::string &line, ParsedRequest *pr) {
   std::size_t pos = 0;
   std::size_t top = 0;
 
@@ -117,8 +117,8 @@ std::pair<std::string, std::string> SplitRequestHeaderLine(
   return std::make_pair(key, value);
 }
 
-HEADER ParseRequestHeader(const std::string &header_line) {
-  HEADER header;
+Header ParseRequestHeader(const std::string &header_line) {
+  Header header;
   size_t top = 0;
   size_t pos = 0;
   std::string trim;
@@ -136,59 +136,59 @@ HEADER ParseRequestHeader(const std::string &header_line) {
   return header;
 }
 
-read_stat ReceiveHttpRequest::ReadHttpRequest(const int &fd,
-                                              parsed_request *pr) {
+ReadStat ReceiveHttpRequest::ReadHttpRequest(const int &fd, ParsedRequest *pr) {
   size_t pos = 0;
   ssize_t read_ret = 0;
   char buf[BUFFER_SIZE];
 
   read_ret = read(fd, buf, BUFFER_SIZE);
   if (read_ret == -1) {
-    return READ_ERROR;
+    return kReadError;
   }
   buf[read_ret] = '\0';
   fd_data_.buf += buf;
-  if (fd_data_.s == UNREAD || fd_data_.s == WAIT_REQUEST) {
+  if (fd_data_.s == kUnread || fd_data_.s == kWaitRequest) {
     pos = fd_data_.buf.find(NL);
     if (std::string::npos != pos) {
       fd_data_.request_line = TrimByPos(&fd_data_.buf, pos, 2);
-      if (InputHttpRequestLine(fd_data_.request_line, &fd_data_.pr) == ERROR) {
-        fd_data_.s = ERROR_REQUEST;
+      if (InputHttpRequestLine(fd_data_.request_line, &fd_data_.pr) == kError) {
+        fd_data_.s = kErrorRequest;
       } else {
-        fd_data_.s = WAIT_HEADER;
+        fd_data_.s = kWaitHeader;
       }
     } else {
-      fd_data_.s = WAIT_REQUEST;
+      fd_data_.s = kWaitRequest;
       *pr = fd_data_.pr;
-      return WAIT_REQUEST;
+      return kWaitRequest;
     }
   }
 
-  if (fd_data_.s == WAIT_HEADER) {
+  if (fd_data_.s == kWaitHeader) {
     pos = fd_data_.buf.find(NLNL);
     if (std::string::npos != pos) {
       fd_data_.request_header = TrimByPos(&fd_data_.buf, pos, 4);
       fd_data_.pr.request_header = ParseRequestHeader(fd_data_.request_header);
-      fd_data_.s = WAIT_BODY;
+      fd_data_.s = kWaitBody;
     } else {
-      fd_data_.s = WAIT_HEADER;
+      fd_data_.s = kWaitHeader;
       *pr = fd_data_.pr;
-      return WAIT_HEADER;
+      return kWaitHeader;
     }
   }
 
-  if (fd_data_.s == WAIT_BODY) {
+  if (fd_data_.s == kWaitBody) {
     pos = fd_data_.buf.find(NL);
     fd_data_.pr.request_body = TrimByPos(&fd_data_.buf, pos, 2);
   }
   *pr = fd_data_.pr;
-  return READ_COMPLETE;
+  return kReadComplete;
 }
 
 // void ReceiveHttpRequest::ShowParsedRequest(const int &fd) {
-//   parsed_request req = fd_data_.pr;
-//   const std::string me[9] = {"ERROR",   "CONNECT", "DELETE", "GET",  "HEAD",
-//                              "OPTIONS", "POST",    "PUT",    "TRACE"};
+//   ParsedRequest req = fd_data_.pr;
+//   const std::string me[9] = {"kError",   "kConnect", "kDelete", "kGet",
+//   "kHead",
+//                              "kOptions", "kPost",    "kPut",    "kTrace"};
 
 //   std::cout << me[req.m] << std::endl;
 //   std::cout << req.request_path << std::endl;

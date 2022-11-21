@@ -4,7 +4,7 @@
 #include <gtest/gtest.h>
 #define DIR "./text/ReceiveHttpRequest/"
 
-HEADER expected_full = {{"Host", "hoge.com"},
+Header expected_full = {{"Host", "hoge.com"},
                         {"Connection", "keep-alive"},
                         {"Content-Length", "38"},
                         {"Cache-Control", "max-age=0"},
@@ -33,7 +33,7 @@ void copy_fd(int dst, const char *src) {
   close(srcfd);
 }
 
-void compare_header(HEADER header, HEADER expected_header) {
+void compare_header(Header header, Header expected_header) {
   for (size_t i = 0; i < header.size(); i++) {
     EXPECT_EQ(header.at(i).first, expected_header.at(i).first);
     EXPECT_EQ(header.at(i).second, expected_header.at(i).second);
@@ -42,14 +42,14 @@ void compare_header(HEADER header, HEADER expected_header) {
 
 TEST(ReceiveHttpRequest, full) {
   ReceiveHttpRequest rhr;
-  parsed_request pr;
-  read_stat rs;
+  ParsedRequest pr;
+  ReadStat rs;
   int fd = open("./text/ReceiveHttpRequest/ReceiveHttpRequest.txt", O_RDWR);
   copy_fd(fd, "FullRequest");
   rs = rhr.ReadHttpRequest(fd, &pr);
 
-  EXPECT_EQ(READ_COMPLETE, rs);
-  EXPECT_EQ(POST, pr.m);
+  EXPECT_EQ(kReadComplete, rs);
+  EXPECT_EQ(kPost, pr.m);
   EXPECT_EQ("/search.html", pr.request_path);
   EXPECT_EQ("HTTP/1.1", pr.version);
   compare_header(pr.request_header, expected_full);
@@ -59,22 +59,22 @@ TEST(ReceiveHttpRequest, full) {
 
 TEST(ReceiveHttpRequest, empty_then_full) {
   ReceiveHttpRequest rhr;
-  parsed_request pr;
-  read_stat rs;
+  ParsedRequest pr;
+  ReadStat rs;
 
   int fd = open("./text/ReceiveHttpRequest/ReceiveHttpRequest.txt",
                 O_RDWR | O_TRUNC);
   copy_fd(fd, "EmptyRequest");
   rs = rhr.ReadHttpRequest(fd, &pr);
 
-  EXPECT_EQ(WAIT_REQUEST, rs);
+  EXPECT_EQ(kWaitRequest, rs);
 
   copy_fd(fd, "FullRequest");
   rs = rhr.ReadHttpRequest(fd, &pr);
 
-  EXPECT_EQ(READ_COMPLETE, rs);
-  EXPECT_EQ(READ_COMPLETE, rs);
-  EXPECT_EQ(POST, pr.m);
+  EXPECT_EQ(kReadComplete, rs);
+  EXPECT_EQ(kReadComplete, rs);
+  EXPECT_EQ(kPost, pr.m);
   EXPECT_EQ("/search.html", pr.request_path);
   EXPECT_EQ("HTTP/1.1", pr.version);
   compare_header(pr.request_header, expected_full);
@@ -84,16 +84,16 @@ TEST(ReceiveHttpRequest, empty_then_full) {
 
 TEST(ReceiveHttpRequest, only_request_line) {
   ReceiveHttpRequest rhr;
-  parsed_request pr;
-  read_stat rs;
+  ParsedRequest pr;
+  ReadStat rs;
   int fd = open("./text/ReceiveHttpRequest/ReceiveHttpRequest.txt",
                 O_RDWR | O_TRUNC);
 
   copy_fd(fd, "OnlyRequestLine");
   rs = rhr.ReadHttpRequest(fd, &pr);
 
-  EXPECT_EQ(WAIT_HEADER, rs);
-  EXPECT_EQ(POST, pr.m);
+  EXPECT_EQ(kWaitHeader, rs);
+  EXPECT_EQ(kPost, pr.m);
   EXPECT_EQ("/search.html", pr.request_path);
   EXPECT_EQ("HTTP/1.1", pr.version);
   close(fd);
@@ -101,22 +101,22 @@ TEST(ReceiveHttpRequest, only_request_line) {
 
 TEST(ReceiveHttpRequest, half_then_half) {
   ReceiveHttpRequest rhr;
-  parsed_request pr;
-  read_stat rs;
+  ParsedRequest pr;
+  ReadStat rs;
   int fd = open("./text/ReceiveHttpRequest/ReceiveHttpRequest.txt",
                 O_RDWR | O_TRUNC);
   copy_fd(fd, "HalfRequestLine");
   rs = rhr.ReadHttpRequest(fd, &pr);
-  EXPECT_EQ(WAIT_REQUEST, rs);
-  EXPECT_EQ(ERROR, pr.m);
+  EXPECT_EQ(kWaitRequest, rs);
+  EXPECT_EQ(kError, pr.m);
   EXPECT_EQ("", pr.request_path);
   EXPECT_EQ("", pr.version);
   EXPECT_EQ("POST /search.", rhr.GetBuf());
 
   copy_fd(fd, "HalfRequestLine2");
   rs = rhr.ReadHttpRequest(fd, &pr);
-  EXPECT_EQ(WAIT_HEADER, rs);
-  EXPECT_EQ(POST, pr.m);
+  EXPECT_EQ(kWaitHeader, rs);
+  EXPECT_EQ(kPost, pr.m);
   EXPECT_EQ("/search.html", pr.request_path);
   EXPECT_EQ("HTTP/1.1", pr.version);
   EXPECT_EQ("", rhr.GetBuf());

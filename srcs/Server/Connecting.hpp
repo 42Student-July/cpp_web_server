@@ -8,13 +8,13 @@
 class Connecting : public Event {
  private:
   ReceiveHttpRequest hr_;
-  parsed_request pr_;
+  ParsedRequest pr_;
 
  public:
   Connecting(const int fd, const ServerContext& context);
   ~Connecting();
-  parsed_request GetParsedRequest() const;
-  void SetParsedRequest(const parsed_request& pr);
-  read_stat ReadRequest();
+  ParsedRequest GetParsedRequest() const;
+  void SetParsedRequest(const ParsedRequest& pr);
+  ReadStat ReadRequest();
 };
 #endif  // SRCS_SERVER_CONNECTING_HPP_

@@ -24,7 +24,7 @@ class Cgi : public Event {
   int pipe_in_[2];
   pid_t child_process_;
   std::string chunked_;
-  method method_;
+  Method method_;
 
   // CgiType type_;
   std::string pass_;
@@ -47,7 +47,7 @@ class Cgi : public Event {
   static void DelPtr(char **ptr);
 
  public:
-  Cgi(const ServerContext &context, const parsed_request &pr, method m);
+  Cgi(const ServerContext &context, const ParsedRequest &pr, Method m);
   ~Cgi();
   void Run();
   int GetOutFd() const;

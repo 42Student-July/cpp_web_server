@@ -27,7 +27,7 @@ void Server::Run() {
     for (int i = 0; i < num_event; i++) {
       epoll_event ev = epoll_.FindEvent(i);
       ExecEvents(&ev);
-      if (events_[ev.data.fd]->GetEventStatus() == DEL)
+      if (events_[ev.data.fd]->GetEventStatus() == kDel)
         DelEvent(events_[ev.data.fd], &ev);
     }
   }
@@ -35,13 +35,13 @@ void Server::Run() {
 
 void Server::ExecEvents(epoll_event *ev) {
   switch (events_[ev->data.fd]->GetEventType()) {
-    case LISTEN:
+    case kListen:
       AcceptNewConnections(ev);
       break;
-    case CONNECTING:
+    case kConnecting:
       ConnectingEvent(ev);
       break;
-    case CGI:
+    case kCgi:
       CgiEvent(ev);
       break;
   }
@@ -79,9 +79,9 @@ void Server::AddEventToMonitored(Event *sock, uint32_t event_flag) {
 void Server::SendResponse(epoll_event *ev) {
   int status = 0;
   response_[ev->data.fd];
-  HttpResponse httpResponse;
-  httpResponse.SetHttpResponse200();
-  response_[ev->data.fd] = httpResponse.GetResponse();
+  HttpResponse http_response;
+  http_response.SetHttpResponse200();
+  response_[ev->data.fd] = http_response.GetResponse();
   if ((status = WriteToClientFd(ev->data.fd)) == kNotDoneYet) {
     (void)status;
     return;
