@@ -77,6 +77,8 @@ class ConfigErrException {
   ConfigErrException(std::string msg, const Token &tkn);
   explicit ConfigErrException(std::string msg);
   ~ConfigErrException();
+
+  static std::string ConfigErrMessage(const std::string &msg, const Token &tkn);
   std::string Msg() const throw();
 };
 

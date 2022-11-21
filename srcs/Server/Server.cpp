@@ -67,7 +67,7 @@ void Server::ReceiveRequest(epoll_event *epo_ev) {
   // read_stat st = receive_request_.ReadHttpRequest(sock->GetFd(),&pr);
   // sock->SetParsedRequest(pr);
   // if(st == )
-
+  (void)this->events_;
   (void)epo_ev;
 }
 void Server::AddEventToMonitored(Event *sock, uint32_t event_flag) {

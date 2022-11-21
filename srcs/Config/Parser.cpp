@@ -1,20 +1,5 @@
 #include "Parser.hpp"
 
-namespace {
-std::string UIntToString(size_t num) {
-  std::ostringstream oss;
-
-  oss << num;
-  return oss.str();
-}
-
-std::string ConfigErrMessage(const std::string &msg, const Token &tkn) {
-  size_t line_num = tkn.GetLine() + 1;
-  return msg + " `" + tkn.GetData() + "` :" + UIntToString(line_num) +
-         " line Error";
-}
-}  // namespace
-
 Parser::Parser(const Lexer &lexer) : tkns_(lexer.GetTokens()) {
   server_directive_case_["listen"] = &Parser::StoreListen;
   server_directive_case_["client_max_body_size"] = &Parser::StoreClientBodySize;
@@ -253,6 +238,13 @@ void Parser::SetTokenIfEmpty(std::string *str, const Token &tkn,
 ConfigErrException::~ConfigErrException() {}
 std::string ConfigErrException::Msg() const throw() { return err_msg_; }
 ConfigErrException::ConfigErrException(std::string msg, const Token &tkn)
-    : err_msg_(ConfigErrMessage(msg, tkn)) {}
+    : err_msg_(ConfigErrException::ConfigErrMessage(msg, tkn)) {}
 
 ConfigErrException::ConfigErrException(std::string msg) : err_msg_(msg) {}
+
+std::string ConfigErrException::ConfigErrMessage(const std::string &msg,
+                                                 const Token &tkn) {
+  size_t line_num = tkn.GetLine() + 1;
+  return msg + " `" + tkn.GetData() + "` :" + utils::UIntToString(line_num) +
+         " line Error";
+}

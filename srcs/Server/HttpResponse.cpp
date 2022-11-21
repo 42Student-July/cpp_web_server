@@ -24,8 +24,10 @@ void HttpResponse::SetStatusCode(int status) { this->statusCode_ = status; }
 void HttpResponse::SetBody(std::string const &body) { this->body_ = body; }
 
 void HttpResponse::SetHeader(std::string const &key, std::string const &value) {
-  // TODO(akito) pair is C++03
-  this->headers_.push_back(std::make_pair(key, value));
+  if (headers_.find(key) != headers_.end()) {
+    throw std::logic_error("key already exists");
+  }
+  headers_[key] = value;
 }
 
 void HttpResponse::SetHeader(std::string const &key, int value) {
@@ -36,15 +38,21 @@ int HttpResponse::GetStatusCode() const { return this->statusCode_; }
 
 std::string const &HttpResponse::GetBody() const { return this->body_; }
 
-std::string HttpResponse::GetRequestLine() const {
+/*
+HTTP start-line: https://httpwg.org/specs/rfc9112.html#message.format
+
+  start-line     = request-line / status-line
+  status-line = HTTP-version SP status-code SP [ reason-phrase ]
+*/
+std::string HttpResponse::GetStatusLine() const {
   return this->version_ + " " + utils::Itoa(this->statusCode_) + " " +
          this->GetStatusMessage() + kCRLF;
 }
 
-std::vector<std::string> HttpResponse::GetResponseHeader() const {
+std::vector<std::string> HttpResponse::GetResponseHeaders() const {
   std::vector<std::string> headers;
-  for (std::vector<std::pair<std::string, std::string> >::const_iterator it =
-           this->headers_.begin();
+
+  for (HttpResponse::HttpHeaders::const_iterator it = this->headers_.begin();
        it != this->headers_.end(); ++it) {
     headers.push_back(it->first + ": " + it->second + kCRLF);
   }
@@ -76,14 +84,21 @@ std::string HttpResponse::GetStatusMessage() const {
   }
 }
 
+/*
+HTTP message: https://httpwg.org/specs/rfc9112.html#message.format
+
+  HTTP-message   = start-line CRLF
+                   *( field-line CRLF )
+                   CRLF
+                   [ message-body ]
+*/
 std::vector<std::string> HttpResponse::GetResponse() const {
   std::vector<std::string> response;
-  response.push_back(this->GetRequestLine());
-  for (std::vector<std::pair<std::string, std::string> >::const_iterator it =
-           this->headers_.begin();
-       it != this->headers_.end(); ++it) {
-    response.push_back(it->first + ": " + it->second + kCRLF);
-  }
+
+  response.push_back(this->GetStatusLine());
+
+  std::vector<std::string> headers = this->GetResponseHeaders();
+  response.insert(response.end(), headers.begin(), headers.end());
 
   response.push_back(kCRLF);
 
