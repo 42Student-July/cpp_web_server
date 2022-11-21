@@ -4,11 +4,13 @@
 #include <string>
 
 #include "Event.hpp"
+#include "Path.hpp"
 #include "ReceiveHttpRequest.hpp"
 class Connecting : public Event {
  private:
   ReceiveHttpRequest hr_;
   ParsedRequest pr_;
+  Path p_;
 
  public:
   Connecting(const int fd, const ServerContext& context);

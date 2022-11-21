@@ -184,20 +184,7 @@ ReadStat ReceiveHttpRequest::ReadHttpRequest(const int &fd, ParsedRequest *pr) {
   return kReadComplete;
 }
 
-// void ReceiveHttpRequest::ShowParsedRequest(const int &fd) {
-//   ParsedRequest req = fd_data_.pr;
-//   const std::string me[9] = {"kError",   "kConnect", "kDelete", "kGet",
-//   "kHead",
-//                              "kOptions", "kPost",    "kPut",    "kTrace"};
-
-//   std::cout << me[req.m] << std::endl;
-//   std::cout << req.request_path << std::endl;
-//   std::cout << req.version << std::endl;
-//   for (size_t i = 0; i < req.request_header.size(); ++i) {
-//     std::cout << req.request_header[i].first << ":"
-//               << req.request_header[i].second << "\n";
-//   }
-//   std::cout << req.request_body << std::endl;
-// }
-
 std::string ReceiveHttpRequest::GetBuf() { return (fd_data_.buf); }
+ParsedRequest ReceiveHttpRequest::GetParsedRequest() const {
+  return fd_data_.pr;
+}
