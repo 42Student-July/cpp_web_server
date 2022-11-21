@@ -1,5 +1,7 @@
 #include "Utils.hpp"
 
+#include <sstream>
+
 namespace utils {
 
 std::string Itoa(int n) {
@@ -44,5 +46,12 @@ std::vector<std::string> SplitWithMultipleSpecifier(
   }
   if (!item.empty()) elements.push_back(item);
   return elements;
+}
+
+std::string UIntToString(size_t num) {
+  std::ostringstream oss;
+
+  oss << num;
+  return oss.str();
 }
 }  // namespace utils

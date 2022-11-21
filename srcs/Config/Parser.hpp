@@ -78,6 +78,8 @@ class ConfigErrException {
   explicit ConfigErrException(std::string msg);
   ~ConfigErrException();
   std::string msg() const throw();
+
+  static std::string ConfigErrMessage(const std::string &msg, const Token &tkn);
 };
 
 #endif  // SRCS_CONFIG_PARSER_HPP_
