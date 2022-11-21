@@ -9,8 +9,8 @@ std::string UIntToString(size_t num) {
 }
 
 std::string ConfigErrMessage(const std::string &msg, const Token &tkn) {
-  size_t lineNum = tkn.GetLine() + 1;
-  return msg + " `" + tkn.GetData() + "` :" + UIntToString(lineNum) +
+  size_t line_num = tkn.GetLine() + 1;
+  return msg + " `" + tkn.GetData() + "` :" + UIntToString(line_num) +
          " line Error";
 }
 }  // namespace
@@ -82,7 +82,7 @@ std::string Parser::ParseListen(Token tkn) {
     listen_str = listen_str.substr(colon_pos + 1);
   }
   long listen = utils::StrToLong(listen_str);
-  if (kport_min > listen || listen > kport_max)
+  if (kPortMin > listen || listen > kPortMax)
     throw ConfigErrException("listen invalid value", tkn);
   return listen_str;
 }
@@ -126,7 +126,7 @@ void Parser::StoreErrorPage(ServerContext *sc) {
     ThrowExceptionIfMatch(next, "{}",
                           "invalid arguments in `error_page` directive");
     long err_num = utils::StrToLong(current.GetData().c_str());
-    if (err_num < kstatus_code_min || kstatus_code_max < err_num)
+    if (err_num < kStatusCodeMin || kStatusCodeMax < err_num)
       throw ConfigErrException(
           "error_page directive value must be between 300 and 599", current);
     sc->error_page.insert(std::make_pair(err_num, ""));
@@ -159,8 +159,8 @@ void Parser::StoreLocation(ServerContext *sc) {
 void Parser::StoreLimitExcept(LocationContext *lc) {
   Token tkn = tkns_.Next();
   do {
-    if (tkn.GetData() == "DELETE" || tkn.GetData() == "GET" ||
-        tkn.GetData() == "POST") {
+    if (tkn.GetData() == "kDelete" || tkn.GetData() == "kGet" ||
+        tkn.GetData() == "kPost") {
       if (lc->limit_except.find(tkn.GetData()) != lc->limit_except.end())
         throw ConfigErrException("`limit_except` directive is duplicate", tkn);
       lc->limit_except.insert(tkn.GetData());
@@ -251,7 +251,7 @@ void Parser::SetTokenIfEmpty(std::string *str, const Token &tkn,
   *str = tkn.GetData();
 }
 ConfigErrException::~ConfigErrException() {}
-std::string ConfigErrException::msg() const throw() { return err_msg_; }
+std::string ConfigErrException::Msg() const throw() { return err_msg_; }
 ConfigErrException::ConfigErrException(std::string msg, const Token &tkn)
     : err_msg_(ConfigErrMessage(msg, tkn)) {}
 

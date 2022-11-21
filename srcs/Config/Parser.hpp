@@ -18,10 +18,10 @@
 #include "Utils.hpp"
 class Parser {
  private:
-  static const long kport_max = 65535;
-  static const long kport_min = 1;
-  static const long kstatus_code_min = 300;
-  static const long kstatus_code_max = 599;
+  static const long kPortMax = 65535;
+  static const long kPortMin = 1;
+  static const long kStatusCodeMin = 300;
+  static const long kStatusCodeMax = 599;
   std::vector<ServerContext> contexts_;
 
   TokenManager tkns_;
@@ -77,7 +77,7 @@ class ConfigErrException {
   ConfigErrException(std::string msg, const Token &tkn);
   explicit ConfigErrException(std::string msg);
   ~ConfigErrException();
-  std::string msg() const throw();
+  std::string Msg() const throw();
 };
 
 #endif  // SRCS_CONFIG_PARSER_HPP_

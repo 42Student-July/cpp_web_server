@@ -2,7 +2,7 @@
 
 #include <sys/socket.h>
 ListenEvent::ListenEvent(const int fd, const ServerContext& context)
-    : Event(fd, context, LISTEN) {}
+    : Event(fd, context, kListen) {}
 ListenEvent::~ListenEvent() {}
 int ListenEvent::Accept() {
   int conn = accept(GetFd(), NULL, NULL);
