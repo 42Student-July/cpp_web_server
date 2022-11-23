@@ -82,9 +82,10 @@ void Cgi::ArgvToCharPtr() {
   }
   argv_ptr_ = new char *[argv_.size() + 1];
   for (size_t i = 0; i < argv_.size(); i++) {
-    argv_ptr_[i] = new char[argv_[i].size() + 1];
-    //     strcpy(argv_ptr_[i], argv_[i].c_str());
-    memmove(argv_ptr_[i], argv_[i].c_str(), argv_[i].size() + 1);
+    // argv_ptr_[i] = new char[argv_[i].size() + 1];
+    // //     strcpy(argv_ptr_[i], argv_[i].c_str());
+    // memmove(argv_ptr_[i], argv_[i].c_str(), argv_[i].size() + 1);
+    argv_ptr_[i] = utils::StrToCharPtr(argv_[i]);
   }
   argv_ptr_[argv_.size()] = NULL;
 }
@@ -92,8 +93,9 @@ void Cgi::EnvMapToCharPtr() {
   env_ptr_ = new char *[env_map_.size() + 1];
   std::map<std::string, std::string>::iterator it = env_map_.begin();
   for (size_t i = 0; it != env_map_.end(); i++, it++) {
-    env_ptr_[i] = new char[it->second.size() + 1];
-    memmove(env_ptr_[i], it->second.c_str(), it->second.size() + 1);
+    // env_ptr_[i] = new char[it->second.size() + 1];
+    // memmove(env_ptr_[i], it->second.c_str(), it->second.size() + 1);
+    env_ptr_[i] = utils::StrToCharPtr(it->second);
   }
   env_ptr_[env_map_.size()] = NULL;
 }

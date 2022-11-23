@@ -14,6 +14,7 @@
 #include "Event.hpp"
 #include "ReceiveHttpRequest.hpp"
 #include "ServerContext.hpp"
+#include "Utils.hpp"
 // enum CgiType{
 // GET,
 // POST
