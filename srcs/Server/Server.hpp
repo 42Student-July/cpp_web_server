@@ -42,6 +42,8 @@ class Server {
   static void CgiRun(epoll_event *ev);
   static void CgiEvent(epoll_event *ev);
   void AddEventToMonitored(Event *sock, uint32_t event_flag);
+  std::string ReplaceURILocation(
+      const std::map<std::string, LocationContext> &lc);
 
  public:
   explicit Server(const std::vector<ServerContext> &contexts);
