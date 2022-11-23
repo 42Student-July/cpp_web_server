@@ -21,7 +21,7 @@ Path &Path::operator=(Path const &other) {
 
 Path::~Path() {}
 
-std::string Path::SedLocation(const Locmap &locs) {
+std::string Path::SetLocation(const Locmap &locs) {
   for (Locmap::const_iterator itr = locs.begin(); itr != locs.end(); itr++) {
     std::string path = itr->first;
     std::string root = itr->second.root;
@@ -34,7 +34,7 @@ std::string Path::SedLocation(const Locmap &locs) {
   return "";
 }
 
-void Path::SetFilePath(std::string name, std::string path) {
+void Path::SetFilePath(const std::string &name, const std::string &path) {
   file_name_ = name;
   file_path_ = path;
 }

@@ -18,7 +18,7 @@ TEST(Path, 1) {
 
   Path p;
   p.SetFilePath("", "/a/bbb/abc.html");
-  std::string str = p.SedLocation(mapList);
+  std::string str = p.SetLocation(mapList);
   EXPECT_EQ("/usr/local/www/nginx/bbb/abc.html", str);
 }
 
@@ -34,7 +34,7 @@ TEST(Path, 2) {
 
   Path p;
   p.SetFilePath("", "/a/bbb/abc.html");
-  std::string str = p.SedLocation(mapList);
+  std::string str = p.SetLocation(mapList);
   EXPECT_EQ("/usr/local/www/nginx/abc.html", str);
 }
 

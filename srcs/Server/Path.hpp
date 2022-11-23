@@ -15,8 +15,8 @@ class Path {
   Path(Path const &other);
   Path &operator=(Path const &other);
   ~Path();
-  std::string SedLocation(const Locmap &locs);
-  void SetFilePath(std::string name, std::string path);
+  std::string SetLocation(const Locmap &locs);
+  void SetFilePath(const std::string &name, const std::string &path);
 
  private:
   std::string file_name_;
