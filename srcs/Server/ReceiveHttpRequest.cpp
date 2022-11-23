@@ -188,3 +188,6 @@ std::string ReceiveHttpRequest::GetBuf() { return (fd_data_.buf); }
 ParsedRequest ReceiveHttpRequest::GetParsedRequest() const {
   return fd_data_.pr;
 }
+void ReceiveHttpRequest::SetParsedRequest(const ParsedRequest &pr) {
+  fd_data_.pr = pr;
+}

@@ -1,41 +1,28 @@
-#include "Path.hpp"
+// #include <gtest/gtest.h>
 
-#include <gtest/gtest.h>
+// #include "Server.hpp"
 
-#include "LocationContext.hpp"
+// #define private public
 
-void init(LocationContext *lc) { lc->root = "/usr/local/www/nginx"; }
+// void init(LocationContext *lc) { lc->root = "/usr/local/www/nginx"; }
 
-TEST(Path, 1) {
-  LocationContext lc;
-  init(&lc);
-  Locmap mapList = {
-      {"/a/", lc},
-      {"/aa/", lc},
-      {"/bb/", lc},
-      {"/cc/", lc},
-  };
+// TEST(Path, 1) {
+//   LocationContext lc;
+//   init(&lc);
+//   std::map<std::string, LocationContext> mapList = {
+//       {"/", lc},
+//       {"/aa/", lc},
+//       {"/bb/", lc},
+//       {"/cc/", lc},
+//   };
 
-  Path p;
-  p.SetFilePath("", "/a/bbb/abc.html");
-  std::string str = p.SedLocation(mapList);
-  EXPECT_EQ("/usr/local/www/nginx/bbb/abc.html", str);
-}
+//   ParsedRequest pr;
+//   pr.request_path = "/a/bbb/abc.html";
 
-TEST(Path, 2) {
-  LocationContext lc;
-  init(&lc);
-  Locmap mapList = {
-      {"/a/bbb/", lc},
-      {"/aa/", lc},
-      {"/bb/", lc},
-      {"/cc/", lc},
-  };
+//   std::vector<ServerContext> contexts;
+//   Server serv(contexts);
 
-  Path p;
-  p.SetFilePath("", "/a/bbb/abc.html");
-  std::string str = p.SedLocation(mapList);
-  EXPECT_EQ("/usr/local/www/nginx/abc.html", str);
-}
-
-// /usr/local/www/nginx/aaa/abc.html
+//   serv.receive_request_.SetParsedRequest(pr);
+//   std::string str = serv.ReplaceURILocation(mapList);
+//   EXPECT_EQ("/usr/local/www/nginx/a/bbb/abc.html", str);
+// }

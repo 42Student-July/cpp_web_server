@@ -69,6 +69,7 @@ class ReceiveHttpRequest {
   void ShowParsedRequest(const int &fd);
   std::string GetBuf();
   ParsedRequest GetParsedRequest() const;
+  void SetParsedRequest(const ParsedRequest &pr);
 };
 
 #endif  // SRCS_SERVER_RECEIVEHTTPREQUEST_HPP_

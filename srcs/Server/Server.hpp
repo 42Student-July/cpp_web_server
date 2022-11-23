@@ -24,6 +24,7 @@
 #include "ServerContext.hpp"
 class Server {
  private:
+  //  public:
   static const int kNotDoneYet = -1;
   std::map<int, Event *> events_;
   Epoll epoll_;
