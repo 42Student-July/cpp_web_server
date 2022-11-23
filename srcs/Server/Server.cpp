@@ -120,3 +120,27 @@ int Server::WriteToClientFd(const int conn) {
   }
   return 0;
 }
+
+std::string Server::ReplaceURILocation(
+    const std::map<std::string, LocationContext> &lc) {
+  std::string request_path = receive_request_.GetParsedRequest().request_path;
+  std::size_t last_slash = request_path.find_last_of('/');
+
+  if (last_slash != std::string::npos) {
+    std::string file_path_ = request_path.substr(0, last_slash + 1);
+    std::string file_name_ = request_path.substr(last_slash + 1);
+    for (std::map<std::string, LocationContext>::const_iterator itr =
+             lc.begin();
+         itr != lc.end(); itr++) {
+      std::string path = itr->first;
+      std::string root = itr->second.root;
+
+      if (file_path_.size() >= path.size() &&
+          std::equal(path.begin(), path.end(), file_path_.begin())) {
+        return (root + "/" + file_path_.erase(0, path.size()) + file_name_);
+      }
+    }
+  }
+
+  return "";
+}
