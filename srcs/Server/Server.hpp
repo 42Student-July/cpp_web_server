@@ -28,7 +28,7 @@ class Server {
   std::map<int, Event *> events_;
   Epoll epoll_;
   ReceiveHttpRequest receive_request_;
-  std::map<int, std::vector<std::string> > response_;
+  std::map<int, std::string> response_;
   void ExecEvents(epoll_event *ev);
   void AcceptNewConnections(epoll_event *ev);
   void ConnectingEvent(epoll_event *ev);

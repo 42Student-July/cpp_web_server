@@ -84,35 +84,33 @@ TEST(HttpResponseTest_Default, RequestLine_500) {
   EXPECT_EQ(expected, res.GetStatusLine());
 }
 
-TEST(HttpResponseTest_Default, GetResponse) {
+TEST(HttpResponseTest_Default, GetRawResponse) {
   HttpResponse http_response;
   http_response.SetStatusCode(200);
   http_response.SetBody("Hello World");
   http_response.SetHeader("Content-Length", http_response.GetBody().size());
 
-  std::vector<std::string> expected = {
-      "HTTP/1.1 200 OK\r\n", "Content-Length: 11\r\n", "\r\n", "Hello World"};
+  std::string expected =
+      "HTTP/1.1 200 OK\r\n"
+      "Content-Length: 11\r\n"
+      "\r\n"
+      "Hello World";
 
-  std::vector<std::string> res = http_response.GetResponse();
-  for (int i = 0; i < expected.size(); i++) {
-    EXPECT_EQ(expected[i], res[i]);
-  }
+  std::string res = http_response.GetRawResponse();
+  EXPECT_EQ(expected, res);
 }
 
-TEST(HttpResponseTest_Default, GetResponse_400) {
+TEST(HttpResponseTest_Default, GetRawResponse_400) {
   HttpResponse http_response;
   http_response.SetStatusCode(400);
   http_response.SetBody("");
   http_response.SetHeader("Content-Length", http_response.GetBody().size());
 
-  std::vector<std::string> expected = {
-      "HTTP/1.1 400 Bad Request\r\n",
-      "Content-Length: 0\r\n",
-      "\r\n",
-  };
+  std::string expected =
+      "HTTP/1.1 400 Bad Request\r\n"
+      "Content-Length: 0\r\n"
+      "\r\n";
 
-  std::vector<std::string> res = http_response.GetResponse();
-  for (int i = 0; i < expected.size(); i++) {
-    EXPECT_EQ(expected[i], res[i]);
-  }
+  std::string res = http_response.GetRawResponse();
+  EXPECT_EQ(expected, res);
 }
