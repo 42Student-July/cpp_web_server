@@ -45,7 +45,7 @@ std::vector<std::string> SplitWithMultipleSpecifier(
   if (!item.empty()) elements.push_back(item);
   return elements;
 }
-char* StrToCharPtr(const std::string &str){
+char *StrToCharPtr(const std::string &str) {
   char *ptr = new char[str.size() + 1];
   memmove(ptr, str.c_str(), str.size() + 1);
   return ptr;
