@@ -79,13 +79,37 @@ Method ConvertMethod(const std::string &method) {
   }
 }
 
+std::map<std::string, std::string> SplitCgiArgs(const std::string &str) {
+  std::map<std::string, std::string> arg_map;
+  std::vector<std::string> split_by_ampersand;
+
+  split_by_ampersand = utils::SplitWithMultipleSpecifier(str, "&");
+  for (std::vector<std::string>::iterator itr = split_by_ampersand.begin();
+       itr != split_by_ampersand.end(); itr++) {
+    std::vector<std::string> split_by_eq =
+        utils::SplitWithMultipleSpecifier(*itr, "=");
+    if (split_by_eq.size() == 2) arg_map[split_by_eq[0]] = split_by_eq[1];
+  }
+
+  return arg_map;
+}
+
 Method InputHttpRequestLine(const std::string &line, ParsedRequest *pr) {
   std::vector<std::string> v;
+  std::string request_path_buf;
+  size_t pos = 0;
 
   v = utils::SplitWithMultipleSpecifier(line, " ");
   if (v.size() != 3) return kError;
   pr->m = ConvertMethod(v.at(0));
-  pr->request_path = v.at(1);
+  request_path_buf = v.at(1);
+  pos = request_path_buf.find(".cgi?");
+  if (pos == std::string::npos) {
+    pr->request_path = request_path_buf;
+  } else {
+    pr->request_path = request_path_buf.substr(0, pos + 4);
+    pr->args = SplitCgiArgs(request_path_buf.substr(pos + 5));
+  }
   pr->version = v.at(2);
   return pr->m;
 }

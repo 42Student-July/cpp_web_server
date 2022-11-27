@@ -19,6 +19,9 @@ Header expected_full = {{"Host", "hoge.com"},
                         {"Accept-Encoding", "gzip, deflate"},
                         {"Accept-Language", "ja,en-US;q=0.8,en;q=0.6"}};
 
+std::map<std::string, std::string> expected_arg = {
+    {"a", "hoge"}, {"b", "fuga"}, {"c", "piyo"}};
+
 void copy_fd(int dst, const char *src) {
   char buf[BUFFER_SIZE];
   std::string file = DIR;
@@ -53,6 +56,24 @@ TEST(ReceiveHttpRequest, full) {
   EXPECT_EQ("/search.html", pr.request_path);
   EXPECT_EQ("HTTP/1.1", pr.version);
   compare_header(pr.request_header, expected_full);
+  EXPECT_EQ("q=test&submitSearch=%E6%A4%9C%E7%B4%A2", pr.request_body);
+  close(fd);
+}
+
+TEST(ReceiveHttpRequest, arg) {
+  ReceiveHttpRequest rhr;
+  ParsedRequest pr;
+  ReadStat rs;
+  int fd = open("./text/ReceiveHttpRequest/ReceiveHttpRequest.txt", O_RDWR);
+  copy_fd(fd, "FullRequest_cgiarg");
+  rs = rhr.ReadHttpRequest(fd, &pr);
+
+  EXPECT_EQ(kReadComplete, rs);
+  EXPECT_EQ(kPost, pr.m);
+  EXPECT_EQ("/search.cgi", pr.request_path);
+  EXPECT_EQ("HTTP/1.1", pr.version);
+  compare_header(pr.request_header, expected_full);
+  EXPECT_EQ(expected_arg, pr.args);
   EXPECT_EQ("q=test&submitSearch=%E6%A4%9C%E7%B4%A2", pr.request_body);
   close(fd);
 }
