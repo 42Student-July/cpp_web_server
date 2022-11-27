@@ -5,6 +5,7 @@
 #include <string>
 
 #include "File.hpp"
+#include "HttpResponse.hpp"
 #include "Path.hpp"
 #include "ReceiveHttpRequest.hpp"
 #include "ServerContext.hpp"
@@ -16,7 +17,7 @@ class HttpProcessor {
 
   static void ProcessHttpRequest(
       const ParsedRequest &parsed_request,
-      std::map<std::string, LocationContext> locations, std::string *result);
+      std::map<std::string, LocationContext> locations, HttpResponse *result);
 
  private:
   HttpProcessor(HttpProcessor const &other);
@@ -24,8 +25,8 @@ class HttpProcessor {
 
   static void ProcessHttpRequestGet(
       const ParsedRequest &parsed_request,
-      std::map<std::string, LocationContext> locations, std::string *result);
-  static void ReadLocalFile(const File &file, std::string *result);
+      std::map<std::string, LocationContext> locations, HttpResponse *result);
+  static void ReadLocalFile(const File &file, HttpResponse *result);
 };
 
 #endif  // SRCS_SERVER_HTTPPROCESSOR_HPP_

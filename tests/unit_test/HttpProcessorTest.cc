@@ -11,7 +11,7 @@ TEST(HttpProcessor, ProcessHttpRequest) {
 
   location_contexts["/"] = location_context;
 
-  std::string result;
+  HttpResponse result;
 
   {
     ParsedRequest parsed_request;
@@ -24,11 +24,10 @@ TEST(HttpProcessor, ProcessHttpRequest) {
                                       &result);
   }
 
-  std::string expected;
+  HttpResponse expected;
   {
-    HttpResponse http_response;
-    http_response.SetStatusCode(200);
-    http_response.SetHeader("Content-Type", "text/html");
+    expected.SetStatusCode(200);
+    expected.SetHeader("Content-Type", "text/html");
     File file("./html/sample.html");
     std::vector<std::string> file_contents = file.StoreFileLinesInVec();
 
@@ -36,10 +35,9 @@ TEST(HttpProcessor, ProcessHttpRequest) {
     for (size_t i = 0; i < file_contents.size(); ++i) {
       body += file_contents[i];
     }
-    http_response.SetBody(body);
-    http_response.SetHeader("Content-Length", std::to_string(body.size()));
-    expected = http_response.GetRawResponse();
+    expected.SetBody(body);
+    expected.SetHeader("Content-Length", std::to_string(body.size()));
   }
 
-  EXPECT_EQ(result, expected);
+  EXPECT_EQ(result.GetRawResponse(), expected.GetRawResponse());
 }

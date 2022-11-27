@@ -3,8 +3,6 @@
 
 #include <vector>
 
-#include "HttpResponse.hpp"
-
 HttpProcessor::HttpProcessor() {}
 
 HttpProcessor::HttpProcessor(HttpProcessor const &other) { *this = other; }
@@ -20,7 +18,7 @@ HttpProcessor::~HttpProcessor() {}
 
 void HttpProcessor::ProcessHttpRequest(
     const ParsedRequest &parsed_request,
-    std::map<std::string, LocationContext> locations, std::string *result) {
+    std::map<std::string, LocationContext> locations, HttpResponse *result) {
   if (parsed_request.m == kGet) {
     ProcessHttpRequestGet(parsed_request, locations, result);
   }
@@ -28,7 +26,7 @@ void HttpProcessor::ProcessHttpRequest(
 
 void HttpProcessor::ProcessHttpRequestGet(
     const ParsedRequest &parsed_request,
-    std::map<std::string, LocationContext> locations, std::string *result) {
+    std::map<std::string, LocationContext> locations, HttpResponse *result) {
   Path path;
 
   // pathってどうやってつかうの？
@@ -48,21 +46,20 @@ void HttpProcessor::ProcessHttpRequestGet(
   File file(full_path);
   if (file.IsExist() && file.CanRead()) {
     ReadLocalFile(file, result);
+  } else {
+    result->SetStatusCode(404);
   }
 }
 
-void HttpProcessor::ReadLocalFile(const File &file, std::string *result) {
-  HttpResponse http_response;
-
-  http_response.SetStatusCode(200);
-  http_response.SetHeader("Content-Type", "text/html");
+void HttpProcessor::ReadLocalFile(const File &file, HttpResponse *result) {
+  result->SetStatusCode(200);
+  result->SetHeader("Content-Type", "text/html");
   std::vector<std::string> file_contents = file.StoreFileLinesInVec();
   std::string body;
   for (std::vector<std::string>::iterator it = file_contents.begin();
        it != file_contents.end(); ++it) {
     body += *it;
   }
-  http_response.SetBody(body);
-  http_response.SetHeader("Content-Length", http_response.GetBody().size());
-  *result = http_response.GetRawResponse();
+  result->SetBody(body);
+  result->SetHeader("Content-Length", result->GetBody().size());
 }
