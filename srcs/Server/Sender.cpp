@@ -28,3 +28,12 @@ int Sender::GetSendedBytes() const { return sended_bytes; }
 int Sender::GetTotalBytes() const { return total_bytes; }
 
 bool Sender::HasMoreToSend() const { return sended_bytes < total_bytes; }
+
+void Sender::Send(int fd) {
+  int bytes = send(fd, buf.c_str() + sended_bytes, total_bytes - sended_bytes,
+                   0);
+  if (bytes == -1) {
+    throw std::runtime_error("send() failed");
+  }
+  sended_bytes += bytes;
+}
