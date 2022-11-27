@@ -79,21 +79,6 @@ Method ConvertMethod(const std::string &method) {
   }
 }
 
-std::map<std::string, std::string> SplitCgiArgs(const std::string &str) {
-  std::map<std::string, std::string> arg_map;
-  std::vector<std::string> split_by_ampersand;
-
-  split_by_ampersand = utils::SplitWithMultipleSpecifier(str, "&");
-  for (std::vector<std::string>::iterator itr = split_by_ampersand.begin();
-       itr != split_by_ampersand.end(); itr++) {
-    std::vector<std::string> split_by_eq =
-        utils::SplitWithMultipleSpecifier(*itr, "=");
-    if (split_by_eq.size() == 2) arg_map[split_by_eq[0]] = split_by_eq[1];
-  }
-
-  return arg_map;
-}
-
 Method InputHttpRequestLine(const std::string &line, ParsedRequest *pr) {
   std::vector<std::string> v;
   std::string request_path_buf;
@@ -108,7 +93,7 @@ Method InputHttpRequestLine(const std::string &line, ParsedRequest *pr) {
     pr->request_path = request_path_buf;
   } else {
     pr->request_path = request_path_buf.substr(0, pos + 4);
-    pr->args = SplitCgiArgs(request_path_buf.substr(pos + 5));
+    pr->query_string = request_path_buf.substr(pos + 5);
   }
   pr->version = v.at(2);
   return pr->m;
