@@ -4,10 +4,11 @@ bool static Compare(const std::string &left, const std::string &right) {
   return left.length() > right.length();
 }
 
-std::vector<std::string> static LocationSort(const Locmap &locs) {
+std::vector<std::string> static LocationSort(const Locationmap &locs) {
   std::vector<std::string> v;
 
-  for (Locmap::const_iterator itr = locs.begin(); itr != locs.end(); itr++) {
+  for (Locationmap::const_iterator itr = locs.begin(); itr != locs.end();
+       itr++) {
     v.push_back(itr->first);
   }
   std::sort(v.begin(), v.end(), Compare);
@@ -35,7 +36,7 @@ Path &Path::operator=(Path const &other) {
 
 Path::~Path() {}
 
-void Path::SetLocation(Locmap *locs) {
+void Path::SetLocation(Locationmap *locs) {
   std::vector<std::string> location_vector = LocationSort(*locs);
   std::string path;
   std::string root;
@@ -76,8 +77,7 @@ void Path::SetFilePath(std::string name, std::string path) {
   file_path_ = path;
 }
 
-std::string Path::GetFilePath(
-    std::map<std::string, LocationContext> *location) {
+std::string Path::GetFilePath(Locationmap *location) {
   SetLocation(location);
   return path_;
 }

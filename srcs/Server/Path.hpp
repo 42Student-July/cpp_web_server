@@ -8,7 +8,7 @@
 
 #include "LocationContext.hpp"
 
-typedef std::map<std::string, LocationContext> Locmap;
+typedef std::map<std::string, LocationContext> Locationmap;
 
 class Path {
  public:
@@ -17,9 +17,9 @@ class Path {
   Path(Path const &other);
   Path &operator=(Path const &other);
   ~Path();
-  void SetLocation(Locmap *locs);
+  void SetLocation(Locationmap *locs);
   void SetFilePath(std::string name, std::string path);
-  std::string GetFilePath(std::map<std::string, LocationContext> *location);
+  std::string GetFilePath(Locationmap *location);
 
  private:
   std::string file_name_;
