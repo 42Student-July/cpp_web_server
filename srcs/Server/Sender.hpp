@@ -10,6 +10,13 @@ class Sender {
   void Send(int fd);
   ~Sender();
 
+  std::string GetBuf() const;
+  void SetSendedBytes(size_t bytes);
+  int GetSendedBytes() const;
+  int GetTotalBytes() const;
+
+  bool HasMoreToSend() const;
+
  private:
   Sender(Sender const &other);
   Sender &operator=(Sender const &other);
@@ -17,8 +24,6 @@ class Sender {
   std::string buf;
   size_t sended_bytes;
   size_t total_bytes;
-
-  bool HasMoreToSend() const;
 };
 
 #endif  // SRCS_SERVER_SENDER_HPP_
