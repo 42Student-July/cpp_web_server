@@ -17,10 +17,9 @@ class Path {
   Path(Path const &other);
   Path &operator=(Path const &other);
   ~Path();
-  std::string SetLocation(Locmap *locs);
+  void SetLocation(Locmap *locs);
   void SetFilePath(std::string name, std::string path);
   std::string GetFilePath(std::map<std::string, LocationContext> *location);
-  std::vector<std::string> sort(const Locmap &locs);
 
  private:
   std::string file_name_;
