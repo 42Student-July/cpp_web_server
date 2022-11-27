@@ -14,4 +14,4 @@ void Connecting::SetSender(const std::string& response) {
   sender_.Init(response);
 }
 
-Sender Connecting::GetSender() const { return sender_; }
+const Sender& Connecting::GetSender() const { return sender_; }

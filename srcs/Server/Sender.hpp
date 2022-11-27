@@ -21,9 +21,9 @@ class Sender {
   Sender(Sender const &other);
   Sender &operator=(Sender const &other);
 
-  std::string buf;
-  size_t sended_bytes;
-  size_t total_bytes;
+  std::string buf_;
+  size_t sended_bytes_;
+  size_t total_bytes_;
 };
 
 #endif  // SRCS_SERVER_SENDER_HPP_

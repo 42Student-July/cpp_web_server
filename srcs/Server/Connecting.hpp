@@ -21,7 +21,7 @@ class Connecting : public Event {
   ParsedRequest GetParsedRequest() const;
   void SetParsedRequest(const ParsedRequest& pr);
   void SetSender(const std::string& response);
-  Sender GetSender() const;
+  const Sender& GetSender() const;
   ReadStat ReadRequest();
 };
 #endif  // SRCS_SERVER_CONNECTING_HPP_
