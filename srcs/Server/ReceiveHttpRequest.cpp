@@ -1,4 +1,6 @@
 #include "ReceiveHttpRequest.hpp"
+
+#include "Utils.hpp"
 ReceiveHttpRequest::ReceiveHttpRequest() {
   fd_data_.s = kUnread;
   fd_data_.pr.m = kError;
@@ -78,21 +80,13 @@ Method ConvertMethod(const std::string &method) {
 }
 
 Method InputHttpRequestLine(const std::string &line, ParsedRequest *pr) {
-  std::size_t pos = 0;
-  std::size_t top = 0;
+  std::vector<std::string> v;
 
-  for (size_t i = 0; i < 3; i++) {
-    pos = line.find(" ", top);
-    if (i == 0) {
-      pr->m = ConvertMethod(line.substr(top, pos - top));
-    } else if (i == 1) {
-      pr->request_path = line.substr(top, pos - top);
-    } else if (i == 2) {
-      pr->version = line.substr(top, pos - top);
-    }
-    while (line[pos] == ' ') pos++;
-    top = pos;
-  }
+  v = utils::SplitWithMultipleSpecifier(line, " ");
+  if (v.size() != 3) return kError;
+  pr->m = ConvertMethod(v.at(0));
+  pr->request_path = v.at(1);
+  pr->version = v.at(2);
   return pr->m;
 }
 
