@@ -21,7 +21,6 @@ class Path {
   void SetFilePath(std::string name, std::string path);
   std::string GetFilePath(Locationmap *location);
 
-
  private:
   std::string file_name_;
   std::string file_path_;
