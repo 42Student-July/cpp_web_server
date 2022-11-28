@@ -45,6 +45,7 @@ struct ParsedRequest {
   std::string request_path;
   Header request_header;
   std::string request_body;
+  std::string query_string;
 };
 
 struct HttpRequestData {
