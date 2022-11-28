@@ -72,7 +72,7 @@ void Path::SetLocation(Locationmap *locs) {
   }
 }
 
-void Path::SetFilePath(std::string name, std::string path) {
+void Path::SetFilePath(const std::string name, const std::string path) {
   file_name_ = name;
   file_path_ = path;
 }

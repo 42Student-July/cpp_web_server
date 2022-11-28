@@ -123,4 +123,15 @@ TEST(Path, 10) {
   EXPECT_EQ("/tmp/www/", str);
 }
 
+TEST(Path, relarive_path) {
+  LocationContext lc;
+  init(&lc, "./html/");
+  Locationmap mapList = {
+      {"/", lc},
+  };
+  Path p("/sample.html");
+  std::string str = p.GetFilePath(&mapList);
+  EXPECT_EQ("./html/sample.html", str);
+}
+
 // /usr/local/www/nginx/aaa/abc.html

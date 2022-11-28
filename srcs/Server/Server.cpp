@@ -23,7 +23,6 @@ void Server::DelEvent(const Event *sock, epoll_event *ev) {
 
 void Server::Run() {
   while (true) {
-    // int num_event =
     for (int i = 0; i < epoll_.Wait(); i++) {
       epoll_event ev = epoll_.FindEvent(i);
       ExecEvents(&ev);
@@ -63,11 +62,12 @@ void Server::AcceptNewConnections(epoll_event *ev) {
 void Server::ReceiveRequest(epoll_event *epo_ev) {
   Connecting *conn = dynamic_cast<Connecting *>(events_[epo_ev->data.fd]);
   conn->ReadRequest();
-  if (conn->GetEventType() == kWrite) {
+  if (conn->GetEventStatus() == kWrite) {
     epoll_.Mod(epo_ev, EPOLLOUT);
   }
-  if (conn->GetEventType() == kCgi) {
-    CgiRun(epo_ev);
+  if (conn->GetEventStatus() == kCgi) {
+    // CgiRun(epo_ev);
+    epoll_.Mod(epo_ev, 0);
   }
 }
 void Server::AddEventToMonitored(Event *sock, uint32_t event_flag) {
@@ -77,18 +77,14 @@ void Server::AddEventToMonitored(Event *sock, uint32_t event_flag) {
 }
 
 void Server::SendResponse(epoll_event *ev) {
-  int status = 0;
-  response_[ev->data.fd];
-  HttpResponse http_response;
-  http_response.SetHttpResponse200();
-  response_[ev->data.fd] = http_response.GetResponse();
-  if ((status = WriteToClientFd(ev->data.fd)) == kNotDoneYet) {
-    (void)status;
-    return;
+  Connecting *conn = dynamic_cast<Connecting *>(events_[ev->data.fd]);
+  if (conn->GetEventStatus() == kWrite) {
+    HttpResponse response;
+    HttpProcessor::ProcessHttpRequest(conn->GetParsedRequest(),
+                                      conn->GetContext().locations, &response);
+    conn->SetSender(response.GetRawResponse());
   }
-  response_.erase(ev->data.fd);
-  epoll_.Del(ev);
-  close(ev->data.fd);
+  conn->SendResponse();
 }
 
 // void Server::CgiRun(epoll_event *epo_ev) {
@@ -113,18 +109,4 @@ void Server::CgiEvent(epoll_event *ev) {
   // 無限にプリント　→　時間でタイムアウト
   // 無限ループ　→　read byteが0だったらキルする
   // cgi読み込み終了したらcgi呼び出したEventのepoll writeに変更
-}
-
-int Server::WriteToClientFd(const int conn) {
-  const int fd = conn;
-  size_t response_size = response_[fd].size();
-  for (size_t i = 0; i < response_size; i++) {
-    ssize_t written_size =
-        write(conn, response_[fd][0].c_str(), response_[fd][0].size());
-    if (written_size == kNotDoneYet) {
-      return kNotDoneYet;
-    }
-    response_[fd].erase(response_[fd].begin());
-  }
-  return 0;
 }

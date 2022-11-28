@@ -15,19 +15,21 @@
 #include "Connecting.hpp"
 #include "Epoll.hpp"
 #include "Event.hpp"
+#include "HttpProcessor.hpp"
 #include "HttpResponse.hpp"
 #include "Listen.hpp"
 #include "ListenEvent.hpp"
 #include "Parser.hpp"
 #include "ReceiveHttpRequest.hpp"
 #include "ServerContext.hpp"
+
 class Server {
  private:
   static const int kNotDoneYet = -1;
   std::map<int, Event *> events_;
   Epoll epoll_;
   ReceiveHttpRequest receive_request_;
-  std::map<int, std::vector<std::string> > response_;
+  std::map<int, std::string> response_;
   void ExecEvents(epoll_event *ev);
   void AcceptNewConnections(epoll_event *ev);
   void ConnectingEvent(epoll_event *ev);
