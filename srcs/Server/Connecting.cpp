@@ -9,3 +9,9 @@ void Connecting::SetParsedRequest(const ParsedRequest& pr) { pr_ = pr; }
 ReadStat Connecting::ReadRequest() {
   return (hr_.ReadHttpRequest(GetFd(), &pr_));
 }
+
+void Connecting::SetSender(const std::string& response) {
+  sender_.Init(response);
+}
+
+const Sender& Connecting::GetSender() const { return sender_; }
