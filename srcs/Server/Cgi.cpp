@@ -1,6 +1,9 @@
 #include "Cgi.hpp"
-Cgi::Cgi(const ServerContext &context, const ParsedRequest &pr, Method m)
-    : Event(-1, context, kCgi), timer_(kKTimeOut), method_(m) {
+Cgi::Cgi(const ServerContext &context, const ParsedRequest &pr, int conn_fd)
+    : Event(-1, context, kCgi),
+      timer_(kKTimeOut),
+      conn_fd_(conn_fd),
+      method_(pr.m) {
   // set up
   (void)pr;
   pass_ = "./www/cgi-bin/env.cgi";

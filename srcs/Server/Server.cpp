@@ -61,14 +61,14 @@ void Server::AcceptNewConnections(epoll_event *ev) {
   AddEventToMonitored(connsock, EPOLLIN);
 }
 void Server::ReceiveRequest(epoll_event *epo_ev) {
-  Connecting *event = dynamic_cast<Connecting *>(events_[epo_ev->data.fd]);
-  // ReadStat stat = event->ReadRequest();
-  Cgi *cgi = new Cgi(event->GetContext(), event->GetParsedRequest(), kGet);
-  cgi->Run();
-  std::cout << cgi->GetChunked() << std::endl;
-  delete cgi;
-  event->SetEventStatus(kDel);
-  (void)epo_ev;
+  Connecting *conn = dynamic_cast<Connecting *>(events_[epo_ev->data.fd]);
+  conn->ReadRequest();
+  if (conn->GetEventType() == kWrite) {
+    epoll_.Mod(epo_ev, EPOLLOUT);
+  }
+  if (conn->GetEventType() == kCgi) {
+    CgiRun(epo_ev);
+  }
 }
 void Server::AddEventToMonitored(Event *sock, uint32_t event_flag) {
   events_.insert(std::make_pair(sock->GetFd(), sock));
@@ -91,13 +91,21 @@ void Server::SendResponse(epoll_event *ev) {
   close(ev->data.fd);
 }
 
-void Server::CgiRun(epoll_event *ev) {
-  // Event *sock = new Cgi(fd[1]);
-  // Events_.insert(std::make_pair(sock->GetFd(),sock));
-  // epoll_event new_ev = Epoll::Create(sock->GetFd(), EPOLLIN);
-  // epoll_.Mod(ev, 0);
-  (void)ev;
-}
+// void Server::CgiRun(epoll_event *epo_ev) {
+//   Connecting *conn = dynamic_cast<Connecting *>(events_[epo_ev->data.fd]);
+//   Event *sock =
+//       new Cgi(conn->GetContext(), conn->GetParsedRequest(), epo_ev->data.fd);
+//   // Events_.insert(std::make_pair(sock->GetFd(),sock));
+//   // epoll_event new_ev = Epoll::Create(sock->GetFd(), EPOLLIN);
+//   // epoll_.Mod(ev, 0);
+//   (void)ev;
+//   // Cgi *cgi = new Cgi(event->GetContext(), event->GetParsedRequest(),
+//   kGet);
+//   // cgi->Run();
+//   // std::cout << cgi->GetChunked() << std::endl;
+//   // delete cgi;
+//   // event->SetEventStatus(kDel);
+// }
 void Server::CgiEvent(epoll_event *ev) {
   (void)ev;
   // Cgi *sock = dynamic_cast<Cgi *>(events_[ev->data.fd]);

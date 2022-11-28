@@ -26,6 +26,7 @@ class Cgi : public Event {
   Timer timer_;
   int pipe_out_[2];
   int pipe_in_[2];
+  int conn_fd_;
   pid_t child_process_;
   std::string chunked_;
   Method method_;
@@ -51,7 +52,7 @@ class Cgi : public Event {
   static void DelPtr(char **ptr);
 
  public:
-  Cgi(const ServerContext &context, const ParsedRequest &pr, Method m);
+  Cgi(const ServerContext &context, const ParsedRequest &pr, int conn_fd);
   ~Cgi();
   void Run();
   int GetOutFd() const;
