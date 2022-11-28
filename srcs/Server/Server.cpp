@@ -81,7 +81,7 @@ void Server::SendResponse(epoll_event *ev) {
   response_[ev->data.fd];
   HttpResponse http_response;
   http_response.SetHttpResponse200();
-  response_[ev->data.fd] = http_response.GetResponse();
+  response_[ev->data.fd] = http_response.GetRawResponse();
   if ((status = WriteToClientFd(ev->data.fd)) == kNotDoneYet) {
     (void)status;
     return;
@@ -107,16 +107,15 @@ void Server::CgiEvent(epoll_event *ev) {
   // cgi読み込み終了したらcgi呼び出したEventのepoll writeに変更
 }
 
+// [TODO] 書き込みがすべて完了しなかった場合に再度書き込む方法
+
 int Server::WriteToClientFd(const int conn) {
   const int fd = conn;
-  size_t response_size = response_[fd].size();
-  for (size_t i = 0; i < response_size; i++) {
-    ssize_t written_size =
-        write(conn, response_[fd][0].c_str(), response_[fd][0].size());
-    if (written_size == kNotDoneYet) {
-      return kNotDoneYet;
-    }
-    response_[fd].erase(response_[fd].begin());
+  ssize_t written_size =
+      write(conn, response_[fd].c_str(), response_[fd].size());
+  if (written_size == kNotDoneYet) {
+    return kNotDoneYet;
   }
+  response_[fd].erase(response_[fd].begin());
   return 0;
 }

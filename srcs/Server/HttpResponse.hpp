@@ -22,7 +22,7 @@ class HttpResponse {
   int GetStatusCode() const;
   std::string const &GetBody() const;
   std::string GetStatusLine() const;
-  std::vector<std::string> GetResponse() const;
+  std::string GetRawResponse() const;
   void SetHttpResponse200();
   std::vector<std::string> GetResponseHeaders() const;
 
