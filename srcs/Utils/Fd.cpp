@@ -7,6 +7,6 @@ void Fd::Close() const {
   if (res == -1) throw std::runtime_error("close err");
 }
 void Fd::Reset(const int fd) {
-  close(val_);
+  if (GetFd() != -1) close(val_);
   val_ = fd;
 }

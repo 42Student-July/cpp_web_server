@@ -1,12 +1,12 @@
 #ifndef SRCS_SERVER_EVENT_HPP_
 #define SRCS_SERVER_EVENT_HPP_
-
+#include <iostream>
 #include <string>
 
 #include "Fd.hpp"
 #include "ServerContext.hpp"
-enum EventType { LISTEN, CONNECTING, CGI };
-enum EventStatus { READ, WRITE, WAIT, DEL };
+enum EventType { kListen, kConnecting, kCgi };
+enum EventStatus { kRead, kWrite, kWait, kDel };
 class Event : public Fd {
  private:
   ServerContext context_;
@@ -15,7 +15,7 @@ class Event : public Fd {
   Event& operator=(const Event& sock);
   Event();
   Event(const Event& sock);
-  static const int Kbuffer_size_ = 8192;
+  static const int kBufferSize = 8192;
 
  public:
   Event(const int fd, const ServerContext& context, const EventType type);

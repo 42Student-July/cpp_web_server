@@ -12,52 +12,64 @@
 #define NLNL "\r\n\r\n"
 #define BUFFER_SIZE 8192
 
-typedef std::vector<std::pair<std::string, std::string> > HEADER;
+typedef std::vector<std::pair<std::string, std::string> > Header;
 
-enum method { ERROR, CONNECT, DELETE, GET, HEAD, OPTIONS, POST, PUT, TRACE };
-
-enum read_stat {
-  UNREAD,
-  WAIT_REQUEST,
-  ERROR_REQUEST,
-  WAIT_HEADER,
-  ERROR_HEADER,
-  WAIT_BODY,
-  ERROR_BODY,
-  READ_COMPLETE,
-  READ_ERROR
+enum Method {
+  kError,
+  kConnect,
+  kDelete,
+  kGet,
+  kHead,
+  kOptions,
+  kPost,
+  kPut,
+  kTrace
 };
 
-struct parsed_request {
-  method m;
+enum ReadStat {
+  kUnread,
+  kWaitRequest,
+  kErrorRequest,
+  kWaitHeader,
+  kErrorHeader,
+  kWaitBody,
+  kErrorBody,
+  kReadComplete,
+  kReadError
+};
+
+struct ParsedRequest {
+  Method m;
   std::string version;
   int status_code;
   std::string request_path;
-  HEADER request_header;
+  Header request_header;
   std::string request_body;
+  std::string query_string;
 };
 
-struct httprequest_data {
-  read_stat s;
+struct HttpRequestData {
+  ReadStat s;
   std::string buf;
   std::string request_line;
   std::string request_header;
   std::string message_body;
-  struct parsed_request pr;
+  struct ParsedRequest pr;
 };
 
 class ReceiveHttpRequest {
  private:
-  httprequest_data fd_data_;
+  HttpRequestData fd_data_;
 
  public:
   ReceiveHttpRequest();
   ReceiveHttpRequest(ReceiveHttpRequest const &other);
   ReceiveHttpRequest &operator=(ReceiveHttpRequest const &other);
   ~ReceiveHttpRequest();
-  read_stat ReadHttpRequest(const int &fd, parsed_request *pr);
+  ReadStat ReadHttpRequest(const int &fd, ParsedRequest *pr);
   void ShowParsedRequest(const int &fd);
   std::string GetBuf();
+  ParsedRequest GetParsedRequest() const;
 };
 
 #endif  // SRCS_SERVER_RECEIVEHTTPREQUEST_HPP_

@@ -43,7 +43,10 @@ integration: re
 unit:
 	make unittest -C $(TESTSPATH)
 	make fclean
-
+test_compose: all
+	make up -C ./tests/docker
+test_compose_down: fclean
+	make down -C ./tests/docker
 .PHONY: all fclean clean re bonus integration unit
 
 -include $(DEPS)

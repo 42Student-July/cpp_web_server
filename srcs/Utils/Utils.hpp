@@ -15,7 +15,10 @@ int Atoi(const std::string &s);
 long StrToLong(const std::string &str);
 std::vector<std::string> SplitWithMultipleSpecifier(
     const std::string &str, const std::string &separators);
+
 char *StrToCharPtr(const std::string &str);
+std::string UIntToString(size_t num);
+
 }  // namespace utils
 
 #endif  // SRCS_UTILS_UTILS_HPP_

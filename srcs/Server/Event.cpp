@@ -1,7 +1,10 @@
 #include "Event.hpp"
 Event::Event(const int fd, const ServerContext& context, const EventType type)
     : Fd(fd), context_(context), type_(type) {}
-Event::~Event() { Close(); }
+Event::~Event() {
+  std::cout << "destructor event" << std::endl;
+  Close();
+}
 void Event::SetEventStatus(EventStatus status) { status_ = status; }
 int Event::GetEventStatus() const { return status_; }
 int Event::GetEventType() const { return type_; }
@@ -13,8 +16,8 @@ ssize_t Event::Write(const char* str, size_t size) const {
   return written_size;
 }
 std::string Event::Read() const {
-  char buf[Kbuffer_size_];
-  ssize_t read_size = read(GetFd(), buf, Kbuffer_size_);
+  char buf[kBufferSize];
+  ssize_t read_size = read(GetFd(), buf, kBufferSize);
   if (read_size == -1) throw std::runtime_error("read err");
   buf[read_size] = '\0';
   std::string ret(buf);

@@ -20,7 +20,6 @@
 #include "ListenEvent.hpp"
 #include "Parser.hpp"
 #include "ReceiveHttpRequest.hpp"
-#include "Result.hpp"
 #include "ServerContext.hpp"
 class Server {
  private:
@@ -32,7 +31,8 @@ class Server {
   void ExecEvents(epoll_event *ev);
   void AcceptNewConnections(epoll_event *ev);
   void ConnectingEvent(epoll_event *ev);
-  static void ReceiveRequest(epoll_event *ev);
+  void AddMonitorToRequest(epoll_event *fd);
+  void ReceiveRequest(epoll_event *ev);
   void SendResponse(epoll_event *ev);
   int WriteToClientFd(const int connfd);
   Server();

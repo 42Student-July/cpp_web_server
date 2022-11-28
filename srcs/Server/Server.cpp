@@ -23,11 +23,11 @@ void Server::DelEvent(const Event *sock, epoll_event *ev) {
 
 void Server::Run() {
   while (true) {
-    int num_event = epoll_.Wait();
-    for (int i = 0; i < num_event; i++) {
+    // int num_event =
+    for (int i = 0; i < epoll_.Wait(); i++) {
       epoll_event ev = epoll_.FindEvent(i);
       ExecEvents(&ev);
-      if (events_[ev.data.fd]->GetEventStatus() == DEL)
+      if (events_[ev.data.fd]->GetEventStatus() == kDel)
         DelEvent(events_[ev.data.fd], &ev);
     }
   }
@@ -35,13 +35,13 @@ void Server::Run() {
 
 void Server::ExecEvents(epoll_event *ev) {
   switch (events_[ev->data.fd]->GetEventType()) {
-    case LISTEN:
+    case kListen:
       AcceptNewConnections(ev);
       break;
-    case CONNECTING:
+    case kConnecting:
       ConnectingEvent(ev);
       break;
-    case CGI:
+    case kCgi:
       CgiEvent(ev);
       break;
   }
@@ -61,13 +61,13 @@ void Server::AcceptNewConnections(epoll_event *ev) {
   AddEventToMonitored(connsock, EPOLLIN);
 }
 void Server::ReceiveRequest(epoll_event *epo_ev) {
-  // Connecting *event = dynamic_cast<Connecting *>(events_[epo_ev->data.fd]);
-  // read_stat stat = event->ReadRequest();
-  // if(stat == )
-  // read_stat st = receive_request_.ReadHttpRequest(sock->GetFd(),&pr);
-  // sock->SetParsedRequest(pr);
-  // if(st == )
-
+  Connecting *event = dynamic_cast<Connecting *>(events_[epo_ev->data.fd]);
+  // ReadStat stat = event->ReadRequest();
+  Cgi *cgi = new Cgi(event->GetContext(), event->GetParsedRequest(), kGet);
+  cgi->Run();
+  std::cout << cgi->GetChunked() << std::endl;
+  delete cgi;
+  event->SetEventStatus(kDel);
   (void)epo_ev;
 }
 void Server::AddEventToMonitored(Event *sock, uint32_t event_flag) {
@@ -79,9 +79,9 @@ void Server::AddEventToMonitored(Event *sock, uint32_t event_flag) {
 void Server::SendResponse(epoll_event *ev) {
   int status = 0;
   response_[ev->data.fd];
-  HttpResponse httpResponse;
-  httpResponse.SetHttpResponse200();
-  response_[ev->data.fd] = httpResponse.GetResponse();
+  HttpResponse http_response;
+  http_response.SetHttpResponse200();
+  response_[ev->data.fd] = http_response.GetResponse();
   if ((status = WriteToClientFd(ev->data.fd)) == kNotDoneYet) {
     (void)status;
     return;

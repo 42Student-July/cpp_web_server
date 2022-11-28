@@ -1,7 +1,9 @@
 #include "ReceiveHttpRequest.hpp"
+
+#include "Utils.hpp"
 ReceiveHttpRequest::ReceiveHttpRequest() {
-  fd_data_.s = UNREAD;
-  fd_data_.pr.m = ERROR;
+  fd_data_.s = kUnread;
+  fd_data_.pr.m = kError;
   fd_data_.pr.status_code = 0;
 }
 
@@ -46,7 +48,7 @@ static std::string TrimByPos(std::string *buf, const size_t &pos,
   return trim;
 }
 
-method ConvertMethod(const std::string &method) {
+Method ConvertMethod(const std::string &method) {
   int i = static_cast<int>(method == "CONNECT") |
           static_cast<int>(method == "DELETE") * 2 |
           static_cast<int>(method == "GET") * 3 |
@@ -57,42 +59,43 @@ method ConvertMethod(const std::string &method) {
           static_cast<int>(method == "TRACE") * 8;
   switch (i) {
     case 1:
-      return (CONNECT);
+      return (kConnect);
     case 2:
-      return (DELETE);
+      return (kDelete);
     case 3:
-      return (GET);
+      return (kGet);
     case 4:
-      return (HEAD);
+      return (kHead);
     case 5:
-      return (OPTIONS);
+      return (kOptions);
     case 6:
-      return (POST);
+      return (kPost);
     case 7:
-      return (PUT);
+      return (kPut);
     case 8:
-      return (TRACE);
+      return (kTrace);
     default:
-      return (ERROR);
+      return (kError);
   }
 }
 
-method InputHttpRequestLine(const std::string &line, parsed_request *pr) {
-  std::size_t pos = 0;
-  std::size_t top = 0;
+Method InputHttpRequestLine(const std::string &line, ParsedRequest *pr) {
+  std::vector<std::string> v;
+  std::string request_path_buf;
+  size_t pos = 0;
 
-  for (size_t i = 0; i < 3; i++) {
-    pos = line.find(" ", top);
-    if (i == 0) {
-      pr->m = ConvertMethod(line.substr(top, pos - top));
-    } else if (i == 1) {
-      pr->request_path = line.substr(top, pos - top);
-    } else if (i == 2) {
-      pr->version = line.substr(top, pos - top);
-    }
-    while (line[pos] == ' ') pos++;
-    top = pos;
+  v = utils::SplitWithMultipleSpecifier(line, " ");
+  if (v.size() != 3) return kError;
+  pr->m = ConvertMethod(v.at(0));
+  request_path_buf = v.at(1);
+  pos = request_path_buf.find(".cgi?");
+  if (pos == std::string::npos) {
+    pr->request_path = request_path_buf;
+  } else {
+    pr->request_path = request_path_buf.substr(0, pos + 4);
+    pr->query_string = request_path_buf.substr(pos + 5);
   }
+  pr->version = v.at(2);
   return pr->m;
 }
 
@@ -117,8 +120,8 @@ std::pair<std::string, std::string> SplitRequestHeaderLine(
   return std::make_pair(key, value);
 }
 
-HEADER ParseRequestHeader(const std::string &header_line) {
-  HEADER header;
+Header ParseRequestHeader(const std::string &header_line) {
+  Header header;
   size_t top = 0;
   size_t pos = 0;
   std::string trim;
@@ -136,68 +139,55 @@ HEADER ParseRequestHeader(const std::string &header_line) {
   return header;
 }
 
-read_stat ReceiveHttpRequest::ReadHttpRequest(const int &fd,
-                                              parsed_request *pr) {
+ReadStat ReceiveHttpRequest::ReadHttpRequest(const int &fd, ParsedRequest *pr) {
   size_t pos = 0;
   ssize_t read_ret = 0;
   char buf[BUFFER_SIZE];
 
   read_ret = read(fd, buf, BUFFER_SIZE);
   if (read_ret == -1) {
-    return READ_ERROR;
+    return kReadError;
   }
   buf[read_ret] = '\0';
   fd_data_.buf += buf;
-  if (fd_data_.s == UNREAD || fd_data_.s == WAIT_REQUEST) {
+  if (fd_data_.s == kUnread || fd_data_.s == kWaitRequest) {
     pos = fd_data_.buf.find(NL);
     if (std::string::npos != pos) {
       fd_data_.request_line = TrimByPos(&fd_data_.buf, pos, 2);
-      if (InputHttpRequestLine(fd_data_.request_line, &fd_data_.pr) == ERROR) {
-        fd_data_.s = ERROR_REQUEST;
+      if (InputHttpRequestLine(fd_data_.request_line, &fd_data_.pr) == kError) {
+        fd_data_.s = kErrorRequest;
       } else {
-        fd_data_.s = WAIT_HEADER;
+        fd_data_.s = kWaitHeader;
       }
     } else {
-      fd_data_.s = WAIT_REQUEST;
+      fd_data_.s = kWaitRequest;
       *pr = fd_data_.pr;
-      return WAIT_REQUEST;
+      return kWaitRequest;
     }
   }
 
-  if (fd_data_.s == WAIT_HEADER) {
+  if (fd_data_.s == kWaitHeader) {
     pos = fd_data_.buf.find(NLNL);
     if (std::string::npos != pos) {
       fd_data_.request_header = TrimByPos(&fd_data_.buf, pos, 4);
       fd_data_.pr.request_header = ParseRequestHeader(fd_data_.request_header);
-      fd_data_.s = WAIT_BODY;
+      fd_data_.s = kWaitBody;
     } else {
-      fd_data_.s = WAIT_HEADER;
+      fd_data_.s = kWaitHeader;
       *pr = fd_data_.pr;
-      return WAIT_HEADER;
+      return kWaitHeader;
     }
   }
 
-  if (fd_data_.s == WAIT_BODY) {
+  if (fd_data_.s == kWaitBody) {
     pos = fd_data_.buf.find(NL);
     fd_data_.pr.request_body = TrimByPos(&fd_data_.buf, pos, 2);
   }
   *pr = fd_data_.pr;
-  return READ_COMPLETE;
+  return kReadComplete;
 }
 
-// void ReceiveHttpRequest::ShowParsedRequest(const int &fd) {
-//   parsed_request req = fd_data_.pr;
-//   const std::string me[9] = {"ERROR",   "CONNECT", "DELETE", "GET",  "HEAD",
-//                              "OPTIONS", "POST",    "PUT",    "TRACE"};
-
-//   std::cout << me[req.m] << std::endl;
-//   std::cout << req.request_path << std::endl;
-//   std::cout << req.version << std::endl;
-//   for (size_t i = 0; i < req.request_header.size(); ++i) {
-//     std::cout << req.request_header[i].first << ":"
-//               << req.request_header[i].second << "\n";
-//   }
-//   std::cout << req.request_body << std::endl;
-// }
-
 std::string ReceiveHttpRequest::GetBuf() { return (fd_data_.buf); }
+ParsedRequest ReceiveHttpRequest::GetParsedRequest() const {
+  return fd_data_.pr;
+}
