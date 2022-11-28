@@ -81,11 +81,20 @@ Method ConvertMethod(const std::string &method) {
 
 Method InputHttpRequestLine(const std::string &line, ParsedRequest *pr) {
   std::vector<std::string> v;
+  std::string request_path_buf;
+  size_t pos = 0;
 
   v = utils::SplitWithMultipleSpecifier(line, " ");
   if (v.size() != 3) return kError;
   pr->m = ConvertMethod(v.at(0));
-  pr->request_path = v.at(1);
+  request_path_buf = v.at(1);
+  pos = request_path_buf.find(".cgi?");
+  if (pos == std::string::npos) {
+    pr->request_path = request_path_buf;
+  } else {
+    pr->request_path = request_path_buf.substr(0, pos + 4);
+    pr->query_string = request_path_buf.substr(pos + 5);
+  }
   pr->version = v.at(2);
   return pr->m;
 }
