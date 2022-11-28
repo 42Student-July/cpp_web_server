@@ -13,7 +13,6 @@ TEST(Path, 1) {
       {"/a/", lc},
   };
 
-
   Path p("/a/bbb/abc.html");
   std::string str = p.GetFilePath(&mapList);
   EXPECT_EQ("/usr/local/www/nginx/bbb/abc.html", str);
@@ -122,6 +121,17 @@ TEST(Path, 10) {
   Path p("/kapounet/pouic/");
   std::string str = p.GetFilePath(&mapList);
   EXPECT_EQ("/tmp/www/", str);
+}
+
+TEST(Path, relarive_path) {
+  LocationContext lc;
+  init(&lc, "./html/");
+  Locationmap mapList = {
+      {"/", lc},
+  };
+  Path p("/sample.html");
+  std::string str = p.GetFilePath(&mapList);
+  EXPECT_EQ("./html/sample.html", str);
 }
 
 // /usr/local/www/nginx/aaa/abc.html

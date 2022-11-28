@@ -27,22 +27,14 @@ void HttpProcessor::ProcessHttpRequest(
 void HttpProcessor::ProcessHttpRequestGet(
     const ParsedRequest &parsed_request,
     std::map<std::string, LocationContext> locations, HttpResponse *result) {
-  Path path;
+  Path path(parsed_request.request_path);
 
   // pathってどうやってつかうの？
-  path.SetFilePath("", parsed_request.request_path);
-  path.SetLocation(locations);
+  path.SetLocation(&locations);
 
-  // for (auto& loc : locations) {
-  //   File file(path.GetFilePath() + loc.second);
-  //   if (file.IsExist() && file.CanRead()) {
-  //     // fullPath
-  //   }
-  // }
+  std::string full_path = path.GetFilePath(&locations);
 
-  // 仮
-  std::string full_path = "./html/sample.html";
-
+  std::cout << full_path << std::endl;
   File file(full_path);
   if (file.IsExist() && file.CanRead()) {
     ReadLocalFile(file, result);

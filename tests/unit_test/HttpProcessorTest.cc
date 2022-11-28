@@ -7,7 +7,7 @@ TEST(HttpProcessor, ProcessHttpRequest) {
   std::map<std::string, LocationContext> location_contexts;
 
   LocationContext location_context;
-  location_context.root = "./html/sample.html";
+  location_context.root = "./html/";
 
   location_contexts["/"] = location_context;
 
@@ -17,7 +17,7 @@ TEST(HttpProcessor, ProcessHttpRequest) {
     ParsedRequest parsed_request;
 
     parsed_request.m = kGet;
-    parsed_request.request_path = "/";
+    parsed_request.request_path = "/sample.html";
     parsed_request.version = "HTTP/1.1";
 
     HttpProcessor::ProcessHttpRequest(parsed_request, location_contexts,

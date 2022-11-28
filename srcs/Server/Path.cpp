@@ -36,7 +36,6 @@ Path &Path::operator=(Path const &other) {
 
 Path::~Path() {}
 
-
 void Path::SetLocation(Locationmap *locs) {
   std::vector<std::string> location_vector = LocationSort(*locs);
   std::string path;
@@ -73,7 +72,7 @@ void Path::SetLocation(Locationmap *locs) {
   }
 }
 
-void Path::SetFilePath(const std::string &name, const std::string &path) {
+void Path::SetFilePath(const std::string name, const std::string path) {
   file_name_ = name;
   file_path_ = path;
 }
