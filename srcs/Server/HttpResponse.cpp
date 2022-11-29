@@ -92,18 +92,20 @@ HTTP message: https://httpwg.org/specs/rfc9112.html#message.format
                    CRLF
                    [ message-body ]
 */
-std::vector<std::string> HttpResponse::GetResponse() const {
-  std::vector<std::string> response;
+std::string HttpResponse::GetRawResponse() const {
+  std::string response;
 
-  response.push_back(this->GetStatusLine());
+  response += this->GetStatusLine();
 
   std::vector<std::string> headers = this->GetResponseHeaders();
-  response.insert(response.end(), headers.begin(), headers.end());
-
-  response.push_back(kCRLF);
+  for (std::vector<std::string>::iterator it = headers.begin();
+       it != headers.end(); it++) {
+    response += *it;
+  }
+  response += kCRLF;
 
   if (this->body_.size() > 0) {
-    response.push_back(GetBody());
+    response += GetBody();
   }
 
   return response;

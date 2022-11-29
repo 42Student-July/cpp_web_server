@@ -19,6 +19,9 @@ Header expected_full = {{"host", "hoge.com"},
                         {"accept-encoding", "gzip, deflate"},
                         {"accept-language", "ja,en-us;q=0.8,en;q=0.6"}};
 
+std::map<std::string, std::string> expected_arg = {
+    {"a", "hoge"}, {"b", "fuga"}, {"c", "piyo"}};
+
 void copy_fd(int dst, const char *src) {
   char buf[BUFFER_SIZE];
   std::string file = DIR;
