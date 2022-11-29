@@ -172,7 +172,9 @@ ReadStat ReceiveHttpRequest::ReadHttpRequest(const int &fd, ParsedRequest *pr) {
 
   if (fd_data_.s == kWaitBody) {
     pos = fd_data_.buf.find(NL);
-    fd_data_.pr.request_body = TrimByPos(&fd_data_.buf, pos, 2);
+    if (std::string::npos != pos) {
+      fd_data_.pr.request_body = TrimByPos(&fd_data_.buf, pos, 2);
+    }
   }
   *pr = fd_data_.pr;
   return kReadComplete;

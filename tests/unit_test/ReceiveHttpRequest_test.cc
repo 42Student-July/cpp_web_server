@@ -134,3 +134,14 @@ TEST(ReceiveHttpRequest, invalid_request1) {
   rs = rhr.ReadHttpRequest(fd, &pr);
   close(fd);
 }
+
+TEST(ReceiveHttpRequest, request_then_nobody) {
+  ReceiveHttpRequest rhr;
+  ParsedRequest pr;
+  ReadStat rs;
+  int fd = open("./text/ReceiveHttpRequest/ReceiveHttpRequest.txt",
+                O_RDWR | O_TRUNC);
+  copy_fd(fd, "request_then_nobody");
+  rs = rhr.ReadHttpRequest(fd, &pr);
+  close(fd);
+}
