@@ -107,6 +107,8 @@ std::pair<std::string, std::string> SplitRequestHeaderLine(
   }
   key = line.substr(0, key_pos);
   value = line.substr(val_pos + 1);
+  std::transform(key.begin(), key.end(), key.begin(), ::tolower);
+  std::transform(value.begin(), value.end(), value.begin(), ::tolower);
 
   return std::make_pair(key, value);
 }

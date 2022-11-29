@@ -2,6 +2,7 @@
 #define SRCS_SERVER_RECEIVEHTTPREQUEST_HPP_
 #include <unistd.h>
 
+#include <algorithm>
 #include <iostream>
 #include <map>
 #include <string>
