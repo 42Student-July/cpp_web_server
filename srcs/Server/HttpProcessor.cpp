@@ -29,7 +29,6 @@ void HttpProcessor::ProcessHttpRequestGet(
     std::map<std::string, LocationContext> locations, HttpResponse *result) {
   Path path(parsed_request.request_path);
 
-  // pathってどうやってつかうの？
   path.SetLocation(&locations);
 
   std::string full_path = path.GetFilePath(&locations);
