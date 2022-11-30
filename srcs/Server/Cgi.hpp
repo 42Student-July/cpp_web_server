@@ -16,10 +16,7 @@
 #include "ServerContext.hpp"
 #include "Timer.hpp"
 #include "Utils.hpp"
-// enum CgiType{
-// GET,
-// POST
-// };
+
 class Cgi : public Event {
  private:
   static const size_t kKTimeOut = 3;
@@ -31,7 +28,6 @@ class Cgi : public Event {
   std::string chunked_;
   Method method_;
 
-  // CgiType type_;
   std::string pass_;
   std::string path_info_;
   std::vector<std::string> argv_;
@@ -49,7 +45,7 @@ class Cgi : public Event {
   void ArgvToCharPtr();
   void EnvMapToCharPtr();
   void Dup2();
-  static void DelPtr(char **ptr);
+  void ReadFromCgi();
 
  public:
   Cgi(const ServerContext &context, const ParsedRequest &pr, int conn_fd);

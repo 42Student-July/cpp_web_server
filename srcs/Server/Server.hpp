@@ -40,8 +40,8 @@ class Server {
   Server();
   void DelEvent(const Event *sock, epoll_event *ev);
   void InitListenEvent(const std::vector<ServerContext> &contexts);
-  static void CgiRun(epoll_event *ev);
-  static void CgiEvent(epoll_event *ev);
+  void GenerateCgi(epoll_event *ev);
+  void ReadFromCgi(epoll_event *ev);
   void AddEventToMonitored(Event *sock, uint32_t event_flag);
 
  public:

@@ -26,3 +26,12 @@ unittest-run:
 unittest-run:
 	docker compose run unittest make unit
 
+.PHONY: nginx
+nginx:
+	docker compose up -d nginx
+.PHONY: nginx_down
+nginx_down:
+	docker compose down --rmi all
+.PHONY: webserv
+webserv:
+	docker compose up -d webserv

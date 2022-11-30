@@ -19,15 +19,10 @@ Cgi::~Cgi() {
   int status = 0;
   waitpid(chilid_process_, &status, WNOHANG);
   if (!WIFEXITED(status)) kill(chilid_process_, SIGKILL);
-  // close(pipe_out_[0]);
+  if (method_ == kPost) close(pipe_in_[1]);
+  close(pipe_out_[0]);
 }
-void Cgi::DelPtr(char **ptr) {
-  if (ptr == NULL) return;
-  for (char **tmp_ptr = ptr; *tmp_ptr != NULL; tmp_ptr++) {
-    delete[] * tmp_ptr;
-  }
-  delete[] ptr;
-}
+
 void Cgi::ParseArgv() {
   if (query_.find('=') != std::string::npos) return;
   size_t pos = 0;
@@ -118,46 +113,40 @@ void Cgi::Fork() {
 // }
 // }
 void Cgi::Dup2() {
-  // if(type_ == kGet){
-  if (dup2(pipe_out_[1], STDOUT_FILENO) == -1)
+  if (dup2(pipe_out_[1], STDOUT_FILENO) == -1) {
     throw std::runtime_error("dup2 err");
-  // }
-  // else if(type_ == kPost){
-  // if(dup2(pipe_in_[0], STDIN_FILENO) == -1)
-  // throw std::runtime_error("dup2 err");
-  // }
+  }
+  if (method_ == kPost) {
+    if (dup2(pipe_in_[0], STDIN_FILENO) == -1)
+      throw std::runtime_error("dup2 err");
+  }
 }
 void Cgi::Run() {
   Fork();
   if (chilid_process_ == 0) {
-    // if(type_ == kGet)
-    // close(pipe_out_[0]);
-    // else
-    // close(pipe_out_[1]);
+    if (method_ == kPost) close(pipe_in_[1]);
+    close(pipe_out_[0]);
     Dup2();
     execve(pass_.c_str(), argv_ptr_, env_ptr_);
-    DelPtr(env_ptr_);
-    DelPtr(argv_ptr_);
+    utils::DelPtr(env_ptr_);
+    utils::DelPtr(argv_ptr_);
     std::cout << pass_ << std::endl;
     std::cout << "sippai" << std::endl;
     exit(1);
   } else {
+    if (method_ == kPost) close(pipe_in_[0]);
     close(pipe_out_[1]);
-    DelPtr(env_ptr_);
-    DelPtr(argv_ptr_);
-    wait(NULL);
+    utils::DelPtr(env_ptr_);
+    utils::DelPtr(argv_ptr_);
+    // wait(NULL);
     while (true) {
       std::string reaad = Read();
       chunked_ += reaad;
       if (reaad.size() == 0) break;
     }
-
-    // if(type_ == kGet)
-    // close(pipe_out_[1]);
-    // else
-    // close(pipe_out_[0]);
   }
 }
+void Cgi::ReadFromCgi() {}
 std::string Cgi::GetChunked() const { return chunked_; }
 
 bool Cgi::TimeOver() const { return timer_.TimeOver(); }

@@ -60,4 +60,11 @@ std::string UIntToString(size_t num) {
   oss << num;
   return oss.str();
 }
+void DelPtr(char **ptr) {
+  if (ptr == NULL) return;
+  for (char **tmp_ptr = ptr; *tmp_ptr != NULL; tmp_ptr++) {
+    delete[] * tmp_ptr;
+  }
+  delete[] ptr;
+}
 }  // namespace utils

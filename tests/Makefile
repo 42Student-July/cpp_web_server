@@ -21,3 +21,13 @@ lint:
 .PHONY: dc-unittest
 dc-unittest:
 	@make unittest-up -C $(DOCKERPATH)
+
+
+.PHONY: nginx
+nginx:
+	@make nginx -C $(DOCKERPATH)
+.PHONY: nginx_down
+nginx_down:
+	@make nginx_down -C $(DOCKERPATH)
+.PHONY: webserv
+	@make webserv -C $(DOCKERPATH)

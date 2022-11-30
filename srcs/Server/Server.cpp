@@ -41,7 +41,7 @@ void Server::ExecEvents(epoll_event *ev) {
       ConnectingEvent(ev);
       break;
     case kCgi:
-      CgiEvent(ev);
+
       break;
   }
 }
@@ -62,13 +62,14 @@ void Server::AcceptNewConnections(epoll_event *ev) {
 void Server::ReceiveRequest(epoll_event *epo_ev) {
   Connecting *conn = dynamic_cast<Connecting *>(events_[epo_ev->data.fd]);
   conn->ReadRequest();
-  if (conn->GetEventStatus() == kWrite) {
-    epoll_.Mod(epo_ev, EPOLLOUT);
-  }
-  if (conn->GetEventStatus() == kCgi) {
-    // CgiRun(epo_ev);
-    epoll_.Mod(epo_ev, 0);
-  }
+  // if (conn->GetEventStatus() == kWrite) {
+  //   epoll_.Mod(epo_ev, EPOLLOUT);
+  // }
+  // if (conn->GetEventStatus() == kCgi) {
+  conn->GetEventStatus();
+  GenerateCgi(epo_ev);
+  epoll_.Mod(epo_ev, 0);
+  //}
 }
 void Server::AddEventToMonitored(Event *sock, uint32_t event_flag) {
   events_.insert(std::make_pair(sock->GetFd(), sock));
@@ -87,26 +88,23 @@ void Server::SendResponse(epoll_event *ev) {
   conn->SendResponse();
 }
 
-// void Server::CgiRun(epoll_event *epo_ev) {
-//   Connecting *conn = dynamic_cast<Connecting *>(events_[epo_ev->data.fd]);
-//   Event *sock =
-//       new Cgi(conn->GetContext(), conn->GetParsedRequest(), epo_ev->data.fd);
-//   // Events_.insert(std::make_pair(sock->GetFd(),sock));
-//   // epoll_event new_ev = Epoll::Create(sock->GetFd(), EPOLLIN);
-//   // epoll_.Mod(ev, 0);
-//   (void)ev;
-//   // Cgi *cgi = new Cgi(event->GetContext(), event->GetParsedRequest(),
-//   kGet);
-//   // cgi->Run();
-//   // std::cout << cgi->GetChunked() << std::endl;
-//   // delete cgi;
-//   // event->SetEventStatus(kDel);
-// }
-void Server::CgiEvent(epoll_event *ev) {
-  (void)ev;
-  // Cgi *sock = dynamic_cast<Cgi *>(events_[ev->data.fd]);
-  // sock->SetChunked(sock->Read());
-  // 無限にプリント　→　時間でタイムアウト
-  // 無限ループ　→　read byteが0だったらキルする
-  // cgi読み込み終了したらcgi呼び出したEventのepoll writeに変更
+void Server::GenerateCgi(epoll_event *epo_ev) {
+  Connecting *conn = dynamic_cast<Connecting *>(events_[epo_ev->data.fd]);
+  Event *sock =
+      new Cgi(conn->GetContext(), conn->GetParsedRequest(), epo_ev->data.fd);
+  AddEventToMonitored(sock, EPOLLIN);
+  dynamic_cast<Cgi *>(sock)->Run();
+  // file statusで返す
+  // std::cout << cgi->GetChunked() << std::endl;
+  // delete cgi;
+  // event->SetEventStatus(kDel);
 }
+// void Server::ReadFromCgi(epoll_event *ev) {
+//   Cgi *cgi = dynamic_cast<Cgi *>(events_[ev->data.fd]);
+//   if (cgi->TimeOver()) {
+//     cgi->SetEventStatus(kDel);
+//     // response ni error message tuika
+//     return;
+//   }
+//   cgi->re
+// }

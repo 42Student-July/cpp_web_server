@@ -18,7 +18,7 @@ std::vector<std::string> SplitWithMultipleSpecifier(
 
 char *StrToCharPtr(const std::string &str);
 std::string UIntToString(size_t num);
-
+void DelPtr(char **ptr);
 }  // namespace utils
 
 #endif  // SRCS_UTILS_UTILS_HPP_
