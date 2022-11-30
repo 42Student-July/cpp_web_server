@@ -4,20 +4,20 @@
 #include <gtest/gtest.h>
 #define DIR "./text/ReceiveHttpRequest/"
 
-Header expected_full = {{"Host", "hoge.com"},
-                        {"Connection", "keep-alive"},
-                        {"Content-Length", "38"},
-                        {"Cache-Control", "max-age=0"},
-                        {"Origin", "http://hoge.com"},
-                        {"Upgrade-Insecure-Requests", "1"},
-                        {"User-Agent", "hoge"},
-                        {"Content-Type", "application/x-www-form-urlencoded"},
-                        {"Accept",
+Header expected_full = {{"host", "hoge.com"},
+                        {"connection", "keep-alive"},
+                        {"content-length", "38"},
+                        {"cache-control", "max-age=0"},
+                        {"origin", "http://hoge.com"},
+                        {"upgrade-insecure-requests", "1"},
+                        {"user-agent", "hoge"},
+                        {"content-type", "application/x-www-form-urlencoded"},
+                        {"accept",
                          "text/html,application/xhtml+xml,application/"
                          "xml;q=0.9,image/webp,image/apng,*/*;q=0.8"},
-                        {"Referer", "http://hoge.com/index.html"},
-                        {"Accept-Encoding", "gzip, deflate"},
-                        {"Accept-Language", "ja,en-US;q=0.8,en;q=0.6"}};
+                        {"referer", "http://hoge.com/index.html"},
+                        {"accept-encoding", "gzip, deflate"},
+                        {"accept-language", "ja,en-us;q=0.8,en;q=0.6"}};
 
 std::map<std::string, std::string> expected_arg = {
     {"a", "hoge"}, {"b", "fuga"}, {"c", "piyo"}};
@@ -134,6 +134,17 @@ TEST(ReceiveHttpRequest, invalid_request1) {
   int fd = open("./text/ReceiveHttpRequest/ReceiveHttpRequest.txt",
                 O_RDWR | O_TRUNC);
   copy_fd(fd, "invalidrequest1");
+  rs = rhr.ReadHttpRequest(fd, &pr);
+  close(fd);
+}
+
+TEST(ReceiveHttpRequest, request_then_nobody) {
+  ReceiveHttpRequest rhr;
+  ParsedRequest pr;
+  ReadStat rs;
+  int fd = open("./text/ReceiveHttpRequest/ReceiveHttpRequest.txt",
+                O_RDWR | O_TRUNC);
+  copy_fd(fd, "request_then_nobody");
   rs = rhr.ReadHttpRequest(fd, &pr);
   close(fd);
 }
