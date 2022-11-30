@@ -62,14 +62,14 @@ void Server::AcceptNewConnections(epoll_event *ev) {
 void Server::ReceiveRequest(epoll_event *epo_ev) {
   Connecting *conn = dynamic_cast<Connecting *>(events_[epo_ev->data.fd]);
   conn->ReadRequest();
-  // if (conn->GetEventStatus() == kWrite) {
-  //   epoll_.Mod(epo_ev, EPOLLOUT);
-  // }
+  if (conn->GetEventStatus() == kWrite) {
+    epoll_.Mod(epo_ev, EPOLLOUT);
+  }
   // if (conn->GetEventStatus() == kCgi) {
-  conn->GetEventStatus();
-  GenerateCgi(epo_ev);
-  epoll_.Mod(epo_ev, 0);
-  //}
+  //   conn->GetEventStatus();
+  //   GenerateCgi(epo_ev);
+  //   epoll_.Mod(epo_ev, 0);
+  // }
 }
 void Server::AddEventToMonitored(Event *sock, uint32_t event_flag) {
   events_.insert(std::make_pair(sock->GetFd(), sock));
