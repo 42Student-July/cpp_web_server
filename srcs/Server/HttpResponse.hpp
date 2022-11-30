@@ -1,5 +1,6 @@
 #ifndef SRCS_SERVER_HTTPRESPONSE_HPP_
 #define SRCS_SERVER_HTTPRESPONSE_HPP_
+
 #include <map>
 #include <string>
 #include <utility>

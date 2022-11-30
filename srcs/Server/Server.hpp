@@ -15,13 +15,14 @@
 #include "Connecting.hpp"
 #include "Epoll.hpp"
 #include "Event.hpp"
+#include "HttpProcessor.hpp"
 #include "HttpResponse.hpp"
 #include "Listen.hpp"
 #include "ListenEvent.hpp"
 #include "Parser.hpp"
 #include "ReceiveHttpRequest.hpp"
-#include "Result.hpp"
 #include "ServerContext.hpp"
+
 class Server {
  private:
   static const int kNotDoneYet = -1;
@@ -39,8 +40,8 @@ class Server {
   Server();
   void DelEvent(const Event *sock, epoll_event *ev);
   void InitListenEvent(const std::vector<ServerContext> &contexts);
-  static void CgiRun(epoll_event *ev);
-  static void CgiEvent(epoll_event *ev);
+  void GenerateCgi(epoll_event *ev);
+  void ReadFromCgi(epoll_event *ev);
   void AddEventToMonitored(Event *sock, uint32_t event_flag);
 
  public:

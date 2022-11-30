@@ -23,8 +23,7 @@ void Server::DelEvent(const Event *sock, epoll_event *ev) {
 
 void Server::Run() {
   while (true) {
-    int num_event = epoll_.Wait();
-    for (int i = 0; i < num_event; i++) {
+    for (int i = 0; i < epoll_.Wait(); i++) {
       epoll_event ev = epoll_.FindEvent(i);
       ExecEvents(&ev);
       if (events_[ev.data.fd]->GetEventStatus() == kDel)
@@ -42,7 +41,7 @@ void Server::ExecEvents(epoll_event *ev) {
       ConnectingEvent(ev);
       break;
     case kCgi:
-      CgiEvent(ev);
+
       break;
   }
 }
@@ -61,14 +60,16 @@ void Server::AcceptNewConnections(epoll_event *ev) {
   AddEventToMonitored(connsock, EPOLLIN);
 }
 void Server::ReceiveRequest(epoll_event *epo_ev) {
-  // Connecting *event = dynamic_cast<Connecting *>(events_[epo_ev->data.fd]);
-  // read_stat stat = event->ReadRequest();
-  // if(stat == )
-  // read_stat st = receive_request_.ReadHttpRequest(sock->GetFd(),&pr);
-  // sock->SetParsedRequest(pr);
-  // if(st == )
-  (void)this->events_;
-  (void)epo_ev;
+  Connecting *conn = dynamic_cast<Connecting *>(events_[epo_ev->data.fd]);
+  conn->ReadRequest();
+  // if (conn->GetEventStatus() == kWrite) {
+  //   epoll_.Mod(epo_ev, EPOLLOUT);
+  // }
+  // if (conn->GetEventStatus() == kCgi) {
+  conn->GetEventStatus();
+  GenerateCgi(epo_ev);
+  epoll_.Mod(epo_ev, 0);
+  //}
 }
 void Server::AddEventToMonitored(Event *sock, uint32_t event_flag) {
   events_.insert(std::make_pair(sock->GetFd(), sock));
@@ -77,45 +78,33 @@ void Server::AddEventToMonitored(Event *sock, uint32_t event_flag) {
 }
 
 void Server::SendResponse(epoll_event *ev) {
-  int status = 0;
-  response_[ev->data.fd];
-  HttpResponse http_response;
-  http_response.SetHttpResponse200();
-  response_[ev->data.fd] = http_response.GetRawResponse();
-  if ((status = WriteToClientFd(ev->data.fd)) == kNotDoneYet) {
-    (void)status;
-    return;
+  Connecting *conn = dynamic_cast<Connecting *>(events_[ev->data.fd]);
+  if (conn->GetEventStatus() == kWrite) {
+    HttpResponse response;
+    HttpProcessor::ProcessHttpRequest(conn->GetParsedRequest(),
+                                      conn->GetContext().locations, &response);
+    conn->SetSender(response.GetRawResponse());
   }
-  response_.erase(ev->data.fd);
-  epoll_.Del(ev);
-  close(ev->data.fd);
+  conn->SendResponse();
 }
 
-void Server::CgiRun(epoll_event *ev) {
-  // Event *sock = new Cgi(fd[1]);
-  // Events_.insert(std::make_pair(sock->GetFd(),sock));
-  // epoll_event new_ev = Epoll::Create(sock->GetFd(), EPOLLIN);
-  // epoll_.Mod(ev, 0);
-  (void)ev;
+void Server::GenerateCgi(epoll_event *epo_ev) {
+  Connecting *conn = dynamic_cast<Connecting *>(events_[epo_ev->data.fd]);
+  Event *sock =
+      new Cgi(conn->GetContext(), conn->GetParsedRequest(), epo_ev->data.fd);
+  AddEventToMonitored(sock, EPOLLIN);
+  dynamic_cast<Cgi *>(sock)->Run();
+  // file statusで返す
+  // std::cout << cgi->GetChunked() << std::endl;
+  // delete cgi;
+  // event->SetEventStatus(kDel);
 }
-void Server::CgiEvent(epoll_event *ev) {
-  (void)ev;
-  // Cgi *sock = dynamic_cast<Cgi *>(events_[ev->data.fd]);
-  // sock->SetChunked(sock->Read());
-  // 無限にプリント　→　時間でタイムアウト
-  // 無限ループ　→　read byteが0だったらキルする
-  // cgi読み込み終了したらcgi呼び出したEventのepoll writeに変更
-}
-
-// [TODO] 書き込みがすべて完了しなかった場合に再度書き込む方法
-
-int Server::WriteToClientFd(const int conn) {
-  const int fd = conn;
-  ssize_t written_size =
-      write(conn, response_[fd].c_str(), response_[fd].size());
-  if (written_size == kNotDoneYet) {
-    return kNotDoneYet;
-  }
-  response_[fd].erase(response_[fd].begin());
-  return 0;
-}
+// void Server::ReadFromCgi(epoll_event *ev) {
+//   Cgi *cgi = dynamic_cast<Cgi *>(events_[ev->data.fd]);
+//   if (cgi->TimeOver()) {
+//     cgi->SetEventStatus(kDel);
+//     // response ni error message tuika
+//     return;
+//   }
+//   cgi->re
+// }

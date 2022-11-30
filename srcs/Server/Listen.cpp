@@ -1,49 +1,28 @@
 #include "Listen.hpp"
+
 Listen::Listen() {}
-Listen::Listen(const std::string &host, const std::string &port) : port_(port) {
-  if (host.empty())
-    host_ = "localhost";
-  else
-    host_ = host;
+Listen::Listen(const std::string &host, const std::string &port)
+    : host_(host), port_(port) {
   InitSockAddr();
 }
 void Listen::InitSockAddr() {
-  memset(&hint_, 0, sizeof(addrinfo));
-  hint_.ai_family = AF_INET;
-  hint_.ai_socktype = SOCK_STREAM;
-  int res = getaddrinfo(host_.c_str(), port_.c_str(), &hint_, &address_);
-  if (res != 0) throw std::runtime_error("getaddrinfo err");
+  memset(&addr_, 0, sizeof(struct sockaddr_in));
+  addr_.sin_family = AF_INET;
+  addr_.sin_port = htons((unsigned short)utils::Atoi(port_));  // to big endian
 }
 Listen::~Listen() {}
 
 int Listen::GenerateConnectableFd() {
-  int listen_fd = 0;
-  addrinfo *current = NULL;
-  for (current = address_; current != NULL; current = current->ai_next) {
-    listen_fd =
-        socket(current->ai_family, current->ai_socktype, current->ai_protocol);
-    if (listen_fd == -1) continue;
-    if (bind(listen_fd, current->ai_addr, address_->ai_addrlen) != 0) break;
-    close(listen_fd);
+  int listen_fd = socket(addr_.sin_family, SOCK_STREAM, 0);
+  if (listen_fd == -1) throw std::runtime_error("socket  err");
+  if (!host_.empty()) {
+    addr_.sin_addr.s_addr = inet_addr(host_.c_str());
   }
-  freeaddrinfo(address_);
-  if (current == NULL) throw std::runtime_error("socket bind err");
+  if (bind(listen_fd, (const sockaddr *)&addr_, sizeof(addr_)) == -1) {
+    throw std::runtime_error("bind err");
+  }
   if (listen(listen_fd, kListenMax) == -1) {
     throw std::runtime_error("listen err");
   }
   return listen_fd;
 }
-
-// int Listen::AcceptFd() const {
-//   sockaddr_storage client_addr;
-//   char hostname[max_line], client_port[max_line];
-//   socklen_t client_len = sizeof(sockaddr_storage);
-//   int connfd = accept4(listen_fd_, reinterpret_cast<SA *>(&client_addr),
-//                        &client_len, SOCK_NONBLOCK);
-//   getnameinfo(reinterpret_cast<SA *>(&client_addr), client_len, hostname,
-//               max_line, client_port, max_line, 0);
-//   std::cout << "accepted connection from (" << hostname << ", " <<
-//   client_port
-//             << ")" << std::endl;
-//   return connfd;
-//}

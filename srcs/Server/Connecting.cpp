@@ -1,13 +1,18 @@
 #include "Connecting.hpp"
 Connecting::Connecting(const int fd, const ServerContext& context)
-    : Event(fd, context, kConnecting) {}
+    : Event(fd, context, kConnecting) {
+  SetEventStatus(kRead);
+}
 Connecting::~Connecting() {}
 
 ParsedRequest Connecting::GetParsedRequest() const { return pr_; }
 void Connecting::SetParsedRequest(const ParsedRequest& pr) { pr_ = pr; }
 
-ReadStat Connecting::ReadRequest() {
-  return (hr_.ReadHttpRequest(GetFd(), &pr_));
+void Connecting::ReadRequest() {
+  ReadStat stat = hr_.ReadHttpRequest(GetFd(), &pr_);
+  if (stat == kReadComplete) {
+    SetEventStatus(kWrite);
+  }
 }
 
 void Connecting::SetSender(const std::string& response) {
@@ -15,3 +20,12 @@ void Connecting::SetSender(const std::string& response) {
 }
 
 const Sender& Connecting::GetSender() const { return sender_; }
+
+void Connecting::SendResponse() {
+  sender_.Send(GetFd());
+  if (!sender_.HasMoreToSend()) {
+    SetEventStatus(kDel);
+  } else {
+    SetEventStatus(kAginWrite);
+  }
+}

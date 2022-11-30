@@ -5,7 +5,7 @@ services:
       context: ../../
       dockerfile: ./tests/docker/nginx/Dockerfile
     ports:
-      - 8080:80
+      - 8082:8082
   webserv:
     build:
       context: ../../

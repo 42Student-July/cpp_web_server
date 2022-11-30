@@ -44,6 +44,13 @@ unit:
 	make unittest -C $(TESTSPATH)
 	make fclean
 
+nginx_up:
+	make nginx -C $(TESTSPATH)
+
+nginx_down:
+	make nginx_down -C $(TESTSPATH)
+test_compose_down: fclean
+	make down -C ./tests/docker
 .PHONY: all fclean clean re bonus integration unit
 
 -include $(DEPS)

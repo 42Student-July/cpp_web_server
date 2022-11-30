@@ -1,32 +1,28 @@
 #include "Cgi.hpp"
-Cgi::Cgi(const ServerContext &context, const ParsedRequest &pr, Method m)
-    : Event(-1, context, kCgi), method_(m) {
+Cgi::Cgi(const ServerContext &context, const ParsedRequest &pr, int conn_fd)
+    : Event(-1, context, kCgi),
+      timer_(kKTimeOut),
+      conn_fd_(conn_fd),
+      method_(pr.m) {
   // set up
   (void)pr;
+  pass_ = "./www/cgi-bin/env.cgi";
   ParseArgv();
   ArgvToCharPtr();
   SetEnv();
   EnvMapToCharPtr();
-  // post
-  // if(type == kPost)
-  // PipeIn();
-  // else{
   PipeOut();
-  // }
+  if (method_ == kPost) PipeIn();
   Reset(pipe_out_[0]);  // fd hennkou
 }
 Cgi::~Cgi() {
   int status = 0;
   waitpid(chilid_process_, &status, WNOHANG);
   if (!WIFEXITED(status)) kill(chilid_process_, SIGKILL);
+  if (method_ == kPost) close(pipe_in_[1]);
   close(pipe_out_[0]);
 }
-void Cgi::DelPtr(char **ptr) {
-  for (char **tmp_ptr = ptr; *tmp_ptr != NULL; tmp_ptr++) {
-    delete[] * tmp_ptr;
-  }
-  delete[] ptr;
-}
+
 void Cgi::ParseArgv() {
   if (query_.find('=') != std::string::npos) return;
   size_t pos = 0;
@@ -75,6 +71,7 @@ void Cgi::SetEnv() {
 
   /// env_map_["path"] = "PATH=/usr/bin/perl";
 }
+
 void Cgi::ArgvToCharPtr() {
   if (argv_.size() == 0) {
     argv_ptr_ = NULL;
@@ -82,9 +79,7 @@ void Cgi::ArgvToCharPtr() {
   }
   argv_ptr_ = new char *[argv_.size() + 1];
   for (size_t i = 0; i < argv_.size(); i++) {
-    argv_ptr_[i] = new char[argv_[i].size() + 1];
-    //     strcpy(argv_ptr_[i], argv_[i].c_str());
-    memmove(argv_ptr_[i], argv_[i].c_str(), argv_[i].size() + 1);
+    argv_ptr_[i] = utils::StrToCharPtr(argv_[i]);
   }
   argv_ptr_[argv_.size()] = NULL;
 }
@@ -92,8 +87,7 @@ void Cgi::EnvMapToCharPtr() {
   env_ptr_ = new char *[env_map_.size() + 1];
   std::map<std::string, std::string>::iterator it = env_map_.begin();
   for (size_t i = 0; it != env_map_.end(); i++, it++) {
-    env_ptr_[i] = new char[it->second.size() + 1];
-    memmove(env_ptr_[i], it->second.c_str(), it->second.size() + 1);
+    env_ptr_[i] = utils::StrToCharPtr(it->second);
   }
   env_ptr_[env_map_.size()] = NULL;
 }
@@ -119,39 +113,43 @@ void Cgi::Fork() {
 // }
 // }
 void Cgi::Dup2() {
-  // if(type_ == kGet){
-  if (dup2(pipe_out_[1], STDOUT_FILENO) == -1)
+  if (dup2(pipe_out_[1], STDOUT_FILENO) == -1) {
     throw std::runtime_error("dup2 err");
-  // }
-  // else if(type_ == kPost){
-  // if(dup2(pipe_in_[0], STDIN_FILENO) == -1)
-  // throw std::runtime_error("dup2 err");
-  // }
+  }
+  if (method_ == kPost) {
+    if (dup2(pipe_in_[0], STDIN_FILENO) == -1)
+      throw std::runtime_error("dup2 err");
+  }
 }
 void Cgi::Run() {
   Fork();
   if (chilid_process_ == 0) {
-    // if(type_ == kGet)
-    // close(pipe_out_[0]);
-    // else
-    close(pipe_out_[1]);
+    if (method_ == kPost) close(pipe_in_[1]);
+    close(pipe_out_[0]);
     Dup2();
     execve(pass_.c_str(), argv_ptr_, env_ptr_);
-    DelPtr(env_ptr_);
-    DelPtr(argv_ptr_);
+    utils::DelPtr(env_ptr_);
+    utils::DelPtr(argv_ptr_);
     std::cout << pass_ << std::endl;
     std::cout << "sippai" << std::endl;
     exit(1);
   } else {
-    DelPtr(env_ptr_);
-    DelPtr(argv_ptr_);
-    // if(type_ == kGet)
-    // close(pipe_out_[1]);
-    // else
-    // close(pipe_out_[0]);
+    if (method_ == kPost) close(pipe_in_[0]);
+    close(pipe_out_[1]);
+    utils::DelPtr(env_ptr_);
+    utils::DelPtr(argv_ptr_);
+    // wait(NULL);
+    while (true) {
+      std::string reaad = Read();
+      chunked_ += reaad;
+      if (reaad.size() == 0) break;
+    }
   }
 }
+void Cgi::ReadFromCgi() {}
+std::string Cgi::GetChunked() const { return chunked_; }
 
+bool Cgi::TimeOver() const { return timer_.TimeOver(); }
 // search?
 // q=cgi+%2B+%26+引数
 // &ei=OShvY7TfJ9Tw-QaMpLXYBQ

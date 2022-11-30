@@ -52,7 +52,7 @@ LocationContext Parser::MakeLocationDirectives() {
   return lc;
 }
 void Parser::StoreListen(ServerContext *sc) {
-  if (!sc->listen.first.empty() || !sc->listen.first.empty())
+  if (!sc->listen.first.empty() || !sc->listen.second.empty())
     throw ConfigErrException("listen directive duplicate", tkns_.Current());
   tkns_.Next();
   sc->listen.first = ParseHost(tkns_.Current());

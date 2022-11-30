@@ -1,7 +1,10 @@
 #include "Event.hpp"
 Event::Event(const int fd, const ServerContext& context, const EventType type)
     : Fd(fd), context_(context), type_(type) {}
-Event::~Event() { Close(); }
+Event::~Event() {
+  std::cout << "destructor event" << std::endl;
+  Close();
+}
 void Event::SetEventStatus(EventStatus status) { status_ = status; }
 int Event::GetEventStatus() const { return status_; }
 int Event::GetEventType() const { return type_; }

@@ -1,5 +1,6 @@
 #ifndef SRCS_SERVER_LISTEN_HPP_
 #define SRCS_SERVER_LISTEN_HPP_
+#include <arpa/inet.h>
 #include <netdb.h>
 #include <string.h>
 #include <sys/socket.h>
@@ -13,13 +14,12 @@
 
 #include "Epoll.hpp"
 #include "Fd.hpp"
-#include "Result.hpp"
 #include "ServerContext.hpp"
+#include "Utils.hpp"
 class Listen {
  private:
   static const int kListenMax = 1024;
-  struct addrinfo hint_;
-  struct addrinfo *address_;
+  struct sockaddr_in addr_;
   std::string host_;
   std::string port_;
   void InitSockAddr();

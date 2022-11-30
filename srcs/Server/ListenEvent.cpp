@@ -7,5 +7,6 @@ ListenEvent::~ListenEvent() {}
 int ListenEvent::Accept() {
   int conn = accept(GetFd(), NULL, NULL);
   if (conn == -1) throw std::runtime_error("accept");
+  std::cout << "new connecting: " << conn << std::endl;
   return conn;
 }

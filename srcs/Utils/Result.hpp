@@ -1,4 +1,0 @@
-#ifndef SRCS_UTILS_RESULT_HPP_
-#define SRCS_UTILS_RESULT_HPP_
-
-#endif  // SRCS_UTILS_RESULT_HPP_

@@ -14,19 +14,20 @@
 #include "Event.hpp"
 #include "ReceiveHttpRequest.hpp"
 #include "ServerContext.hpp"
-// enum CgiType{
-// GET,
-// POST
-// };
+#include "Timer.hpp"
+#include "Utils.hpp"
+
 class Cgi : public Event {
  private:
+  static const size_t kKTimeOut = 3;
+  Timer timer_;
   int pipe_out_[2];
   int pipe_in_[2];
+  int conn_fd_;
   pid_t child_process_;
   std::string chunked_;
   Method method_;
 
-  // CgiType type_;
   std::string pass_;
   std::string path_info_;
   std::vector<std::string> argv_;
@@ -44,10 +45,10 @@ class Cgi : public Event {
   void ArgvToCharPtr();
   void EnvMapToCharPtr();
   void Dup2();
-  static void DelPtr(char **ptr);
+  void ReadFromCgi();
 
  public:
-  Cgi(const ServerContext &context, const ParsedRequest &pr, Method m);
+  Cgi(const ServerContext &context, const ParsedRequest &pr, int conn_fd);
   ~Cgi();
   void Run();
   int GetOutFd() const;
@@ -55,5 +56,6 @@ class Cgi : public Event {
   void End();
   std::string GetChunked() const;
   void SetChunked(const std::string &str);
+  bool TimeOver() const;
 };
 #endif  // SRCS_SERVER_CGI_HPP_

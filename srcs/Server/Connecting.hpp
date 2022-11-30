@@ -4,10 +4,10 @@
 #include <string>
 
 #include "Event.hpp"
+#include "HttpResponse.hpp"
 #include "Path.hpp"
 #include "ReceiveHttpRequest.hpp"
 #include "Sender.hpp"
-
 class Connecting : public Event {
  private:
   ReceiveHttpRequest hr_;
@@ -20,8 +20,9 @@ class Connecting : public Event {
   ~Connecting();
   ParsedRequest GetParsedRequest() const;
   void SetParsedRequest(const ParsedRequest& pr);
-  void SetSender(const std::string& response);
+  void ReadRequest();
+  void SendResponse();
   const Sender& GetSender() const;
-  ReadStat ReadRequest();
+  void SetSender(const std::string& response);
 };
 #endif  // SRCS_SERVER_CONNECTING_HPP_

@@ -48,10 +48,23 @@ std::vector<std::string> SplitWithMultipleSpecifier(
   return elements;
 }
 
+char *StrToCharPtr(const std::string &str) {
+  char *ptr = new char[str.size() + 1];
+  memmove(ptr, str.c_str(), str.size() + 1);
+  return ptr;
+}
+
 std::string UIntToString(size_t num) {
   std::ostringstream oss;
 
   oss << num;
   return oss.str();
+}
+void DelPtr(char **ptr) {
+  if (ptr == NULL) return;
+  for (char **tmp_ptr = ptr; *tmp_ptr != NULL; tmp_ptr++) {
+    delete[] * tmp_ptr;
+  }
+  delete[] ptr;
 }
 }  // namespace utils

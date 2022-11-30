@@ -1,12 +1,12 @@
 #ifndef SRCS_SERVER_EVENT_HPP_
 #define SRCS_SERVER_EVENT_HPP_
-
+#include <iostream>
 #include <string>
 
 #include "Fd.hpp"
 #include "ServerContext.hpp"
 enum EventType { kListen, kConnecting, kCgi };
-enum EventStatus { kRead, kWrite, kWait, kDel };
+enum EventStatus { kRead, kWrite, kAginWrite, kWait, kDel };
 class Event : public Fd {
  private:
   ServerContext context_;
