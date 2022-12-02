@@ -27,13 +27,14 @@ void HttpProcessor::ProcessHttpRequest(
 void HttpProcessor::ProcessHttpRequestGet(
     const ParsedRequest &parsed_request,
     std::map<std::string, LocationContext> locations, HttpResponse *result) {
-  Path path(parsed_request.request_path);
+  LocationPair selected_location_context =
+      Path::FindBestLocation(locations, parsed_request.request_path);
 
-  path.SetLocation(&locations);
-
-  std::string full_path = path.GetFilePath(&locations);
+  std::string full_path = Path::GetAliasPath(selected_location_context,
+                                             parsed_request.request_path);
 
   std::cout << full_path << std::endl;
+  selected_location_context.second.root += parsed_request.request_path;
   File file(full_path);
   if (file.IsExist() && file.CanRead()) {
     ReadLocalFile(file, result);
