@@ -55,6 +55,7 @@ struct HttpRequestData {
   std::string request_line;
   std::string request_header;
   std::string message_body;
+  bool is_chunked;
   struct ParsedRequest pr;
 };
 
