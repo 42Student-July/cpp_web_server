@@ -119,3 +119,10 @@ void HttpResponse::SetHttpResponse200() {
 }
 
 HttpResponse::~HttpResponse() {}
+
+void HttpResponse::SetHttpResponse(int status_code, std::string const &body) {
+  this->SetStatusCode(status_code);
+  this->SetBody(body);
+  this->SetHeader("Content-Type", "text/html");
+  this->SetHeader("Content-Length", this->GetBody().size());
+}
