@@ -43,24 +43,21 @@ void HttpProcessor::ProcessHttpRequestGet(
 
   // fileがfileの場合
   if (file.IsFile()) {
-    if (file.CanRead()) {
-      ReadLocalFile(file, result);
-      return;
-    } else {
+    if (!file.CanRead()) {
       result->SetStatusCode(403);
       return;
     }
+    ReadLocalFile(file, result);
+    return;
   }
 
   // fileがdirectoryの場合
   if (file.IsDir()) {
     if (selected_location_context.second.auto_index == "on") {
-      // return autoindex file
-      return;
-    } else {
-      ReadIndexFile(full_path, selected_location_context.second, result);
       return;
     }
+    ReadIndexFile(full_path, selected_location_context.second, result);
+    return;
   }
 }
 
