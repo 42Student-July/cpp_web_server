@@ -9,7 +9,8 @@ int main(int ac, char **av) {
     lexer.Tokenize();
     Parser parser(lexer);
     parser.Parse();
-    Server server(parser.ConfigSetting());
+
+    Server server(ServerContext::ToMap(parser.GetConfig()));
     server.Run();
   } catch (std::runtime_error &e) {
     std::cout << e.what() << std::endl;

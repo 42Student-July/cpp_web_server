@@ -35,7 +35,7 @@ class Parser {
   explicit Parser(const Lexer &lexer);
   ~Parser();
   void Parse();
-  const std::vector<ServerContext> &ConfigSetting() const;
+  const std::vector<ServerContext> &GetConfig() const;
 
  private:
   void StoreServDirectives();

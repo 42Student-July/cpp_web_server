@@ -1,0 +1,3 @@
+#ifndef SRCS_SERVER_GET_HPP_
+#define SRCS_SERVER_GET_HPP_
+#endif  // SRCS_SERVER_GET_HPP_

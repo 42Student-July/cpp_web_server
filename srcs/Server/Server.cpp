@@ -1,110 +1,65 @@
 #include "Server.hpp"
-Server::Server(const std::vector<ServerContext> &contexts) {
-  InitListenEvent(contexts);
-}
+Server::Server(const ContextMap &contexts) { InitListen(contexts); }
 Server::~Server() {
-  for (; events_.begin() != events_.end();) {
-    DelEvent(events_.begin()->second, NULL);
+  for (std::map<int, Event *>::iterator it = event_map_.begin();
+       it != event_map_.end(); it++) {
+    delete it->second;
   }
 }
-void Server::InitListenEvent(const std::vector<ServerContext> &contexts) {
-  for (size_t i = 0; i < contexts.size(); i++) {
-    Listen listen(contexts[i].GetHost(), contexts[i].GetPort());
+void Server::InitListen(const ContextMap &contexts) {
+  ContextMap::const_iterator it = contexts.begin();
+  for (; it != contexts.end(); it++) {
+    Listen listen(it->first.first, it->first.second);
     const int fd = listen.GenerateConnectableFd();
-    Event *sock = new ListenEvent(fd, contexts[i]);
-    AddEventToMonitored(sock, EPOLLIN);
+    Event *event = new ListenToClient(fd, it->second);
+    AddEventToMonitored(fd, event, EPOLLIN);
   }
 }
-void Server::DelEvent(const Event *sock, epoll_event *ev) {
-  if (ev != 0) epoll_.Del(ev);
-  events_.erase(sock->GetFd());
-  delete sock;
+void Server::AddEventToMonitored(const int fd, Event *event,
+                                 uint32_t event_flag) {
+  event_map_.insert(std::make_pair(fd, event));
+  epoll_event new_ev = Epoll::Create(fd, event_flag);
+  new_ev.data.fd = fd;
+  epoll_.Add(fd, &new_ev);
 }
-
+void Server::AddEventToMonitored(const int fd, Event *event,
+                                 epoll_event *new_ev) {
+  event_map_.insert(std::make_pair(fd, event));
+  epoll_.Add(fd, new_ev);
+}
 void Server::Run() {
   while (true) {
-    for (int i = 0; i < epoll_.Wait(); i++) {
-      epoll_event ev = epoll_.FindEvent(i);
-      ExecEvents(&ev);
-      if (events_[ev.data.fd]->GetEventStatus() == kDel)
-        DelEvent(events_[ev.data.fd], &ev);
+    int ready = epoll_.Wait();
+    for (int i = 0; i < ready; i++) {
+      epoll_event epoll = epoll_.Find(i);
+      Event *event =
+          event_map_[epoll.data.fd];  // static_cast<Event *>(epoll.data.ptr);
+      event->Do();
+      event->Handle(&epoll_);
+      RegisterNewEvent(event);
+      NextEvent(event, &epoll);
     }
   }
 }
 
-void Server::ExecEvents(epoll_event *ev) {
-  switch (events_[ev->data.fd]->GetEventType()) {
-    case kListen:
-      AcceptNewConnections(ev);
-      break;
-    case kConnecting:
-      ConnectingEvent(ev);
-      break;
-    case kCgi:
-
-      break;
-  }
+void Server::RegisterNewEvent(Event *event) {
+  // ここの返り値はもう少し考える
+  std::pair<Event *, epoll_event> new_event = event->PublishNewEvent();
+  if (new_event.first == NULL) return;
+  AddEventToMonitored(new_event.second.data.fd, new_event.first,
+                      &(new_event.second));
 }
 
-void Server::ConnectingEvent(epoll_event *ev) {
-  if ((ev->events & EPOLLIN) != 0u) {
-    ReceiveRequest(ev);
-  } else if ((ev->events & EPOLLOUT) != 0u) {
-    SendResponse(ev);
+void Server::NextEvent(Event *event, epoll_event *epoll) {
+  Event *next_event = event->NextEvent();
+  if (next_event != NULL) {
+    event_map_[epoll->data.fd] = next_event;
+    delete event;
+  } else if (Event::IsDelete(event->State())) {
+    event_map_.erase(epoll->data.fd);
+    epoll_.Del(epoll->data.fd, epoll);
+    delete event;
+    // レスポンスを返し終える　cgi read読み切る　cgi write終わる
+    // epollから監視対象外す
   }
 }
-void Server::AcceptNewConnections(epoll_event *ev) {
-  ListenEvent *sock = dynamic_cast<ListenEvent *>(events_[ev->data.fd]);
-  int conn_fd = sock->Accept();
-  Event *connsock = new Connecting(conn_fd, sock->GetContext());
-  AddEventToMonitored(connsock, EPOLLIN);
-}
-void Server::ReceiveRequest(epoll_event *epo_ev) {
-  Connecting *conn = dynamic_cast<Connecting *>(events_[epo_ev->data.fd]);
-  conn->ReadRequest();
-  if (conn->GetEventStatus() == kWrite) {
-    epoll_.Mod(epo_ev, EPOLLOUT);
-  }
-  // if (conn->GetEventStatus() == kCgi) {
-  // conn->GetEventStatus();
-  // GenerateCgi(epo_ev);
-  // epoll_.Mod(epo_ev, 0);
-  //}
-}
-void Server::AddEventToMonitored(Event *sock, uint32_t event_flag) {
-  events_.insert(std::make_pair(sock->GetFd(), sock));
-  epoll_event new_ev = Epoll::Create(sock->GetFd(), event_flag);
-  epoll_.Add(&new_ev);
-}
-
-void Server::SendResponse(epoll_event *ev) {
-  Connecting *conn = dynamic_cast<Connecting *>(events_[ev->data.fd]);
-  if (conn->GetEventStatus() == kWrite) {
-    HttpResponse response;
-    HttpProcessor::ProcessHttpRequest(conn->GetParsedRequest(),
-                                      conn->GetContext().locations, &response);
-    conn->SetSender(response.GetRawResponse());
-  }
-  conn->SendResponse();
-}
-
-void Server::GenerateCgi(epoll_event *epo_ev) {
-  Connecting *conn = dynamic_cast<Connecting *>(events_[epo_ev->data.fd]);
-  Event *sock =
-      new Cgi(conn->GetContext(), conn->GetParsedRequest(), epo_ev->data.fd);
-  AddEventToMonitored(sock, EPOLLIN);
-  dynamic_cast<Cgi *>(sock)->Run();
-  // file statusで返す
-  // std::cout << cgi->GetChunked() << std::endl;
-  // delete cgi;
-  // event->SetEventStatus(kDel);
-}
-// void Server::ReadFromCgi(epoll_event *ev) {
-//   Cgi *cgi = dynamic_cast<Cgi *>(events_[ev->data.fd]);
-//   if (cgi->TimeOver()) {
-//     cgi->SetEventStatus(kDel);
-//     // response ni error message tuika
-//     return;
-//   }
-//   cgi->re
-// }
