@@ -19,9 +19,6 @@ Header expected_full = {{"host", "hoge.com"},
                         {"accept-encoding", "gzip, deflate"},
                         {"accept-language", "ja,en-us;q=0.8,en;q=0.6"}};
 
-std::map<std::string, std::string> expected_arg = {
-    {"a", "hoge"}, {"b", "fuga"}, {"c", "piyo"}};
-
 void copy_fd(int dst, const char *src) {
   char buf[BUFFER_SIZE];
   std::string file = DIR;
@@ -36,18 +33,17 @@ void copy_fd(int dst, const char *src) {
   close(srcfd);
 }
 
-void compare_header(Header header, Header expected_header) {
-  for (size_t i = 0; i < header.size(); i++) {
-    EXPECT_EQ(header.at(i).first, expected_header.at(i).first);
-    EXPECT_EQ(header.at(i).second, expected_header.at(i).second);
-  }
+int open_pseudo_socket() {
+  int fd = open("./text/ReceiveHttpRequest/pseudo_socket.txt",
+                O_RDWR | O_TRUNC | O_CREAT, 0644);
+  return fd;
 }
 
 TEST(ReceiveHttpRequest, full) {
   ReceiveHttpRequest rhr;
   ParsedRequest pr;
   ReadStat rs;
-  int fd = open("./text/ReceiveHttpRequest/ReceiveHttpRequest.txt", O_RDWR);
+  int fd = open_pseudo_socket();
   copy_fd(fd, "FullRequest");
   rs = rhr.ReadHttpRequest(fd, &pr);
 
@@ -55,7 +51,7 @@ TEST(ReceiveHttpRequest, full) {
   EXPECT_EQ(kPost, pr.m);
   EXPECT_EQ("/search.html", pr.request_path);
   EXPECT_EQ("HTTP/1.1", pr.version);
-  compare_header(pr.request_header, expected_full);
+  EXPECT_EQ(pr.request_header, expected_full);
   EXPECT_EQ("q=test&submitSearch=%E6%A4%9C%E7%B4%A2", pr.request_body);
   close(fd);
 }
@@ -65,8 +61,7 @@ TEST(ReceiveHttpRequest, empty_then_full) {
   ParsedRequest pr;
   ReadStat rs;
 
-  int fd = open("./text/ReceiveHttpRequest/ReceiveHttpRequest.txt",
-                O_RDWR | O_TRUNC);
+  int fd = open_pseudo_socket();
   copy_fd(fd, "EmptyRequest");
   rs = rhr.ReadHttpRequest(fd, &pr);
 
@@ -80,7 +75,7 @@ TEST(ReceiveHttpRequest, empty_then_full) {
   EXPECT_EQ(kPost, pr.m);
   EXPECT_EQ("/search.html", pr.request_path);
   EXPECT_EQ("HTTP/1.1", pr.version);
-  compare_header(pr.request_header, expected_full);
+  EXPECT_EQ(pr.request_header, expected_full);
   EXPECT_EQ("q=test&submitSearch=%E6%A4%9C%E7%B4%A2", pr.request_body);
   close(fd);
 }
@@ -89,8 +84,7 @@ TEST(ReceiveHttpRequest, only_request_line) {
   ReceiveHttpRequest rhr;
   ParsedRequest pr;
   ReadStat rs;
-  int fd = open("./text/ReceiveHttpRequest/ReceiveHttpRequest.txt",
-                O_RDWR | O_TRUNC);
+  int fd = open_pseudo_socket();
 
   copy_fd(fd, "OnlyRequestLine");
   rs = rhr.ReadHttpRequest(fd, &pr);
@@ -106,8 +100,7 @@ TEST(ReceiveHttpRequest, half_then_half) {
   ReceiveHttpRequest rhr;
   ParsedRequest pr;
   ReadStat rs;
-  int fd = open("./text/ReceiveHttpRequest/ReceiveHttpRequest.txt",
-                O_RDWR | O_TRUNC);
+  int fd = open_pseudo_socket();
   copy_fd(fd, "HalfRequestLine");
   rs = rhr.ReadHttpRequest(fd, &pr);
   EXPECT_EQ(kWaitRequest, rs);
@@ -131,8 +124,7 @@ TEST(ReceiveHttpRequest, invalid_request1) {
   ReceiveHttpRequest rhr;
   ParsedRequest pr;
   ReadStat rs;
-  int fd = open("./text/ReceiveHttpRequest/ReceiveHttpRequest.txt",
-                O_RDWR | O_TRUNC);
+  int fd = open_pseudo_socket();
   copy_fd(fd, "invalidrequest1");
   rs = rhr.ReadHttpRequest(fd, &pr);
   close(fd);
@@ -142,8 +134,7 @@ TEST(ReceiveHttpRequest, request_then_nobody) {
   ReceiveHttpRequest rhr;
   ParsedRequest pr;
   ReadStat rs;
-  int fd = open("./text/ReceiveHttpRequest/ReceiveHttpRequest.txt",
-                O_RDWR | O_TRUNC);
+  int fd = open_pseudo_socket();
   copy_fd(fd, "request_then_nobody");
   rs = rhr.ReadHttpRequest(fd, &pr);
   close(fd);

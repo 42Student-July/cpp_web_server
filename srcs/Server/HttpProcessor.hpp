@@ -27,6 +27,8 @@ class HttpProcessor {
       const ParsedRequest &parsed_request,
       std::map<std::string, LocationContext> locations, HttpResponse *result);
   static void ReadLocalFile(const File &file, HttpResponse *result);
+  static void ReadIndexFile(const std::string &full_path,
+                            const LocationContext &loc, HttpResponse *result);
 };
 
 #endif  // SRCS_SERVER_HTTPPROCESSOR_HPP_

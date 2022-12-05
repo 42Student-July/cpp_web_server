@@ -1,6 +1,58 @@
 #include "ReceiveHttpRequest.hpp"
 
 #include "Utils.hpp"
+
+static size_t CountTransferEncoding(Header *rh) {
+  size_t count = 0;
+
+  for (Header::iterator it = rh->begin(); it != rh->end(); it++) {
+    if (it->first == "transfer-encoding" && it->second == "chunked") {
+      count++;
+    }
+  }
+  return count;
+}
+
+static size_t CountContentLength(Header *rh) {
+  size_t count = 0;
+
+  for (Header::iterator it = rh->begin(); it != rh->end(); it++) {
+    if (it->first == "content-length") {
+      count++;
+    }
+  }
+  return count;
+}
+
+bool IsValidHost(Header *rh) {
+  size_t count = 0;
+  Header::iterator tmp;
+
+  for (Header::iterator it = rh->begin(); it != rh->end(); it++) {
+    if (it->first == "host") {
+      tmp = it;
+      count++;
+    }
+  }
+  return (count == 1);
+}
+
+bool IsValidHeader(HttpRequestData *fd_data) {
+  Header rh = fd_data->pr.request_header;
+  const size_t num_of_transfer_encoding = CountTransferEncoding(&rh);
+  const size_t num_of_content_length = CountContentLength(&rh);
+
+  if (num_of_transfer_encoding == 1 || num_of_content_length == 0) {
+    fd_data->is_chunked = true;
+  } else if (num_of_transfer_encoding == 0 || num_of_content_length == 1) {
+    fd_data->is_chunked = false;
+  } else {
+    fd_data->pr.status_code = 400;
+    return false;
+  }
+  return (IsValidHost(&rh));
+}
+
 ReceiveHttpRequest::ReceiveHttpRequest() {
   fd_data_.s = kUnread;
   fd_data_.pr.m = kError;
@@ -173,7 +225,12 @@ ReadStat ReceiveHttpRequest::ReadHttpRequest(const int &fd, ParsedRequest *pr) {
     if (std::string::npos != pos) {
       fd_data_.request_header = TrimByPos(&fd_data_.buf, pos, 4);
       fd_data_.pr.request_header = ParseRequestHeader(fd_data_.request_header);
-      fd_data_.s = kWaitBody;
+      if (IsValidHeader(&fd_data_)) {
+        fd_data_.s = kWaitBody;
+      } else {
+        fd_data_.s = kErrorHeader;
+        return kErrorHeader;
+      }
     } else {
       fd_data_.s = kWaitHeader;
       *pr = fd_data_.pr;

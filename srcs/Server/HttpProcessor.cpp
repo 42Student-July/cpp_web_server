@@ -27,31 +27,68 @@ void HttpProcessor::ProcessHttpRequest(
 void HttpProcessor::ProcessHttpRequestGet(
     const ParsedRequest &parsed_request,
     std::map<std::string, LocationContext> locations, HttpResponse *result) {
-  Path path(parsed_request.request_path);
+  LocationPair selected_location_context =
+      Path::FindBestLocation(locations, parsed_request.request_path);
 
-  // pathってどうやってつかうの？
-  path.SetLocation(&locations);
-
-  std::string full_path = path.GetFilePath(&locations);
+  std::string full_path = Path::GetAliasPath(selected_location_context,
+                                             parsed_request.request_path);
 
   std::cout << full_path << std::endl;
+  selected_location_context.second.root += parsed_request.request_path;
   File file(full_path);
-  if (file.IsExist() && file.CanRead()) {
-    ReadLocalFile(file, result);
-  } else {
+  if (!file.IsExist()) {
     result->SetStatusCode(404);
+    return;
+  }
+
+  // fileがfileの場合
+  if (file.IsFile()) {
+    if (!file.CanRead()) {
+      result->SetStatusCode(403);
+      return;
+    }
+    ReadLocalFile(file, result);
+    return;
+  }
+
+  // fileがdirectoryの場合
+  if (file.IsDir()) {
+    if (selected_location_context.second.auto_index == "on") {
+      return;
+    }
+    ReadIndexFile(full_path, selected_location_context.second, result);
+    return;
   }
 }
 
 void HttpProcessor::ReadLocalFile(const File &file, HttpResponse *result) {
-  result->SetStatusCode(200);
-  result->SetHeader("Content-Type", "text/html");
   std::vector<std::string> file_contents = file.StoreFileLinesInVec();
   std::string body;
   for (std::vector<std::string>::iterator it = file_contents.begin();
        it != file_contents.end(); ++it) {
     body += *it;
   }
-  result->SetBody(body);
-  result->SetHeader("Content-Length", result->GetBody().size());
+  result->SetHttpResponse(200, body);
+}
+
+void HttpProcessor::ReadIndexFile(const std::string &full_path,
+                                  const LocationContext &loc,
+                                  HttpResponse *result) {
+  std::string index_path;
+  if (loc.index.empty()) {
+    index_path = "index.html";
+  } else {
+    // 一旦 indexには複数のindexが指定されていることは考えない
+    index_path = loc.index.back();
+  }
+  File file(full_path + index_path);
+  if (!file.IsExist()) {
+    result->SetStatusCode(404);
+    return;
+  }
+  if (!file.CanRead()) {
+    result->SetStatusCode(403);
+    return;
+  }
+  ReadLocalFile(file, result);
 }
