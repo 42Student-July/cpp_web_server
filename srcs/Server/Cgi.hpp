@@ -10,7 +10,6 @@
 #include <string>
 #include <vector>
 
-#include "Connecting.hpp"
 #include "Event.hpp"
 #include "ReceiveHttpRequest.hpp"
 #include "ServerContext.hpp"

@@ -12,40 +12,36 @@
 #include <vector>
 
 #include "Cgi.hpp"
-#include "Connecting.hpp"
+// #include "Connecting.hpp"
 #include "Epoll.hpp"
 #include "Event.hpp"
 #include "HttpProcessor.hpp"
 #include "HttpResponse.hpp"
 #include "Listen.hpp"
-#include "ListenEvent.hpp"
+#include "ListenToClient.hpp"
 #include "Parser.hpp"
 #include "ReceiveHttpRequest.hpp"
 #include "ServerContext.hpp"
-
+#include "Socket.hpp"
 class Server {
  private:
-  static const int kNotDoneYet = -1;
-  std::map<int, Event *> events_;
+  // static const int kNotDoneYet = -1;
+  std::map<int, Event *> event_map_;
   Epoll epoll_;
-  ReceiveHttpRequest receive_request_;
-  std::map<int, std::string> response_;
-  void ExecEvents(epoll_event *ev);
-  void AcceptNewConnections(epoll_event *ev);
-  void ConnectingEvent(epoll_event *ev);
-  void AddMonitorToRequest(epoll_event *fd);
-  void ReceiveRequest(epoll_event *ev);
-  void SendResponse(epoll_event *ev);
-  int WriteToClientFd(const int connfd);
+  // ReceiveHttpRequest receive_request_;
+  // std::map<int, std::string> response_;
   Server();
-  void DelEvent(const Event *sock, epoll_event *ev);
-  void InitListenEvent(const std::vector<ServerContext> &contexts);
+  void InitListen(const ContextMap &contexts);
   void GenerateCgi(epoll_event *ev);
   void ReadFromCgi(epoll_event *ev);
-  void AddEventToMonitored(Event *sock, uint32_t event_flag);
+  void AddEventToMonitored(const int fd, Event *event, uint32_t event_flag);
+  void AddEventToMonitored(const int fd, Event *event, epoll_event *new_ev);
+  void NextEvent(Event *event, epoll_event *epoll);
+  void RegisterNewEvent(Event *event);
+  void DeleteEvent(Event *event, epoll_event *epoll);
 
  public:
-  explicit Server(const std::vector<ServerContext> &contexts);
+  explicit Server(const ContextMap &contexts);
   ~Server();
   void Run();
 };

@@ -1,3 +1,4 @@
+
 #include "Epoll.hpp"
 Epoll::Epoll() : Fd(-1) { Init(); }
 
@@ -14,8 +15,12 @@ int Epoll::Wait() {
   return num_fd;
 }
 
-epoll_event Epoll::FindEvent(const int& n) const { return events_[n]; }
-
+epoll_event Epoll::Find(const int& n) const { return events_[n]; }
+epoll_event Epoll::FindFromFd(const int& fd) const {
+  std::map<int, epoll_event>::const_iterator it = epoll_map_.find(fd);
+  if (it == epoll_map_.end()) throw std::runtime_error("find from fd err");
+  return it->second;
+}
 epoll_event Epoll::Create(const int conn_fd, uint32_t flag) {
   epoll_event new_event;
   memset(&new_event, 0, sizeof(epoll_event));
@@ -24,16 +29,20 @@ epoll_event Epoll::Create(const int conn_fd, uint32_t flag) {
   return new_event;
 }
 
-void Epoll::Mod(epoll_event* ev, uint32_t flags) const {
-  ev->events = flags;
-  if ((epoll_ctl(GetFd(), EPOLL_CTL_MOD, ev->data.fd, ev)) < 0)
+void Epoll::Mod(const int fd, uint32_t flags) {
+  epoll_event ev = FindFromFd(fd);
+  ev.events = flags;
+  epoll_map_[fd] = ev;
+  if ((epoll_ctl(GetFd(), EPOLL_CTL_MOD, fd, &ev)) < 0)
     throw std::runtime_error("epoll ctl mod err ");
 }
-void Epoll::Add(epoll_event* ev) const {
-  if ((epoll_ctl(GetFd(), EPOLL_CTL_ADD, ev->data.fd, ev)) < 0)
+void Epoll::Add(const int fd, epoll_event* ev) {
+  epoll_map_.insert(std::make_pair(fd, *ev));
+  if ((epoll_ctl(GetFd(), EPOLL_CTL_ADD, fd, ev)) < 0)
     throw std::runtime_error("epoll ctl add err ");
 }
-void Epoll::Del(epoll_event* ev) const {
-  if ((epoll_ctl(GetFd(), EPOLL_CTL_DEL, ev->data.fd, ev)) < 0)
+void Epoll::Del(const int fd, epoll_event* ev) {
+  epoll_map_.erase(fd);
+  if ((epoll_ctl(GetFd(), EPOLL_CTL_DEL, fd, ev)) < 0)
     throw std::runtime_error("epoll ctl del err");
 }

@@ -1,31 +1,46 @@
 #ifndef SRCS_SERVER_EVENT_HPP_
 #define SRCS_SERVER_EVENT_HPP_
+#include <sys/epoll.h>
+
 #include <iostream>
 #include <string>
+#include <utility>
 
+#include "Epoll.hpp"
 #include "Fd.hpp"
 #include "ServerContext.hpp"
-enum EventType { kListen, kConnecting, kCgi };
-enum EventStatus { kRead, kWrite, kAginWrite, kWait, kDel };
-class Event : public Fd {
- private:
-  ServerContext context_;
-  EventStatus status_;
-  const EventType type_;
-  Event& operator=(const Event& sock);
-  Event();
-  Event(const Event& sock);
-  static const int kBufferSize = 8192;
-
+#include "Socket.hpp"
+enum EventType { kListen, kConn, kCgi };
+enum EventState {
+  kRead,
+  kReadAgain,
+  kReadFinished,
+  kWrite,
+  kWriteAgain,
+  kWriteFinished,
+  kCgiWrite,
+  kCgiRead,
+  kCgiReadAgain,
+  kCgiReadFinished,
+  kWait,
+  kDel,
+  kErr,
+  kCgiErr
+};
+class Event {
  public:
-  Event(const int fd, const ServerContext& context, const EventType type);
   virtual ~Event();
-  void SetEventStatus(EventStatus status);
-  int GetEventStatus() const;
-  int GetEventType() const;
-  const ServerContext& GetContext() const;
-  std::string Read() const;
-  ssize_t Write(const char* str, const size_t size) const;
+  virtual void Do() = 0;
+  virtual Event *NextEvent() = 0;
+  virtual std::pair<Event *, epoll_event> PublishNewEvent() = 0;
+  virtual void Handle(Epoll *epoll) = 0;
+  virtual EventState State() = 0;
+  virtual Socket *GetSocket() const = 0;
+
+  virtual EventType Type() const = 0;
+  static bool IsNotDelete(const EventState &state);
+  static bool IsFinished(const EventState &state);
+  static bool IsDelete(const EventState &st);
 };
 
 #endif  // SRCS_SERVER_EVENT_HPP_

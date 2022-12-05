@@ -1,0 +1,36 @@
+server {
+  listen 8080;
+  server_name a;
+}
+server {
+  listen 8080;
+  server_name b;
+}
+server {
+  listen 8080;
+  server_name c;
+}
+server {
+  listen 8081;
+  server_name a;
+}
+server {
+  listen 8081;
+  server_name b;
+}
+server {
+  listen 8081;
+  server_name c;
+}
+server {
+  listen 1:8081;
+  server_name a;
+}
+server {
+  listen 1:8081;
+  server_name b;
+}
+server {
+  listen 1:8081;
+  server_name c;
+}

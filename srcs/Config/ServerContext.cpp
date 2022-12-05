@@ -1,5 +1,5 @@
 #include "ServerContext.hpp"
-ServerContext::ServerContext() : client_body_size(-1) {}
+ServerContext::ServerContext() : client_body_size(false, 100000) {}
 ServerContext::~ServerContext() {}
 ServerContext::ServerContext(const ServerContext &sc) { *this = sc; }
 ServerContext &ServerContext::operator=(const ServerContext &sc) {
@@ -14,3 +14,18 @@ ServerContext &ServerContext::operator=(const ServerContext &sc) {
 
 std::string ServerContext::GetHost() const { return listen.first; }
 std::string ServerContext::GetPort() const { return listen.second; }
+
+ContextMap ServerContext::ToMap(const std::vector<ServerContext> &context) {
+  ContextMap cmap;
+  for (size_t i = 0; i < context.size(); i++) {
+    ContextMap::iterator it = cmap.find(context[i].listen);
+    if (it == cmap.end()) {
+      std::vector<ServerContext> v;
+      v.push_back(context[i]);
+      cmap.insert(std::make_pair(context[i].listen, v));
+    } else {
+      it->second.push_back(context[i]);
+    }
+  }
+  return cmap;
+}

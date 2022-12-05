@@ -15,7 +15,7 @@ Parser::Parser(const Lexer &lexer) : tkns_(lexer.GetTokens()) {
   location_directive_case_["upload_pass"] = &Parser::StoreUploadPass;
 }
 Parser::~Parser() {}
-const std::vector<ServerContext> &Parser::ConfigSetting() const {
+const std::vector<ServerContext> &Parser::GetConfig() const {
   return contexts_;
 }
 
@@ -84,7 +84,7 @@ std::string Parser::ParseHost(Token tkn) {
   return host;
 }
 void Parser::StoreClientBodySize(ServerContext *sc) {
-  if (sc->client_body_size != -1)
+  if (sc->client_body_size.first)
     throw ConfigErrException("`client_max_body_size` directive duplicate",
                              tkns_.Current());
   tkns_.Next();
@@ -92,7 +92,8 @@ void Parser::StoreClientBodySize(ServerContext *sc) {
   if (size < 0)
     throw ConfigErrException("`client_max_body_size` directive invalid value",
                              tkns_.Current());
-  sc->client_body_size = size;
+  sc->client_body_size.second = size;
+  sc->client_body_size.first = true;
   ThrowExceptionIfNotMatch(tkns_.Next(), ";", "semicolon `;` not found");
 }
 void Parser::StoreServerName(ServerContext *sc) {
