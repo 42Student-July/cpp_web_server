@@ -4,10 +4,12 @@
 #include <algorithm>
 #include <map>
 #include <string>
+#include <utility>
 #include <vector>
 
 #include "LocationContext.hpp"
 
+typedef std::pair<std::string, LocationContext> LocationPair;
 typedef std::map<std::string, LocationContext> Locationmap;
 
 class Path {
@@ -17,14 +19,15 @@ class Path {
   Path(Path const &other);
   Path &operator=(Path const &other);
   ~Path();
-  void SetLocation(Locationmap *locs);
-  void SetFilePath(std::string name, std::string path);
-  std::string GetFilePath(Locationmap *location);
+  static LocationPair FindBestLocation(const Locationmap &locations,
+                                       const std::string &request_uri);
 
- private:
-  std::string file_name_;
-  std::string file_path_;
-  std::string path_;
+  static std::string GetAliasPath(const LocationPair &location_pair,
+                                  const std::string &request_uri);
+  class LocationNotFound : public std::exception {
+   public:
+    const char *what() const throw();
+  };
 };
 
 #endif  // SRCS_SERVER_PATH_HPP_
