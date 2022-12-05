@@ -1,5 +1,6 @@
 *.pdf
 /webserv
+tests/unit_test/text/ReceiveHttpRequest/pseudo_socket.txt
 
 # Prerequisites
 *.d
