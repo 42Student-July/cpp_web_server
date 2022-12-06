@@ -5,7 +5,9 @@ ReceveRequestFromClient::ReceveRequestFromClient(Socket *sock)
     : socket_(sock) {}
 ReceveRequestFromClient::~ReceveRequestFromClient() {}
 void ReceveRequestFromClient::Do() {
-  stat_ = request_.ReadHttpRequest(socket_->sock_fd, &socket_->pr);
+  std::vector<ServerContext> sc;
+
+  stat_ = request_.ReadHttpRequest(socket_->sock_fd, &socket_->pr, sc);
   if (IsReadErr(stat_)) {
     socket_->response_code = kKk400BadRequest;
   } else if (IsReadComplete(stat_)) {

@@ -43,9 +43,10 @@ TEST(ReceiveHttpRequest, full) {
   ReceiveHttpRequest rhr;
   ParsedRequest pr;
   ReadStat rs;
+  std::vector<ServerContext> sc;
   int fd = open_pseudo_socket();
   copy_fd(fd, "FullRequest");
-  rs = rhr.ReadHttpRequest(fd, &pr);
+  rs = rhr.ReadHttpRequest(fd, &pr, sc);
 
   EXPECT_EQ(kReadComplete, rs);
   EXPECT_EQ(kPost, pr.m);
@@ -60,15 +61,16 @@ TEST(ReceiveHttpRequest, empty_then_full) {
   ReceiveHttpRequest rhr;
   ParsedRequest pr;
   ReadStat rs;
+  std::vector<ServerContext> sc;
 
   int fd = open_pseudo_socket();
   copy_fd(fd, "EmptyRequest");
-  rs = rhr.ReadHttpRequest(fd, &pr);
+  rs = rhr.ReadHttpRequest(fd, &pr, sc);
 
   EXPECT_EQ(kWaitRequest, rs);
 
   copy_fd(fd, "FullRequest");
-  rs = rhr.ReadHttpRequest(fd, &pr);
+  rs = rhr.ReadHttpRequest(fd, &pr, sc);
 
   EXPECT_EQ(kReadComplete, rs);
   EXPECT_EQ(kReadComplete, rs);
@@ -84,10 +86,12 @@ TEST(ReceiveHttpRequest, only_request_line) {
   ReceiveHttpRequest rhr;
   ParsedRequest pr;
   ReadStat rs;
+  std::vector<ServerContext> sc;
+
   int fd = open_pseudo_socket();
 
   copy_fd(fd, "OnlyRequestLine");
-  rs = rhr.ReadHttpRequest(fd, &pr);
+  rs = rhr.ReadHttpRequest(fd, &pr, sc);
 
   EXPECT_EQ(kWaitHeader, rs);
   EXPECT_EQ(kPost, pr.m);
@@ -100,9 +104,10 @@ TEST(ReceiveHttpRequest, half_then_half) {
   ReceiveHttpRequest rhr;
   ParsedRequest pr;
   ReadStat rs;
+  std::vector<ServerContext> sc;
   int fd = open_pseudo_socket();
   copy_fd(fd, "HalfRequestLine");
-  rs = rhr.ReadHttpRequest(fd, &pr);
+  rs = rhr.ReadHttpRequest(fd, &pr, sc);
   EXPECT_EQ(kWaitRequest, rs);
   EXPECT_EQ(kError, pr.m);
   EXPECT_EQ("", pr.request_path);
@@ -110,7 +115,7 @@ TEST(ReceiveHttpRequest, half_then_half) {
   EXPECT_EQ("POST /search.", rhr.GetBuf());
 
   copy_fd(fd, "HalfRequestLine2");
-  rs = rhr.ReadHttpRequest(fd, &pr);
+  rs = rhr.ReadHttpRequest(fd, &pr, sc);
   EXPECT_EQ(kWaitHeader, rs);
   EXPECT_EQ(kPost, pr.m);
   EXPECT_EQ("/search.html", pr.request_path);
@@ -124,9 +129,10 @@ TEST(ReceiveHttpRequest, invalid_request1) {
   ReceiveHttpRequest rhr;
   ParsedRequest pr;
   ReadStat rs;
+  std::vector<ServerContext> sc;
   int fd = open_pseudo_socket();
   copy_fd(fd, "invalidrequest1");
-  rs = rhr.ReadHttpRequest(fd, &pr);
+  rs = rhr.ReadHttpRequest(fd, &pr, sc);
   close(fd);
 }
 
@@ -134,8 +140,9 @@ TEST(ReceiveHttpRequest, request_then_nobody) {
   ReceiveHttpRequest rhr;
   ParsedRequest pr;
   ReadStat rs;
+  std::vector<ServerContext> sc;
   int fd = open_pseudo_socket();
   copy_fd(fd, "request_then_nobody");
-  rs = rhr.ReadHttpRequest(fd, &pr);
+  rs = rhr.ReadHttpRequest(fd, &pr, sc);
   close(fd);
 }

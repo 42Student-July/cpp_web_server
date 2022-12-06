@@ -13,44 +13,35 @@ static size_t CountTransferEncoding(Header *rh) {
   return count;
 }
 
-static size_t CountContentLength(Header *rh) {
+static size_t CountHeaderField(Header *rh, const std::string &key) {
   size_t count = 0;
 
   for (Header::iterator it = rh->begin(); it != rh->end(); it++) {
-    if (it->first == "content-length") {
+    if (it->first == key) {
       count++;
     }
   }
   return count;
 }
 
-bool IsValidHost(Header *rh) {
-  size_t count = 0;
-  Header::iterator tmp;
-
-  for (Header::iterator it = rh->begin(); it != rh->end(); it++) {
-    if (it->first == "host") {
-      tmp = it;
-      count++;
-    }
-  }
-  return (count == 1);
-}
-
 bool IsValidHeader(HttpRequestData *fd_data) {
   Header rh = fd_data->pr.request_header;
   const size_t num_of_transfer_encoding = CountTransferEncoding(&rh);
-  const size_t num_of_content_length = CountContentLength(&rh);
+  const size_t num_of_content_length = CountHeaderField(&rh, "content-length");
 
-  if (num_of_transfer_encoding == 1 || num_of_content_length == 0) {
+  if (num_of_transfer_encoding == 1 && num_of_content_length == 0) {
     fd_data->is_chunked = true;
-  } else if (num_of_transfer_encoding == 0 || num_of_content_length == 1) {
+  } else if (num_of_transfer_encoding == 0 && num_of_content_length == 1) {
     fd_data->is_chunked = false;
   } else {
     fd_data->pr.status_code = 400;
     return false;
   }
-  return (IsValidHost(&rh));
+  if (CountHeaderField(&rh, "host") != 1) {
+    fd_data->pr.status_code = 400;
+    return false;
+  }
+  return true;
 }
 
 ReceiveHttpRequest::ReceiveHttpRequest() {
@@ -193,7 +184,8 @@ Header ParseRequestHeader(const std::string &header_line) {
   return header;
 }
 
-ReadStat ReceiveHttpRequest::ReadHttpRequest(const int &fd, ParsedRequest *pr) {
+ReadStat ReceiveHttpRequest::ReadHttpRequest(const int &fd, ParsedRequest *pr,
+                                             std::vector<ServerContext> sc) {
   size_t pos = 0;
   ssize_t read_ret = 0;
   char buf[BUFFER_SIZE];
@@ -226,6 +218,7 @@ ReadStat ReceiveHttpRequest::ReadHttpRequest(const int &fd, ParsedRequest *pr) {
       fd_data_.request_header = TrimByPos(&fd_data_.buf, pos, 4);
       fd_data_.pr.request_header = ParseRequestHeader(fd_data_.request_header);
       if (IsValidHeader(&fd_data_)) {
+        sc_ = &SelectServerContext(sc);
         fd_data_.s = kWaitBody;
       } else {
         fd_data_.s = kErrorHeader;
@@ -251,4 +244,32 @@ ReadStat ReceiveHttpRequest::ReadHttpRequest(const int &fd, ParsedRequest *pr) {
 std::string ReceiveHttpRequest::GetBuf() { return (fd_data_.buf); }
 ParsedRequest ReceiveHttpRequest::GetParsedRequest() const {
   return fd_data_.pr;
+}
+
+ServerContext &ReceiveHttpRequest::SelectServerContext(
+    std::vector<ServerContext> &contexts) const {
+  std::string hostname;
+  if (contexts.size() > 1) {
+    try {
+      hostname = GetValueByKey("host");
+    } catch (...) {
+      return *contexts.begin();
+    }
+
+    for (std::vector<ServerContext>::iterator it = contexts.begin();
+         it != contexts.end(); it++) {
+      if (it->server_name == hostname) return *it;
+    }
+  }
+  return *contexts.begin();
+}
+
+std::string &ReceiveHttpRequest::GetValueByKey(const std::string &key) const {
+  Header h = fd_data_.pr.request_header;
+
+  Header::iterator it = std::find_if(h.begin(), h.end(), SearchValueByKey(key));
+  if (it == h.end()) {
+    throw std::exception();
+  }
+  return it->second;
 }
