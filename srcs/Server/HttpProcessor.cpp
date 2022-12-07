@@ -3,6 +3,8 @@
 
 #include <vector>
 
+#include "Utils.hpp"
+
 HttpProcessor::HttpProcessor() {}
 
 HttpProcessor::HttpProcessor(HttpProcessor const &other) { *this = other; }
@@ -54,6 +56,7 @@ void HttpProcessor::ProcessHttpRequestGet(
   // fileがdirectoryの場合
   if (file.IsDir()) {
     if (selected_location_context.second.auto_index == "on") {
+      CreateHttpAutoIndexHtml(parsed_request.request_path, full_path, result);
       return;
     }
     ReadIndexFile(full_path, selected_location_context.second, result);
@@ -91,4 +94,36 @@ void HttpProcessor::ReadIndexFile(const std::string &full_path,
     return;
   }
   ReadLocalFile(file, result);
+}
+
+void HttpProcessor::CreateHttpAutoIndexHtml(const std::string &request_path,
+                                            const std::string &full_path,
+                                            HttpResponse *result) {
+  std::string body;
+  body += "<html><head><title>Index of ";
+  body += request_path;
+  body += "</title></head><body bgcolor=\"white\"><h1>Index of ";
+  body += request_path;
+  body += "</h1><hr><pre><a href=\"../\">../</a>\n";
+
+  File file(full_path);
+  std::vector<FileInfo> file_list = file.GetFileListInDir();
+  for (std::vector<FileInfo>::iterator it = file_list.begin();
+       it != file_list.end(); ++it) {
+    FileInfo &file_info = *it;
+    body += "<a href=\"";
+    body += file_info.name;
+    body += "\">";
+    body += file_info.name;
+    body += "\t";
+    body += file_info.timestamp;
+    body += "\t";
+    body += utils::UIntToString(file_info.size);
+    body += "</a>\n";
+    std::cout << file_info.name;
+    std::cout << file_info.timestamp;
+    std::cout << file_info.size << std::endl;
+  }
+  body += "</pre><hr></body></html>";
+  result->SetHttpResponse(200, body);
 }

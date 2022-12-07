@@ -4,6 +4,12 @@
 #include <string>
 #include <vector>
 
+struct FileInfo {
+  std::string name;
+  size_t size;
+  std::string timestamp;
+};
+
 class File {
  private:
   std::string filename_;
@@ -26,6 +32,8 @@ class File {
   bool CanExec() const;
 
   void SetFileName(const std::string &name);
+
+  std::vector<FileInfo> GetFileListInDir() const;
 };
 
 #endif  // SRCS_UTILS_FILE_HPP_
