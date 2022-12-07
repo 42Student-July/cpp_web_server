@@ -1,11 +1,15 @@
 #include "ReceveRequestFromClient.hpp"
 
+#include <vector>  // エラー回避のための仮置きのためにおいたstd::vector<ServerContext> scのための仮置き
+
 #include "ResponseToTheClient.hpp"
 ReceveRequestFromClient::ReceveRequestFromClient(Socket *sock)
     : socket_(sock) {}
 ReceveRequestFromClient::~ReceveRequestFromClient() {}
 void ReceveRequestFromClient::Do() {
-  std::vector<ServerContext> sc;  //エラー回避のための仮置き
+  std::vector<ServerContext>
+      sc;  // ↓ReadHttpRequest()のプロトタイプ変更によるエラー回避のための仮置き↓
+
   stat_ = request_.ReadHttpRequest(socket_->sock_fd, &socket_->pr, sc);
   if (IsReadErr(stat_)) {
     socket_->response_code = kKk400BadRequest;

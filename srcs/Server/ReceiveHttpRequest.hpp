@@ -70,7 +70,7 @@ class ReceiveHttpRequest {
     std::string Key_;
 
    public:
-    SearchValueByKey(std::string key) : Key_(key) {}
+    explicit SearchValueByKey(std::string key) : Key_(key) {}
     bool operator()(const std::pair<std::string, std::string> pair) const {
       return Key_ == pair.first;
     }
@@ -87,7 +87,7 @@ class ReceiveHttpRequest {
   std::string GetBuf();
   ParsedRequest GetParsedRequest() const;
   ServerContext &SelectServerContext(
-      std::vector<ServerContext> &contexts) const;
+      std::vector<ServerContext> *contexts) const;
   std::string &GetValueByKey(const std::string &key) const;
 };
 

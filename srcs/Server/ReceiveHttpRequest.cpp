@@ -218,7 +218,7 @@ ReadStat ReceiveHttpRequest::ReadHttpRequest(const int &fd, ParsedRequest *pr,
       fd_data_.request_header = TrimByPos(&fd_data_.buf, pos, 4);
       fd_data_.pr.request_header = ParseRequestHeader(fd_data_.request_header);
       if (IsValidHeader(&fd_data_)) {
-        sc_ = &SelectServerContext(sc);
+        sc_ = &SelectServerContext(&sc);
         fd_data_.s = kWaitBody;
       } else {
         fd_data_.s = kErrorHeader;
@@ -247,21 +247,21 @@ ParsedRequest ReceiveHttpRequest::GetParsedRequest() const {
 }
 
 ServerContext &ReceiveHttpRequest::SelectServerContext(
-    std::vector<ServerContext> &contexts) const {
+    std::vector<ServerContext> *contexts) const {
   std::string hostname;
-  if (contexts.size() > 1) {
+  if (contexts->size() > 1) {
     try {
       hostname = GetValueByKey("host");
     } catch (...) {
-      return *contexts.begin();
+      return *contexts->begin();
     }
 
-    for (std::vector<ServerContext>::iterator it = contexts.begin();
-         it != contexts.end(); it++) {
+    for (std::vector<ServerContext>::iterator it = contexts->begin();
+         it != contexts->end(); it++) {
       if (it->server_name == hostname) return *it;
     }
   }
-  return *contexts.begin();
+  return *contexts->begin();
 }
 
 std::string &ReceiveHttpRequest::GetValueByKey(const std::string &key) const {
