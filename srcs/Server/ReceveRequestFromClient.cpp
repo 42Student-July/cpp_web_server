@@ -7,8 +7,7 @@ ReceveRequestFromClient::ReceveRequestFromClient(Socket *sock)
     : socket_(sock) {}
 ReceveRequestFromClient::~ReceveRequestFromClient() {}
 void ReceveRequestFromClient::Do() {
-  std::vector<ServerContext>
-      sc;  // ↓ReadHttpRequest()のプロトタイプ変更によるエラー回避のための仮置き↓
+  std::vector<ServerContext> sc;  // ↓プロトタイプ変更によるエラー回避↓
 
   stat_ = request_.ReadHttpRequest(socket_->sock_fd, &socket_->pr, sc);
   if (IsReadErr(stat_)) {
