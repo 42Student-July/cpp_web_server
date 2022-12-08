@@ -1,10 +1,15 @@
 #ifndef SRCS_SERVER_METHOD_HPP_
 #define SRCS_SERVER_METHOD_HPP_
-class Method {
+#include <string>
+
+#include "ReceiveHttpRequest.hpp"
+#include "Socket.hpp"
+class HttpMethod {
  public:
-  virtual ~Method();
-  virtual void Run() = 0;
-  virtual void ChangeSocketState() = 0;
+  virtual ~HttpMethod();
+  virtual void Run(const std::string &path, Socket *sock) = 0;
+  virtual void UpdateSocketData(Socket *sock) = 0;
+  static HttpMethod *Build(const Method &m);
 };
 
 #endif  // SRCS_SERVER_METHOD_HPP_

@@ -1,5 +1,6 @@
 #include "Path.hpp"
 
+#include "Utils.hpp"
 Path::Path() {}
 
 Path::Path(Path const &other) { *this = other; }
@@ -69,4 +70,24 @@ std::string Path::GetAliasPath(const LocationPair &location_pair,
 
 const char *Path::LocationNotFound::what() const throw() {
   return "Location Context not found";
+}
+
+bool Path::IsValidPath(const std::string &path) {
+  std::vector<std::string> v = utils::SplitWithMultipleSpecifier(path, "/");
+  if (v.empty()) return false;
+  std::stack<std::string> s;
+  for (size_t i = 0; i < v.size(); i++) {
+    if (v[i] == ".") continue;
+    if (v[i] == "..") {
+      if (s.empty()) return false;
+      s.pop();
+    } else {
+      s.push(v[i]);
+    }
+  }
+  return true;
+}
+bool Path::IsFullPath(const std::string &path) {
+  if (path.empty()) return false;
+  return path[0] == '/';
 }

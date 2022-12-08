@@ -79,3 +79,19 @@ std::vector<std::string> File::StoreFileLinesInVec() const {
   reading_file.close();
   return lines;
 }
+
+int File::DelFile() { return unlink(filename_.c_str()); }
+int File::Replace(const std::string &str) {
+  int fd = open(filename_.c_str(), O_TRUNC | O_WRONLY | O_CREAT, 0644);
+  if (fd == -1) return -1;
+  ssize_t byte = 0;
+  size_t writen_size = 0;
+  while (writen_size != str.size()) {
+    if ((byte = write(fd, str.c_str() + writen_size,
+                      str.size() - writen_size)) < 0) {
+      return -1;
+    }
+    writen_size += byte;
+  }
+  return 0;
+}

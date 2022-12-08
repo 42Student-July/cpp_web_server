@@ -3,6 +3,7 @@
 
 #include <algorithm>
 #include <map>
+#include <stack>
 #include <string>
 #include <utility>
 #include <vector>
@@ -24,6 +25,8 @@ class Path {
 
   static std::string GetAliasPath(const LocationPair &location_pair,
                                   const std::string &request_uri);
+  static bool IsValidPath(const std::string &path);
+  static bool IsFullPath(const std::string &path);
   class LocationNotFound : public std::exception {
    public:
     const char *what() const throw();

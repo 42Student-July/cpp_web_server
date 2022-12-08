@@ -10,7 +10,7 @@
 #include "Fd.hpp"
 #include "ServerContext.hpp"
 #include "Socket.hpp"
-enum EventType { kListen, kConn, kCgi };
+enum EventType { kListen, kConn, kCgiReadd, kCgiWrite };
 enum EventState {
   kRead,
   kReadAgain,
@@ -18,8 +18,8 @@ enum EventState {
   kWrite,
   kWriteAgain,
   kWriteFinished,
-  kCgiWrite,
-  kCgiRead,
+  // kCgiWrite,
+  // kCgiRead,
   kCgiReadAgain,
   kCgiReadFinished,
   kWait,

@@ -45,7 +45,7 @@ class Parser {
   void StoreClientBodySize(ServerContext *sc);
   void StoreServerName(ServerContext *sc);
   void StoreErrorPage(ServerContext *sc);
-  void StoreUploadPass(ServerContext *sc);
+  void StoreUploadPath(ServerContext *sc);
   void StoreLocation(ServerContext *sc);
 
   void StoreLimitExcept(LocationContext *lc);
@@ -54,7 +54,7 @@ class Parser {
   void StoreAutoIndex(LocationContext *lc);
   void StoreIndex(LocationContext *lc);
   void StoreCgiExtension(LocationContext *lc);
-  void StoreUploadPass(LocationContext *lc);
+  void StoreUploadPath(LocationContext *lc);
 
   static std::string ParseListen(Token tkn);
   static std::string ParseHost(Token tkn);

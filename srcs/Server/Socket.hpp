@@ -20,6 +20,7 @@
 
 enum ResponseCode {
   kKk200Ok,
+  kKk201Created,
   kKk204NoContent,
   kKk400BadRequest,
   kKk401Unauthorized,
@@ -33,7 +34,10 @@ enum ResponseCode {
   kKk503ServerUnavailable,
   kKkNotSet
 };
-// struct CgiRes {pid_t process_id; std::string chunked;};
+struct CgiRes {
+  pid_t process_id;
+  int cgi_fd;
+};
 
 class Socket {
  private:
