@@ -10,7 +10,6 @@
 #include <vector>
 
 #include "LocationContext.hpp"
-class LocationContext;
 class ServerContext {
  public:
   std::pair<std::string, std::string> listen;

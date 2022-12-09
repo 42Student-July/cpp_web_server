@@ -48,7 +48,7 @@ struct HttpRequestData {
   bool is_chunked;
   struct ParsedRequest pr;
 };
-class ServerContext;
+
 class ReceiveHttpRequest {
  private:
   HttpRequestData fd_data_;
