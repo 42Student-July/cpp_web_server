@@ -8,6 +8,7 @@
 
 #include <iostream>
 #include <string>
+#include <vector>
 
 #include "Fd.hpp"
 #include "ServerContext.hpp"
@@ -46,6 +47,7 @@ struct CgiRes {
 class Socket {
  private:
  public:
+  std::vector<ServerContext> vec_context;
   ServerContext server_context;
   LocationContext location_context;
   std::string reesponse;
@@ -59,7 +61,7 @@ class Socket {
   std::string response_body;
   CgiRes cgi_res;
   std::string full_path;
-  Socket(int fd, const ServerContext& context);
+  Socket(int fd, const std::vector<ServerContext>& context);
   ~Socket();
 };
 

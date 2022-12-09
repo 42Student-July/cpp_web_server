@@ -11,7 +11,8 @@ ReceveRequestFromClient::ReceveRequestFromClient(Socket *sock)
     : socket_(sock), cgi_(NULL) {}
 ReceveRequestFromClient::~ReceveRequestFromClient() {}
 void ReceveRequestFromClient::Do() {
-  stat_ = request_.ReadHttpRequest(socket_->sock_fd, &socket_->pr);
+  stat_ = request_.ReadHttpRequest(socket_->sock_fd, &socket_->pr,
+                                   socket_->vec_context);
   if (IsReadErr(stat_)) {
     socket_->response_code = kKk400BadRequest;
   } else if (IsReadComplete(stat_)) {

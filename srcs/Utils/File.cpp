@@ -1,5 +1,6 @@
 #include "File.hpp"
 
+#include <dirent.h>
 #include <fcntl.h>
 #include <sys/stat.h>
 
@@ -94,4 +95,39 @@ int File::Replace(const std::string &str) {
     writen_size += byte;
   }
   return 0;
+}
+std::vector<FileInfo> File::GetFileListInDir() const {
+  std::vector<FileInfo> file_list;
+
+  if (!IsDir()) return file_list;
+  DIR *dir = NULL;
+  struct dirent *ent = NULL;
+  if ((dir = opendir(filename_.c_str())) != NULL) {
+    while ((ent = readdir(dir)) != NULL) {
+      std::string file_name(ent->d_name);
+      std::cout << file_name << std::endl;
+      if (file_name == "." || file_name == "..") {
+        continue;
+      }
+      FileInfo file_info;
+
+      struct stat buf;
+      int exists = stat(filename_.c_str(), &buf);
+      if (exists < 0) {
+        std::cerr << "Could not stat file: " << file_name << std::endl;
+        continue;
+      }
+      char time_buf[50];
+      ctime_r(&buf.st_mtime, time_buf);
+      file_info.timestamp = time_buf;
+      file_info.size = buf.st_size;
+      file_info.name = file_name;
+
+      file_list.push_back(file_info);
+    }
+    closedir(dir);
+  } else {
+    std::cerr << "Could not open directory: " << filename_ << std::endl;
+  }
+  return file_list;
 }

@@ -8,7 +8,17 @@
 #include <utility>
 #include <vector>
 
-#include "ReceiveHttpRequest.hpp"
+enum Method {
+  kError,
+  kConnect,
+  kDelete,
+  kGet,
+  kHead,
+  kOptions,
+  kPost,
+  kPut,
+  kTrace
+};
 class LocationContext {
  public:
   std::set<std::string> limit_except;
