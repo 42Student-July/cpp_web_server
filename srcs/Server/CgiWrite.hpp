@@ -4,10 +4,12 @@
 
 #include "Epoll.hpp"
 #include "Event.hpp"
+#include "Sender.hpp"
 #include "Socket.hpp"
 class CgiWrite : public Event {
  private:
   Socket *socket_;
+  Sender sender_;
 
  public:
   explicit CgiWrite(Socket *socket);

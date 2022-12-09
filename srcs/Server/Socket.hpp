@@ -29,14 +29,18 @@ enum ResponseCode {
   kKk405MethodNotAllowed,
   kKk413RequestEntityTooLarge,
   kKk429TooManyRequest,
-  kKk500internalServerRequestsError,
+  kKk500internalServerError,
   kKk501NotImplemented,
   kKk503ServerUnavailable,
   kKkNotSet
 };
 struct CgiRes {
+  int buff_size;
+  int written_size;
+  int read_size;
   pid_t process_id;
   int cgi_fd;
+  char buf[2048];
 };
 
 class Socket {
@@ -53,6 +57,8 @@ class Socket {
   ResponseCode response_code;
   bool can_write;
   std::string response_body;
+  CgiRes cgi_res;
+  std::string full_path;
   Socket(int fd, const ServerContext& context);
   ~Socket();
 };

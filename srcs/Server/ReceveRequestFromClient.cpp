@@ -1,6 +1,8 @@
 #include "ReceveRequestFromClient.hpp"
 
+#include "Cgi.hpp"
 #include "CgiRead.hpp"
+#include "CgiResponse.hpp"
 #include "CgiWrite.hpp"
 #include "Method.hpp"
 #include "PrepareElementsFromRequestAndConfig.hpp"
@@ -14,20 +16,26 @@ void ReceveRequestFromClient::Do() {
     socket_->response_code = kKk400BadRequest;
   } else if (IsReadComplete(stat_)) {
     stat_ = kReadComplete;
-    ExecMethod();
+    ExecMethodOrCgi();
   }
 }
-void ReceveRequestFromClient::ExecMethod() {
+void ReceveRequestFromClient::ExecMethodOrCgi() {
   // paht 探索 index くっつけるcgi 実行,イベントに追加 get(auto indexも) post
   // redirectも delete処理　 通常の処理実行、cgi実行
   PrepareElementsFromRequestAndConfig pre(socket_->server_context, socket_->pr);
   if (!pre.RequestMethodAllowed()) {
     socket_->response_code = kKk405MethodNotAllowed;
   } else if (pre.IsRequestCgi()) {
-    if (socket_->pr.request_body.empty())
-      cgi_ = new CgiRead(socket_);
-    else
-      cgi_ = new CgiWrite(socket_);
+    try {
+      Cgi c(socket_);
+      c.Run();
+      if (socket_->pr.request_body.empty())
+        cgi_ = new CgiRead(socket_);
+      else
+        cgi_ = new CgiWrite(socket_);
+    } catch (...) {
+      socket_->response_code = kKk500internalServerError;
+    }
   } else {
     HttpMethod *m = HttpMethod::Build(socket_->pr.m);
     if (m == NULL) {
@@ -39,12 +47,13 @@ void ReceveRequestFromClient::ExecMethod() {
   }
 }
 Event *ReceveRequestFromClient::NextEvent() {
+  if (cgi_ != NULL) {
+    return new CgiResponse(socket_);
+  }
   if (IsReadFinished(stat_)) {
     // std::cout << "retu response" << std::endl;
-    // cgi response mo zissou
     return new ResponseToTheClient(socket_);
   }
-  // std::cout << "retu NULL" << std::endl;
   return NULL;
 }
 
@@ -52,18 +61,20 @@ std::pair<Event *, epoll_event> ReceveRequestFromClient::PublishNewEvent() {
   epoll_event epo_ev;
   if (cgi_ != NULL) {
     memset(&epo_ev, 0, sizeof(epoll_event));
-    if (cgi_->Type() == kCgiWrite)
-      epo_ev.events = EPOLLOUT;
-    else
+    if (socket_->pr.request_body.empty())
       epo_ev.events = EPOLLIN;
+    else
+      epo_ev.events = EPOLLOUT;
   }
   return std::make_pair(cgi_, epo_ev);
 }
 void ReceveRequestFromClient::Handle(Epoll *epoll) {
-  if (IsReadFinished(stat_)) {
+  // cgiなら in out 一旦外す
+  if (cgi_ != NULL) {
+    epoll->Mod(socket_->sock_fd, 0);
+  } else if (IsReadFinished(stat_)) {
     epoll->Mod(socket_->sock_fd, EPOLLOUT);
   }
-  // cgiなら in out 一旦外す
 }
 
 EventState ReceveRequestFromClient::State() {

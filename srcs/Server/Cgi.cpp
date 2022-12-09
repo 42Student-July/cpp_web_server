@@ -1,108 +1,58 @@
 #include "Cgi.hpp"
-// Cgi::Cgi(const ServerContext &context, const ParsedRequest &pr, int conn_fd)
-//     : Event(-1, context, kCgi),
-//       timer_(kKTimeOut),
-//       conn_fd_(conn_fd),
-//       method_(pr.m) {
-//   // set up
-//   (void)pr;
-//   pass_ = "./www/cgi-bin/env.cgi";
-//   ParseArgv();
-//   ArgvToCharPtr();
-//   SetEnv();
-//   EnvMapToCharPtr();
-//   PipeOut();
-//   if (method_ == kPost) PipeIn();
-//   Reset(pipe_out_[0]);  // fd hennkou
-// }
-// Cgi::~Cgi() {
-//   int status = 0;
-//   waitpid(chilid_process_, &status, WNOHANG);
-//   if (!WIFEXITED(status)) kill(chilid_process_, SIGKILL);
-//   if (method_ == kPost) close(pipe_in_[1]);
-//   close(pipe_out_[0]);
-// }
 
-// void Cgi::ParseArgv() {
-//   if (query_.find('=') != std::string::npos) return;
-//   size_t pos = 0;
-//   std::string query = query_;
-//   while ((pos = query.find_first_of("+")) != std::string::npos) {
-//     StoreStrIfNotEmpty(query.substr(0, pos));
-//     query = query.substr(pos + 1);
-//   }
-//   StoreStrIfNotEmpty(query);
-// }
+#include <fcntl.h>
+Cgi::Cgi(Socket *sock) : socket_(sock) {
+  // set up
+  ParseArgv();
+  SetEnv();
+}
+Cgi::~Cgi() {}
 
-// void Cgi::StoreStrIfNotEmpty(const std::string &str) {
-//   if (str.empty()) return;
-//   argv_.push_back(str);
-// }
-// void Cgi::SetEnv() {
-//   // if(!length.empty)
-//   env_map_["CONTENT_LENGTH"] =
-//       std::string("CONTENT_LENGTH=") +
-//       std::string("50");  // request headder ni attara tukeru
-//   env_map_["AUTH_TYPE"] =
-//       std::string("AUTH_TYPE=") +
-//       std::string("auth");  // hedderの authenticationの値を使う
-//   env_map_["CONTENT_TYPE"] =
-//       std::string("CONTENT_TYPE=") +
-//       std::string("type");  // yttp request headder ni attara must
-//   env_map_["PATH_INFO"] = std::string("PATH_INFO=") +
-//                           std::string("paht");  //
-//                           cgiファイル名の後ろにつくあれ
-//   env_map_["QUERY_STRING"] =
-//       std::string("QUERY_STRING=") +
-//       std::string("abc=abc&bbb=ccc");  // ?の後に=があったら
-//   env_map_["REMOTE_ADDR"] =
-//       std::string("REMOTE_ADDR=") + std::string("172.0.0.1");  // host
-//       address
-//   env_map_["REQUEST_METHOD"] =
-//       std::string("REQUEST_METHOD=") + std::string("GET");  // method name
-//   env_map_["SCRIPT_NAME"] = std::string("SCRIPT_NAME=") +
-//                             std::string("/test.cgi");  // encode してないuri
-//   env_map_["SERVER_NAME"] =
-//       std::string("SERVER_NAME=") + std::string("localhost");  // 必須
-//   env_map_["SERVER_PORT"] =
-//       std::string("SERVER_PORT=") + std::string("80");  // 必須
-//   env_map_["SERVER_PROTOCOL"] =
-//       std::string("SERVER_PROTOCOL=") + std::string("HTTP/1.1");
-//   env_map_["SERVER_SOFTWARE"] = std::string("SERVER_SOFTWARE=") +
-//                                 std::string("WEBSEEEEEEEEEEEEEEEEERVEEEEEEEEE");
+void Cgi::ParseArgv() {
+  std::string query = socket_->pr.query_string;
+  if (query.find('=') != std::string::npos) return;
+  size_t pos = 0;
+  while ((pos = query.find_first_of("+")) != std::string::npos) {
+    StoreStrIfNotEmpty(query.substr(0, pos));
+    query = query.substr(pos + 1);
+  }
+  StoreStrIfNotEmpty(query);
+}
 
+void Cgi::StoreStrIfNotEmpty(const std::string &str) {
+  if (str.empty()) return;
+  argv_.push_back(str);
+}
+void Cgi::SetEnv() {
+  // if(!socket_.pr.headder(contentlength))
+  env_map_["CONTENT_LENGTH"] =
+      std::string("CONTENT_LENGTH=") + std::string("50");  // headder
+  env_map_["AUTH_TYPE"] =
+      std::string("AUTH_TYPE=") +
+      std::string("auth");  // hedderの authenticationの値を使う
+  env_map_["CONTENT_TYPE"] = std::string("CONTENT_TYPE=") +
+                             std::string("type");  //  headder ni attara must
+  env_map_["PATH_INFO"] =
+      std::string("PATH_INFO=") +
+      socket_->full_path;  // request line cgiファイル名の後ろにつくあれ
+  env_map_["QUERY_STRING"] = std::string("QUERY_STRING=") +
+                             socket_->pr.query_string;  // ?の後に=があったら
+  env_map_["REMOTE_ADDR"] = std::string("REMOTE_ADDR=");  // host addr
+
+  env_map_["REQUEST_METHOD"] = std::string("REQUEST_METHOD=") +
+                               utils::ToStr(socket_->pr.m);  // method name
+  env_map_["SCRIPT_NAME"] = std::string("SCRIPT_NAME=") +
+                            socket_->pr.request_path;  // encode してないuri
+  env_map_["SERVER_NAME"] = std::string("SERVER_NAME=") +
+                            socket_->server_context.server_name;  // 必須
+  env_map_["SERVER_PORT"] =
+      std::string("SERVER_PORT=") + socket_->server_context.GetPort();  // 必須
+  env_map_["SERVER_PROTOCOL"] =
+      std::string("SERVER_PROTOCOL=") + std::string("HTTP/1.1");
+  env_map_["SERVER_SOFTWARE"] = std::string("SERVER_SOFTWARE=") +
+                                std::string("WEBSEEEEEEEEEEEEEEEEERVEEEEEEEEE");
+}
 //   /// env_map_["path"] = "PATH=/usr/bin/perl";
-// }
-
-// void Cgi::ArgvToCharPtr() {
-//   if (argv_.size() == 0) {
-//     argv_ptr_ = NULL;
-//     return;
-//   }
-//   argv_ptr_ = new char *[argv_.size() + 1];
-//   for (size_t i = 0; i < argv_.size(); i++) {
-//     argv_ptr_[i] = utils::StrToCharPtr(argv_[i]);
-//   }
-//   argv_ptr_[argv_.size()] = NULL;
-// }
-// void Cgi::EnvMapToCharPtr() {
-//   env_ptr_ = new char *[env_map_.size() + 1];
-//   std::map<std::string, std::string>::iterator it = env_map_.begin();
-//   for (size_t i = 0; it != env_map_.end(); i++, it++) {
-//     env_ptr_[i] = utils::StrToCharPtr(it->second);
-//   }
-//   env_ptr_[env_map_.size()] = NULL;
-// }
-// void Cgi::PipeIn() {
-//   if (pipe(pipe_in_) == -1) throw std::runtime_error("pipe");
-//   // close(pipe_in_);
-// }
-// void Cgi::PipeOut() {
-//   if (pipe(pipe_out_) == -1) throw std::runtime_error("pipe");
-//   // close();
-// }
-// void Cgi::Fork() {
-//   if ((chilid_process_ = fork()) == -1) throw std::runtime_error("fork");
 // }
 // // void Cgi::print(){
 // //   std::cout << query_ <<std::endl;
@@ -110,44 +60,51 @@
 // // std::cout << *ptr << std::endl;
 // // }
 // // std::cout << "===================" << std::endl;
-// // for(char **ptr = env_ptr_ ; *ptr != NULL; ptr++){
+// // for(char **ptr = ptr ; *ptr != NULL; ptr++){
 // // std::cout << *ptr << std::endl;
 // // }
 // // }
-// void Cgi::Dup2() {
-//   if (dup2(pipe_out_[1], STDOUT_FILENO) == -1) {
-//     throw std::runtime_error("dup2 err");
-//   }
-//   if (method_ == kPost) {
-//     if (dup2(pipe_in_[0], STDIN_FILENO) == -1)
-//       throw std::runtime_error("dup2 err");
-//   }
-// }
-// void Cgi::Run() {
-//   Fork();
-//   if (chilid_process_ == 0) {
-//     if (method_ == kPost) close(pipe_in_[1]);
-//     close(pipe_out_[0]);
-//     Dup2();
-//     execve(pass_.c_str(), argv_ptr_, env_ptr_);
-//     utils::DelPtr(env_ptr_);
-//     utils::DelPtr(argv_ptr_);
-//     std::cout << pass_ << std::endl;
-//     std::cout << "sippai" << std::endl;
-//     exit(1);
-//   } else {
-//     if (method_ == kPost) close(pipe_in_[0]);
-//     close(pipe_out_[1]);
-//     utils::DelPtr(env_ptr_);
-//     utils::DelPtr(argv_ptr_);
-//     // wait(NULL);
-//     while (true) {
-//       std::string reaad = Read();
-//       chunked_ += reaad;
-//       if (reaad.size() == 0) break;
-//     }
-//   }
-// }
+void Cgi::Fork() {
+  if ((socket_->cgi_res.process_id = fork()) == -1) {
+    close(fd_[0]);
+    close(fd_[1]);
+    throw std::runtime_error("fork");
+  }
+}
+void Cgi::SockPair() {
+  if (socketpair(AF_UNIX, SOCK_STREAM, 0, fd_) == -1)
+    throw std::runtime_error("socketpair");
+}
+void Cgi::SetSockopt() {
+  int flag = 0;
+  if ((flag = fcntl(fd_[0], F_GETFL, 0)) == -1 ||
+      fcntl(fd_[0], F_SETFL, flag | O_NONBLOCK) == -1) {
+    close(fd_[0]);
+    close(fd_[1]);
+    throw std::runtime_error("fcntl");
+  }
+}
+void Cgi::Run() {
+  SockPair();
+  // SetSockopt();
+  socket_->cgi_res.cgi_fd = fd_[0];
+  Fork();
+  if (socket_->cgi_res.process_id == 0) {
+    close(fd_[0]);
+    char **argv = utils::VecToCharDoublePtr(argv_);
+    char **env = utils::MapToCharDoublePtr(env_map_);
+    if (dup2(fd_[1], STDIN_FILENO) == -1 || dup2(fd_[1], STDOUT_FILENO) == -1)
+      exit(1);
+    execve(socket_->pr.request_path.c_str(), argv, env);
+    utils::DelPtr(argv);
+    utils::DelPtr(env);
+    std::cout << socket_->pr.request_path.c_str() << std::endl;
+    std::cout << "sippai" << std::endl;
+    exit(1);
+  }
+  close(fd_[1]);
+}
+
 // void Cgi::ReadFromCgi() {}
 // std::string Cgi::GetChunked() const { return chunked_; }
 

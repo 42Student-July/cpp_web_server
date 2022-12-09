@@ -1,17 +1,16 @@
-#ifndef SRCS_SERVER_CGIREAD_HPP_
-#define SRCS_SERVER_CGIREAD_HPP_
+#ifndef SRCS_SERVER_CGIRESPONSE_HPP_
+#define SRCS_SERVER_CGIRESPONSE_HPP_
 #include <utility>
 
 #include "Event.hpp"
 #include "Socket.hpp"
-class CgiRead : public Event {
+class CgiResponse : public Event {
  private:
-  static const int kBuffSize = 2048;
   Socket *socket_;
 
  public:
-  explicit CgiRead(Socket *socket);
-  ~CgiRead();
+  explicit CgiResponse(Socket *sock);
+  ~CgiResponse();
   void Do();
   Event *NextEvent();
   std::pair<Event *, epoll_event> PublishNewEvent();
@@ -21,4 +20,4 @@ class CgiRead : public Event {
   EventType Type() const;
 };
 
-#endif  // SRCS_SERVER_CGIREAD_HPP_
+#endif  // SRCS_SERVER_CGIRESPONSE_HPP_

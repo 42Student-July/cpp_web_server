@@ -16,7 +16,7 @@ class ReceveRequestFromClient : public Event {
   static bool IsReadAgain(const ReadStat &st);
   static bool IsReadFinished(const ReadStat &st);
   static bool IsReadComplete(const ReadStat &st);
-  void ExecMethod();
+  void ExecMethodOrCgi();
 
  public:
   explicit ReceveRequestFromClient(Socket *sock);

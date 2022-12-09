@@ -13,6 +13,7 @@ std::string PrepareElementsFromRequestAndConfig::GetFullPath() const {
 }
 void PrepareElementsFromRequestAndConfig::UpdateData(Socket *sock) const {
   sock->location_context = selected_location_context_.second;
+  sock->full_path = full_path_;
 }
 LocationContext PrepareElementsFromRequestAndConfig::GetLocation() const {
   return selected_location_context_.second;

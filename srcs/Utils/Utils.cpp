@@ -2,6 +2,8 @@
 
 #include <sstream>
 
+#include "ReceiveHttpRequest.hpp"
+
 namespace utils {
 
 std::string Itoa(int n) {
@@ -66,5 +68,30 @@ void DelPtr(char **ptr) {
     delete[] * tmp_ptr;
   }
   delete[] ptr;
+}
+char **MapToCharDoublePtr(const std::map<std::string, std::string> &m) {
+  if (m.size() == 0) return NULL;
+  char **ptr = new char *[m.size() + 1];
+  std::map<std::string, std::string>::const_iterator it = m.begin();
+  for (size_t i = 0; it != m.end(); i++, it++) {
+    ptr[i] = utils::StrToCharPtr(it->second);
+  }
+  ptr[m.size()] = NULL;
+  return ptr;
+}
+char **VecToCharDoublePtr(const std::vector<std::string> &vec) {
+  if (vec.size() == 0) return NULL;
+  char **ptr = new char *[vec.size() + 1];
+  for (size_t i = 0; i < vec.size(); i++) {
+    ptr[i] = utils::StrToCharPtr(vec[i]);
+  }
+  ptr[vec.size()] = NULL;
+  return ptr;
+}
+std::string ToStr(const Method &m) {
+  if (m == kDelete) return "DELETE";
+  if (m == kPost) return "POST";
+  if (m == kGet) return "GET";
+  return "";
 }
 }  // namespace utils
