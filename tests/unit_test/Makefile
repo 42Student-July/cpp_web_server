@@ -12,6 +12,10 @@ CXXFLAGS = -std=c++11
 NAME = unit_test
 RM = rm -f
 
+ifdef REQ_ONLY
+TESTOBJS = ReceiveHttpRequest_test.o 
+endif
+
 all:		$(NAME)
 
 $(NAME):	$(OBJS) $(TESTOBJS)
@@ -33,4 +37,9 @@ re:			fclean $(NAME)
 
 sample: sample.cc sample_test.cc
 		$(CXX) $(CXXFLAGS) -o a.out sample.cc sample_test.cc -L/usr/local/lib -lgtest -lgtest_main -pthread
+
+request: $(OBJS) $(TESTOBJS)
+		$(RM) $(NAME)
+		make REQ_ONLY=1	
+
 .PHONY:		all clean fclean re
