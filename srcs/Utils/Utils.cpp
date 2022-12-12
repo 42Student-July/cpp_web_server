@@ -34,6 +34,13 @@ long StrToLong(const std::string &str) {
   if (errno == ERANGE || (*end != '\0')) return -1;
   return ret;
 }
+long StrToLong(const std::string &str, int base) {
+  char *end = NULL;
+  errno = 0;
+  long ret = strtol(str.c_str(), &end, base);
+  if (errno == ERANGE || (*end != '\0')) return -1;
+  return ret;
+}
 std::vector<std::string> SplitWithMultipleSpecifier(
     const std::string &str, const std::string &separators) {
   std::vector<std::string> elements;
