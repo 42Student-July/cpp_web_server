@@ -1,0 +1,31 @@
+POST / HTTP/1.1
+Host: hoge.com
+Transfer-Encoding: chunked
+
+6
+<HTML>
+2
+
+
+27
+<HEAD><TITLE>Hello World</TITLE></HEAD>
+2
+
+
+6
+<BODY>
+2
+
+
+16
+<BIG>Hello World</BIG>
+2
+
+
+e
+</BODY></HTML>
+2
+
+
+0
+

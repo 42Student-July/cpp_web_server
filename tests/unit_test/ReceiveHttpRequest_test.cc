@@ -2,6 +2,7 @@
 
 #include <fcntl.h>
 #include <gtest/gtest.h>
+
 #define DIR "./text/ReceiveHttpRequest/"
 
 Header expected_full = {{"host", "hoge.com"},
@@ -144,5 +145,52 @@ TEST(ReceiveHttpRequest, request_then_nobody) {
   int fd = open_pseudo_socket();
   copy_fd(fd, "request_then_nobody");
   rs = rhr.ReadHttpRequest(fd, &pr, sc);
+  close(fd);
+}
+
+TEST(ReceiveHttpRequest, request_chunked) {
+  ReceiveHttpRequest rhr;
+  ParsedRequest pr;
+  ReadStat rs;
+  std::vector<ServerContext> sc;
+
+  int fd = open_pseudo_socket();
+  copy_fd(fd, "ChunkedRequest1");
+  rs = rhr.ReadHttpRequest(fd, &pr, sc);
+  EXPECT_EQ("hogehogefugapiyopfoofoofoofoofoofoofoo",
+            rhr.GetParsedRequest().request_body);
+  EXPECT_EQ(kDecodeComplete, rhr.GetDecodeStat());
+  close(fd);
+}
+
+TEST(ReceiveHttpRequest, request_chunked2) {
+  ReceiveHttpRequest rhr;
+  ParsedRequest pr;
+  ReadStat rs;
+  std::vector<ServerContext> sc;
+
+  std::string expext =
+      "<HTML>\r\n<HEAD><TITLE>Hello "
+      "World</TITLE></HEAD>\r\n<BODY>\r\n<BIG>Hello "
+      "World</BIG>\r\n</BODY></HTML>\r\n";
+
+  int fd = open_pseudo_socket();
+  copy_fd(fd, "ChunkedRequest2");
+  rs = rhr.ReadHttpRequest(fd, &pr, sc);
+  EXPECT_EQ(expext, rhr.GetParsedRequest().request_body);
+  EXPECT_EQ(kDecodeComplete, rhr.GetDecodeStat());
+  close(fd);
+}
+
+TEST(ReceiveHttpRequest, request_chunked_error) {
+  ReceiveHttpRequest rhr;
+  ParsedRequest pr;
+  ReadStat rs;
+  std::vector<ServerContext> sc;
+
+  int fd = open_pseudo_socket();
+  copy_fd(fd, "ChunkedRequestError");
+  rs = rhr.ReadHttpRequest(fd, &pr, sc);
+  EXPECT_EQ(kChunkError, rhr.GetDecodeStat());
   close(fd);
 }

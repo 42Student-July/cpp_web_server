@@ -232,9 +232,17 @@ ReadStat ReceiveHttpRequest::ReadHttpRequest(const int &fd, ParsedRequest *pr,
   }
 
   if (fd_data_.s == kWaitBody) {
-    pos = fd_data_.buf.find(NL);
-    if (std::string::npos != pos) {
-      fd_data_.pr.request_body = TrimByPos(&fd_data_.buf, pos, 2);
+    if (!fd_data_.is_chunked) {
+      pos = fd_data_.buf.find(NL);
+      if (std::string::npos != pos) {
+        fd_data_.pr.request_body = TrimByPos(&fd_data_.buf, pos, 2);
+      }
+    } else {
+      pos = fd_data_.buf.find(NL);
+      if (std::string::npos != pos) {
+        ds_ = cb_.DecodeChunkedBody(&fd_data_.buf);
+        fd_data_.pr.request_body = cb_.GetDecodedBody();
+      }
     }
   }
   *pr = fd_data_.pr;
@@ -273,3 +281,5 @@ std::string &ReceiveHttpRequest::GetValueByKey(const std::string &key) const {
   }
   return it->second;
 }
+
+DecodeStat ReceiveHttpRequest::GetDecodeStat() const { return ds_; }

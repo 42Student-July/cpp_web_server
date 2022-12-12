@@ -16,7 +16,7 @@ namespace utils {
 std::string Itoa(int n);
 int Atoi(const std::string &s);
 long StrToLong(const std::string &str);
-long StrToLong(const std::string &str, int base);
+long HexStrToLong(const std::string &str);
 std::vector<std::string> SplitWithMultipleSpecifier(
     const std::string &str, const std::string &separators);
 

@@ -9,6 +9,7 @@
 #include <utility>
 #include <vector>
 
+#include "DecodeChunkedBody.hpp"
 #include "ServerContext.hpp"
 
 #define NL "\r\n"
@@ -51,8 +52,11 @@ struct HttpRequestData {
 
 class ReceiveHttpRequest {
  private:
+  size_t next_chunked_size_;
   HttpRequestData fd_data_;
   ServerContext *sc_;
+  ChunkedBody cb_;
+  DecodeStat ds_;
 
   class SearchValueByKey {
     std::string Key_;
@@ -77,6 +81,7 @@ class ReceiveHttpRequest {
   ServerContext &SelectServerContext(
       std::vector<ServerContext> *contexts) const;
   std::string &GetValueByKey(const std::string &key) const;
+  DecodeStat GetDecodeStat() const;
 };
 
 #endif  // SRCS_SERVER_RECEIVEHTTPREQUEST_HPP_

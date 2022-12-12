@@ -34,10 +34,10 @@ long StrToLong(const std::string &str) {
   if (errno == ERANGE || (*end != '\0')) return -1;
   return ret;
 }
-long StrToLong(const std::string &str, int base) {
+long HexStrToLong(const std::string &str) {
   char *end = NULL;
   errno = 0;
-  long ret = strtol(str.c_str(), &end, base);
+  long ret = strtol(str.c_str(), &end, 16);
   if (errno == ERANGE || (*end != '\0')) return -1;
   return ret;
 }
