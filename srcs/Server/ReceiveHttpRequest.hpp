@@ -17,18 +17,6 @@
 
 typedef std::vector<std::pair<std::string, std::string> > Header;
 
-enum Method {
-  kError,
-  kConnect,
-  kDelete,
-  kGet,
-  kHead,
-  kOptions,
-  kPost,
-  kPut,
-  kTrace
-};
-
 enum ReadStat {
   kUnread,
   kWaitRequest,

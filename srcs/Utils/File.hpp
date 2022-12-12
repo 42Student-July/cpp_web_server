@@ -1,5 +1,8 @@
 #ifndef SRCS_UTILS_FILE_HPP_
 #define SRCS_UTILS_FILE_HPP_
+#include <fcntl.h>
+#include <unistd.h>
+
 #include <stdexcept>
 #include <string>
 #include <vector>
@@ -23,7 +26,8 @@ class File {
   ~File();
   std::string ReadFileLines() const;
   std::vector<std::string> StoreFileLinesInVec() const;
-
+  int DelFile();
+  int Replace(const std::string &body);
   bool IsExist() const;
   bool IsDir() const;
   bool IsFile() const;

@@ -10,11 +10,13 @@ class ReceveRequestFromClient : public Event {
   Socket *socket_;
   ReceiveHttpRequest request_;
   ReadStat stat_;
+  Event *cgi_;
   // EventState event_state_;
   static bool IsReadErr(const ReadStat &st);
   static bool IsReadAgain(const ReadStat &st);
   static bool IsReadFinished(const ReadStat &st);
   static bool IsReadComplete(const ReadStat &st);
+  void ExecMethodOrCgi();
 
  public:
   explicit ReceveRequestFromClient(Socket *sock);

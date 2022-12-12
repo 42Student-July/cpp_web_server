@@ -25,7 +25,7 @@ Socket* ListenToClient::GetSocket() const { return socket_; }
 EventType ListenToClient::Type() const { return kListen; }
 
 std::pair<Event*, epoll_event> ListenToClient::PublishNewEvent() {
-  socket_ = new Socket(conn_fd_, context_[0]);
+  socket_ = new Socket(conn_fd_, context_);
   return std::make_pair(new ReceveRequestFromClient(socket_),
                         Epoll::Create(conn_fd_, EPOLLIN));  // recive request
 }

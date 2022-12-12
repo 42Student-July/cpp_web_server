@@ -94,8 +94,8 @@ void print_location_context(std::map<std::string, LocationContext> l) {
     print_vec(it->second.index, "index: ");
     std::cout << "==============cgi_extension==============" << std::endl;
     print_vec(it->second.cgi_extension, "cgi_extension :");
-    std::cout << "==============upload_pass==============" << std::endl;
-    std::cout << "upload_pass second:" << it->second.upload_pass << std::endl;
+    std::cout << "==============upload_path==============" << std::endl;
+    std::cout << "upload_path second:" << it->second.upload_path << std::endl;
     std::cout << "======location num: " << i + 1
               << " end============" << std::endl;
   }
@@ -129,7 +129,7 @@ void parser_run(std::string filename, std::string msg, bool flg) {
       p1.Parse();
       std::cout << "✗" << std::endl;
     } catch (ConfigErrException &e) {
-      //std::cout << e.msg() << std::endl;
+      // std::cout << e.msg() << std::endl;
       std::cout << "OK" << std::endl;
     } catch (std::string str) {
       std::cout << str << std::endl;
@@ -145,7 +145,7 @@ void parser_run(std::string filename, std::string msg, bool flg) {
       print_serv_context(p1.GetConfig());
       std::cout << "OK" << std::endl;
     } catch (ConfigErrException &str) {
-      //std::cout << str.msg() << std::endl;
+      // std::cout << str.msg() << std::endl;
       std::cout << "✗" << std::endl;
     }
   }
@@ -209,7 +209,7 @@ void parser_err_case() {
   parser_run(path + "cgi_extension_middle_comma", "cgi_extension_middle_comma",
              1);
   parser_run(path + "cgi_extension_end_comma", "cgi_extension_end_comma", 1);
-  std::cout << "===========upload_pass err=============" << std::endl;
+  std::cout << "===========upload_path err=============" << std::endl;
   parser_run(path + "upload_pass_duplicate", "upload_pass_duplicate", 1);
   parser_run(path + "upload_pass_two_argment", "upload_pass_two_argment", 1);
   std::cout << "===========================================" << std::endl;

@@ -2,6 +2,7 @@
 #define SRCS_SERVER_CGI_HPP_
 #include <signal.h>
 #include <string.h>
+#include <sys/socket.h>
 #include <sys/wait.h>
 #include <unistd.h>
 
@@ -13,48 +14,26 @@
 #include "Event.hpp"
 #include "ReceiveHttpRequest.hpp"
 #include "ServerContext.hpp"
+#include "Socket.hpp"
 #include "Timer.hpp"
 #include "Utils.hpp"
-
-class Cgi : public Event {
+class Cgi {
  private:
-  static const size_t kKTimeOut = 3;
-  Timer timer_;
-  int pipe_out_[2];
-  int pipe_in_[2];
-  int conn_fd_;
-  pid_t child_process_;
-  std::string chunked_;
-  Method method_;
-
-  std::string pass_;
-  std::string path_info_;
+  int fd_[2];
+  Socket *socket_;
+  std::string path_info_;  // request parser
   std::vector<std::string> argv_;
   std::map<std::string, std::string> env_map_;
-  std::string query_;
-  pid_t chilid_process_;
-  char **argv_ptr_;
-  char **env_ptr_;
+  void SockPair();
+  void SetSockopt();
   void SetEnv();
-  void PipeIn();
-  void PipeOut();
-  void Fork();
   void StoreStrIfNotEmpty(const std::string &str);
   void ParseArgv();
-  void ArgvToCharPtr();
-  void EnvMapToCharPtr();
-  void Dup2();
-  void ReadFromCgi();
+  void Fork();
 
  public:
-  Cgi(const ServerContext &context, const ParsedRequest &pr, int conn_fd);
+  explicit Cgi(Socket *socket);
   ~Cgi();
   void Run();
-  int GetOutFd() const;
-  int GetInFd() const;
-  void End();
-  std::string GetChunked() const;
-  void SetChunked(const std::string &str);
-  bool TimeOver() const;
 };
 #endif  // SRCS_SERVER_CGI_HPP_

@@ -8,6 +8,7 @@
 
 #include <iostream>
 #include <string>
+#include <vector>
 
 #include "Fd.hpp"
 #include "ServerContext.hpp"
@@ -20,6 +21,7 @@
 
 enum ResponseCode {
   kKk200Ok,
+  kKk201Created,
   kKk204NoContent,
   kKk400BadRequest,
   kKk401Unauthorized,
@@ -28,16 +30,24 @@ enum ResponseCode {
   kKk405MethodNotAllowed,
   kKk413RequestEntityTooLarge,
   kKk429TooManyRequest,
-  kKk500internalServerRequestsError,
+  kKk500internalServerError,
   kKk501NotImplemented,
   kKk503ServerUnavailable,
   kKkNotSet
 };
-// struct CgiRes {pid_t process_id; std::string chunked;};
+struct CgiRes {
+  int buff_size;
+  int written_size;
+  int read_size;
+  pid_t process_id;
+  int cgi_fd;
+  char buf[2048];
+};
 
 class Socket {
  private:
  public:
+  std::vector<ServerContext> vec_context;
   ServerContext server_context;
   LocationContext location_context;
   std::string reesponse;
@@ -49,7 +59,9 @@ class Socket {
   ResponseCode response_code;
   bool can_write;
   std::string response_body;
-  Socket(int fd, const ServerContext& context);
+  CgiRes cgi_res;
+  std::string full_path;
+  Socket(int fd, const std::vector<ServerContext>& context);
   ~Socket();
 };
 

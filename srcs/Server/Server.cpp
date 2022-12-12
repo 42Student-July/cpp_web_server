@@ -19,7 +19,6 @@ void Server::AddEventToMonitored(const int fd, Event *event,
                                  uint32_t event_flag) {
   event_map_.insert(std::make_pair(fd, event));
   epoll_event new_ev = Epoll::Create(fd, event_flag);
-  new_ev.data.fd = fd;
   epoll_.Add(fd, &new_ev);
 }
 void Server::AddEventToMonitored(const int fd, Event *event,

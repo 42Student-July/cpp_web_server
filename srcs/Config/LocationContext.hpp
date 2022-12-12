@@ -7,6 +7,18 @@
 #include <string>
 #include <utility>
 #include <vector>
+
+enum Method {
+  kError,
+  kConnect,
+  kDelete,
+  kGet,
+  kHead,
+  kOptions,
+  kPost,
+  kPut,
+  kTrace
+};
 class LocationContext {
  public:
   std::set<std::string> limit_except;
@@ -15,13 +27,16 @@ class LocationContext {
   std::string auto_index;
   std::vector<std::string> index;
   std::vector<std::string> cgi_extension;
-  std::string upload_pass;
+  std::string upload_path;
 
  public:
   LocationContext();
   ~LocationContext();
   LocationContext(const LocationContext &lc);
   LocationContext &operator=(const LocationContext &lc);
+  bool IsAllowMethod(const Method &m);
+  bool IsAllowExtensionCgi(const std::string &file_nmae);
+  bool IsUploadPath(const std::string &path) const;
 };
 
 #endif  // SRCS_CONFIG_LOCATIONCONTEXT_HPP_

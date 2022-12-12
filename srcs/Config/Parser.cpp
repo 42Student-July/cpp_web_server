@@ -1,5 +1,6 @@
 #include "Parser.hpp"
 
+#include "Path.hpp"
 Parser::Parser(const Lexer &lexer) : tkns_(lexer.GetTokens()) {
   server_directive_case_["listen"] = &Parser::StoreListen;
   server_directive_case_["client_max_body_size"] = &Parser::StoreClientBodySize;
@@ -12,7 +13,7 @@ Parser::Parser(const Lexer &lexer) : tkns_(lexer.GetTokens()) {
   location_directive_case_["autoindex"] = &Parser::StoreAutoIndex;
   location_directive_case_["index"] = &Parser::StoreIndex;
   location_directive_case_["cgi_extension"] = &Parser::StoreCgiExtension;
-  location_directive_case_["upload_pass"] = &Parser::StoreUploadPass;
+  location_directive_case_["upload_path"] = &Parser::StoreUploadPath;
 }
 Parser::~Parser() {}
 const std::vector<ServerContext> &Parser::GetConfig() const {
@@ -176,6 +177,9 @@ void Parser::StoreRoot(LocationContext *lc) {
   tkns_.Next();
   ThrowExceptionIfMatch(tkns_.Current(), ";{}",
                         "invalid arguments in `root` directive");
+  if (!Path::IsFullPath(tkns_.Data()) && !Path::IsValidPath(tkns_.Data()))
+    throw ConfigErrException("invalid arguments in `root` directive",
+                             tkns_.Current());
   SetTokenIfEmpty(&lc->root, tkns_.Current(), "`root` directive is duplicate");
   ThrowExceptionIfNotMatch(tkns_.Next(), ";", "semicolon `;` not found");
 }
@@ -205,7 +209,8 @@ void Parser::StoreCgiExtension(LocationContext *lc) {
                         "invalid arguments in `cgi_extension` directive");
   while (!TokenManager::Equal(tkns_.Current(), ";")) {
     size_t pos = 0;
-    if ((pos = tkns_.Data().find_last_of(".")) == std::string::npos || pos != 0)
+    if ((pos = tkns_.Data().find_last_of(".")) == std::string::npos ||
+        pos != 0 || tkns_.Data().size() == 1)
       throw ConfigErrException("invalid arguments in `cgi_extension` directive",
                                tkns_.Current());
     lc->cgi_extension.push_back(tkns_.Data());
@@ -213,11 +218,14 @@ void Parser::StoreCgiExtension(LocationContext *lc) {
   }
   ThrowExceptionIfNotMatch(tkns_.Current(), ";", "semicolon `;` not found");
 }
-void Parser::StoreUploadPass(LocationContext *lc) {
+void Parser::StoreUploadPath(LocationContext *lc) {
   ThrowExceptionIfMatch(tkns_.Next(), ";{}",
-                        "invalid arguments in `upload_pass` directive");
-  SetTokenIfEmpty(&lc->upload_pass, tkns_.Current(),
-                  "duplicate `upload_pass` directive");
+                        "invalid arguments in `upload_path` directive");
+  if (!Path::IsFullPath(tkns_.Data()) && !Path::IsValidPath(tkns_.Data()))
+    throw ConfigErrException("invalid arguments in `Upload_path` directive",
+                             tkns_.Current());
+  SetTokenIfEmpty(&lc->upload_path, tkns_.Current(),
+                  "duplicate `upload_path` directive");
   ThrowExceptionIfNotMatch(tkns_.Next(), ";", "semicolon `;` not found");
 }
 void Parser::ThrowExceptionIfMatch(Token tkn, std::string str,

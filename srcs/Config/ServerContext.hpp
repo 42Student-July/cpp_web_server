@@ -13,9 +13,8 @@
 class ServerContext {
  public:
   std::pair<std::string, std::string> listen;
-  // host, port; hostのかぶりはbindでエラーでるか確かめる
   std::pair<bool, long> client_body_size;
-  std::string server_name;  // ここデフォルトあるか
+  std::string server_name;
   std::map<long, std::string> error_page;
   std::map<std::string, LocationContext> locations;
 
