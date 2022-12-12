@@ -42,7 +42,8 @@ DecodeStat ChunkedBody::DecodeChunkedBody(std::string *request_buf) {
         decoded_body_ += buf_.substr(str_head_, next_size_);
         str_head_ += next_size_;
         stat_ = kWaitSize;
-        if (buf_.substr(str_head_, 2) == "\r\n") {
+        if (buf_.size() + 2 >= str_head_ &&
+            buf_.substr(str_head_, 2) == "\r\n") {
           str_head_ += 2;
         } else {
           stat_ = kChunkError;
