@@ -24,18 +24,22 @@ static size_t CountHeaderField(Header *rh, const std::string &key) {
   return count;
 }
 
+static bool IsNeededBody(const Method &m) { return (m == kGet || m == kHead); }
+
 bool IsValidHeader(HttpRequestData *fd_data) {
   Header rh = fd_data->pr.request_header;
   const size_t num_of_transfer_encoding = CountTransferEncoding(&rh);
   const size_t num_of_content_length = CountHeaderField(&rh, "content-length");
 
-  if (num_of_transfer_encoding == 1 && num_of_content_length == 0) {
-    fd_data->is_chunked = true;
-  } else if (num_of_transfer_encoding == 0 && num_of_content_length == 1) {
-    fd_data->is_chunked = false;
-  } else {
-    fd_data->pr.status_code = 400;
-    return false;
+  if (!IsNeededBody(fd_data->pr.m)) {
+    if (num_of_transfer_encoding == 1 && num_of_content_length == 0) {
+      fd_data->is_chunked = true;
+    } else if (num_of_transfer_encoding == 0 && num_of_content_length == 1) {
+      fd_data->is_chunked = false;
+    } else {
+      fd_data->pr.status_code = 400;
+      return false;
+    }
   }
   if (CountHeaderField(&rh, "host") != 1) {
     fd_data->pr.status_code = 400;
@@ -63,25 +67,6 @@ ReceiveHttpRequest &ReceiveHttpRequest::operator=(
 }
 
 ReceiveHttpRequest::~ReceiveHttpRequest() {}
-
-ssize_t LoopRead(const int &fd, std::string *str) {
-  ssize_t buffer_remaining = 0;
-  std::string strbuf = "";
-
-  char buf[BUFFER_SIZE];
-  for (;;) {
-    buffer_remaining = read(fd, buf, BUFFER_SIZE);
-    if (buffer_remaining == -1) {
-      return -1;
-    }
-    strbuf = buf;
-    *str += strbuf;
-    if (buffer_remaining < BUFFER_SIZE) {
-      break;
-    }
-  }
-  return 0;
-}
 
 static std::string TrimByPos(std::string *buf, const size_t &pos,
                              const size_t &size) {
@@ -164,7 +149,7 @@ std::pair<std::string, std::string> SplitRequestHeaderLine(
   value = line.substr(val_pos + 1);
   std::transform(key.begin(), key.end(), key.begin(), ::tolower);
   std::transform(value.begin(), value.end(), value.begin(), ::tolower);
-
+  if (key.size() == 0 || value.size() == 0) throw std::exception();
   return std::make_pair(key, value);
 }
 
