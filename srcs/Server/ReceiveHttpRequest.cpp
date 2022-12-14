@@ -24,18 +24,22 @@ static size_t CountHeaderField(Header *rh, const std::string &key) {
   return count;
 }
 
+static bool IsNeededBody(const Method &m) { return (m == kGet || m == kHead); }
+
 bool IsValidHeader(HttpRequestData *fd_data) {
   Header rh = fd_data->pr.request_header;
   const size_t num_of_transfer_encoding = CountTransferEncoding(&rh);
   const size_t num_of_content_length = CountHeaderField(&rh, "content-length");
 
-  if (num_of_transfer_encoding == 1 && num_of_content_length == 0) {
-    fd_data->is_chunked = true;
-  } else if (num_of_transfer_encoding == 0 && num_of_content_length == 1) {
-    fd_data->is_chunked = false;
-  } else {
-    fd_data->pr.status_code = 400;
-    return false;
+  if (!IsNeededBody(fd_data->pr.m)) {
+    if (num_of_transfer_encoding == 1 && num_of_content_length == 0) {
+      fd_data->is_chunked = true;
+    } else if (num_of_transfer_encoding == 0 && num_of_content_length == 1) {
+      fd_data->is_chunked = false;
+    } else {
+      fd_data->pr.status_code = 400;
+      return false;
+    }
   }
   if (CountHeaderField(&rh, "host") != 1) {
     fd_data->pr.status_code = 400;
@@ -63,25 +67,6 @@ ReceiveHttpRequest &ReceiveHttpRequest::operator=(
 }
 
 ReceiveHttpRequest::~ReceiveHttpRequest() {}
-
-ssize_t LoopRead(const int &fd, std::string *str) {
-  ssize_t buffer_remaining = 0;
-  std::string strbuf = "";
-
-  char buf[BUFFER_SIZE];
-  for (;;) {
-    buffer_remaining = read(fd, buf, BUFFER_SIZE);
-    if (buffer_remaining == -1) {
-      return -1;
-    }
-    strbuf = buf;
-    *str += strbuf;
-    if (buffer_remaining < BUFFER_SIZE) {
-      break;
-    }
-  }
-  return 0;
-}
 
 static std::string TrimByPos(std::string *buf, const size_t &pos,
                              const size_t &size) {
@@ -150,6 +135,9 @@ std::pair<std::string, std::string> SplitRequestHeaderLine(
   size_t val_pos = 0;
 
   key_pos = line.find(':');
+  if (key_pos == std::string::npos) {
+    throw std::exception();
+  }
   val_pos = key_pos;
   while (isspace(line[key_pos]) != 0 && key_pos > 0) {
     key_pos--;
@@ -161,7 +149,7 @@ std::pair<std::string, std::string> SplitRequestHeaderLine(
   value = line.substr(val_pos + 1);
   std::transform(key.begin(), key.end(), key.begin(), ::tolower);
   std::transform(value.begin(), value.end(), value.begin(), ::tolower);
-
+  if (key.size() == 0 || value.size() == 0) throw std::exception();
   return std::make_pair(key, value);
 }
 
@@ -170,6 +158,7 @@ Header ParseRequestHeader(const std::string &header_line) {
   size_t top = 0;
   size_t pos = 0;
   std::string trim;
+  std::pair<std::string, std::string> p;
 
   for (;;) {
     pos = header_line.find(NL, top);
@@ -177,7 +166,12 @@ Header ParseRequestHeader(const std::string &header_line) {
       pos = header_line.length();
     }
     trim = header_line.substr(top, pos - top);
-    header.push_back(SplitRequestHeaderLine(trim));
+    try {
+      p = SplitRequestHeaderLine(trim);
+    } catch (...) {
+      throw std::exception();
+    }
+    header.push_back(p);
     top = pos + 2;
     if (top >= header_line.length()) break;
   }
@@ -216,7 +210,13 @@ ReadStat ReceiveHttpRequest::ReadHttpRequest(const int &fd, ParsedRequest *pr,
     pos = fd_data_.buf.find(NLNL);
     if (std::string::npos != pos) {
       fd_data_.request_header = TrimByPos(&fd_data_.buf, pos, 4);
-      fd_data_.pr.request_header = ParseRequestHeader(fd_data_.request_header);
+      try {
+        fd_data_.pr.request_header =
+            ParseRequestHeader(fd_data_.request_header);
+      } catch (...) {
+        fd_data_.s = kErrorHeader;
+        return kErrorHeader;
+      }
       if (IsValidHeader(&fd_data_)) {
         sc_ = &SelectServerContext(&sc);
         fd_data_.s = kWaitBody;

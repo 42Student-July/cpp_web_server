@@ -80,6 +80,7 @@ TEST(ReceiveHttpRequest, empty_then_full) {
   EXPECT_EQ(pr.request_header, expected_full);
   EXPECT_EQ("q=test&submitSearch=%E6%A4%9C%E7%B4%A2", pr.request_body);
   close(fd);
+  remove("./text/ReceiveHttpRequest/pseudo_socket.txt");
 }
 
 TEST(ReceiveHttpRequest, only_request_line) {
@@ -98,6 +99,7 @@ TEST(ReceiveHttpRequest, only_request_line) {
   EXPECT_EQ("/search.html", pr.request_path);
   EXPECT_EQ("HTTP/1.1", pr.version);
   close(fd);
+  remove("./text/ReceiveHttpRequest/pseudo_socket.txt");
 }
 
 TEST(ReceiveHttpRequest, half_then_half) {
@@ -123,6 +125,7 @@ TEST(ReceiveHttpRequest, half_then_half) {
   EXPECT_EQ("", rhr.GetBuf());
 
   close(fd);
+  remove("./text/ReceiveHttpRequest/pseudo_socket.txt");
 }
 
 TEST(ReceiveHttpRequest, invalid_request1) {
@@ -133,6 +136,20 @@ TEST(ReceiveHttpRequest, invalid_request1) {
   int fd = open_pseudo_socket();
   copy_fd(fd, "invalidrequest1");
   rs = rhr.ReadHttpRequest(fd, &pr, sc);
+  close(fd);
+  remove("./text/ReceiveHttpRequest/pseudo_socket.txt");
+}
+
+TEST(ReceiveHttpRequest, invalid_request2) {
+  ReceiveHttpRequest rhr;
+  ParsedRequest pr;
+  ReadStat rs;
+  std::vector<ServerContext> sc;
+  int fd = open_pseudo_socket();
+  copy_fd(fd, "InvalidHeader_NoValue");
+  rs = rhr.ReadHttpRequest(fd, &pr, sc);
+
+  EXPECT_EQ(kErrorHeader, rs);
   close(fd);
 }
 
@@ -145,4 +162,18 @@ TEST(ReceiveHttpRequest, request_then_nobody) {
   copy_fd(fd, "request_then_nobody");
   rs = rhr.ReadHttpRequest(fd, &pr, sc);
   close(fd);
+  remove("./text/ReceiveHttpRequest/pseudo_socket.txt");
+}
+
+TEST(ReceiveHttpRequest, curl) {
+  ReceiveHttpRequest rhr;
+  ParsedRequest pr;
+  ReadStat rs;
+  std::vector<ServerContext> sc;
+  int fd = open_pseudo_socket();
+  copy_fd(fd, "curl_request");
+  rs = rhr.ReadHttpRequest(fd, &pr, sc);
+  EXPECT_EQ(kReadComplete, rs);
+  close(fd);
+  remove("./text/ReceiveHttpRequest/pseudo_socket.txt");
 }
