@@ -150,6 +150,9 @@ std::pair<std::string, std::string> SplitRequestHeaderLine(
   size_t val_pos = 0;
 
   key_pos = line.find(':');
+  if (key_pos == std::string::npos) {
+    throw std::exception();
+  }
   val_pos = key_pos;
   while (isspace(line[key_pos]) != 0 && key_pos > 0) {
     key_pos--;
@@ -170,6 +173,7 @@ Header ParseRequestHeader(const std::string &header_line) {
   size_t top = 0;
   size_t pos = 0;
   std::string trim;
+  std::pair<std::string, std::string> p;
 
   for (;;) {
     pos = header_line.find(NL, top);
@@ -177,7 +181,12 @@ Header ParseRequestHeader(const std::string &header_line) {
       pos = header_line.length();
     }
     trim = header_line.substr(top, pos - top);
-    header.push_back(SplitRequestHeaderLine(trim));
+    try {
+      p = SplitRequestHeaderLine(trim);
+    } catch (...) {
+      throw std::exception();
+    }
+    header.push_back(p);
     top = pos + 2;
     if (top >= header_line.length()) break;
   }
@@ -216,7 +225,13 @@ ReadStat ReceiveHttpRequest::ReadHttpRequest(const int &fd, ParsedRequest *pr,
     pos = fd_data_.buf.find(NLNL);
     if (std::string::npos != pos) {
       fd_data_.request_header = TrimByPos(&fd_data_.buf, pos, 4);
-      fd_data_.pr.request_header = ParseRequestHeader(fd_data_.request_header);
+      try {
+        fd_data_.pr.request_header =
+            ParseRequestHeader(fd_data_.request_header);
+      } catch (...) {
+        fd_data_.s = kErrorHeader;
+        return kErrorHeader;
+      }
       if (IsValidHeader(&fd_data_)) {
         sc_ = &SelectServerContext(&sc);
         fd_data_.s = kWaitBody;
