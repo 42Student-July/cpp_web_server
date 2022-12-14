@@ -27,6 +27,7 @@ enum EventState {
   kErr,
   kCgiErr
 };
+class Socket;
 class Event {
  public:
   virtual ~Event();

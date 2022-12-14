@@ -177,7 +177,7 @@ void Parser::StoreRoot(LocationContext *lc) {
   tkns_.Next();
   ThrowExceptionIfMatch(tkns_.Current(), ";{}",
                         "invalid arguments in `root` directive");
-  if (!Path::IsFullPath(tkns_.Data()) && !Path::IsValidPath(tkns_.Data()))
+  if (!Path::IsFullPath(tkns_.Data()) || !Path::IsValidPath(tkns_.Data()))
     throw ConfigErrException("invalid arguments in `root` directive",
                              tkns_.Current());
   SetTokenIfEmpty(&lc->root, tkns_.Current(), "`root` directive is duplicate");

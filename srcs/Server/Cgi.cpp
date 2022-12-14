@@ -27,9 +27,7 @@ void Cgi::SetEnv() {
   // if(!socket_.pr.headder(contentlength))
   env_map_["CONTENT_LENGTH"] =
       std::string("CONTENT_LENGTH=") + std::string("50");  // headder
-  env_map_["AUTH_TYPE"] =
-      std::string("AUTH_TYPE=") +
-      std::string("auth");  // hedderの authenticationの値を使う
+  env_map_["AUTH_TYPE"] = std::string("AUTH_TYPE=");
   env_map_["CONTENT_TYPE"] = std::string("CONTENT_TYPE=") +
                              std::string("type");  //  headder ni attara must
   env_map_["PATH_INFO"] =

@@ -1,5 +1,5 @@
 #!/usr/bin/perl
-print "Content-type: text/html \n\n";
+#print "Content-type: text/html \n\n";
 while(1){
 	print "ab";
 }

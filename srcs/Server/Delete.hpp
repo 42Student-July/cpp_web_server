@@ -2,7 +2,7 @@
 #define SRCS_SERVER_DELETE_HPP_
 #include <string>
 
-#include "Method.hpp"
+#include "HttpMethod.hpp"
 class Delete : public HttpMethod {
  private:
   ResponseCode rescode_;

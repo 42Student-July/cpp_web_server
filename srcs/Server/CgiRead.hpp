@@ -2,12 +2,14 @@
 #define SRCS_SERVER_CGIREAD_HPP_
 #include <utility>
 
+#include "CgiParser.hpp"
 #include "Event.hpp"
 #include "Socket.hpp"
 class CgiRead : public Event {
  private:
-  static const int kBuffSize = 2048;
+  bool created_next_event_;
   Socket *socket_;
+  CgiParser cgi_parser_;
 
  public:
   explicit CgiRead(Socket *socket);

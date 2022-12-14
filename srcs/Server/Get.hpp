@@ -3,7 +3,7 @@
 #include <string>
 
 #include "File.hpp"
-#include "Method.hpp"
+#include "HttpMethod.hpp"
 class Get : public HttpMethod {
  private:
   ResponseCode rescode_;

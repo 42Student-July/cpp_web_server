@@ -1,4 +1,4 @@
-#include "Method.hpp"
+#include "HttpMethod.hpp"
 
 #include "Delete.hpp"
 #include "Get.hpp"
