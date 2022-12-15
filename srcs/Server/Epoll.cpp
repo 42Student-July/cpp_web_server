@@ -18,7 +18,7 @@ int Epoll::Wait() {
 epoll_event Epoll::Find(const int& n) const { return events_[n]; }
 epoll_event Epoll::FindFromFd(const int& fd) const {
   std::map<int, epoll_event>::const_iterator it = epoll_map_.find(fd);
-  if (it == epoll_map_.end()) throw std::runtime_error("find from fd err");
+  if (it == epoll_map_.end()) throw EpollErr("find from fd err", fd);
   return it->second;
 }
 epoll_event Epoll::Create(const int conn_fd, uint32_t flag) {
@@ -34,15 +34,20 @@ void Epoll::Mod(const int fd, uint32_t flags) {
   ev.events = flags;
   epoll_map_[fd] = ev;
   if ((epoll_ctl(GetFd(), EPOLL_CTL_MOD, fd, &ev)) < 0)
-    throw std::runtime_error("epoll ctl mod err ");
+    throw EpollErr("epoll ctl mod err", fd);
 }
 void Epoll::Add(const int fd, epoll_event* ev) {
   epoll_map_.insert(std::make_pair(fd, *ev));
   if ((epoll_ctl(GetFd(), EPOLL_CTL_ADD, fd, ev)) < 0)
-    throw std::runtime_error("epoll ctl add err ");
+    throw EpollErr("epoll ctl add err", fd);
 }
 void Epoll::Del(const int fd, epoll_event* ev) {
   epoll_map_.erase(fd);
   if ((epoll_ctl(GetFd(), EPOLL_CTL_DEL, fd, ev)) < 0)
-    throw std::runtime_error("epoll ctl del err");
+    throw EpollErr("epoll ctl del err", fd);
 }
+
+EpollErr::EpollErr(const std::string msg, int fd) : fd_(fd), msg_(msg) {}
+EpollErr::~EpollErr() {}
+int EpollErr::GetFd() const { return fd_; }
+std::string EpollErr::Msg() const { return msg_; }

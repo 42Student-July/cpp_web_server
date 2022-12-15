@@ -47,7 +47,7 @@ LocationPair Path::FindBestLocation(const Locationmap &locations,
     }
   }
   if (selected_location.first.empty()) {
-    throw LocationNotFound();
+    throw std::runtime_error("location not found");  // LocationNotFound();
   }
   return selected_location;
 }

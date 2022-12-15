@@ -6,6 +6,7 @@
 
 #include <iostream>
 #include <map>
+#include <string>
 #include <utility>
 #include <vector>
 
@@ -28,6 +29,17 @@ class Epoll : public Fd {
   void Del(const int fd, epoll_event *ev);
   void Add(const int fd, epoll_event *ev);
   void Mod(const int fd, uint32_t flags);
+};
+class EpollErr {
+ private:
+  int fd_;
+  std::string msg_;
+
+ public:
+  EpollErr(const std::string msg, int fd);
+  ~EpollErr();
+  int GetFd() const;
+  std::string Msg() const;
 };
 
 #endif  // SRCS_SERVER_EPOLL_HPP_

@@ -37,6 +37,7 @@ enum ResponseCode {
   kKkNotSet
 };
 struct CgiRes {
+  explicit CgiRes(int fd) : cgi_fd(fd) {}
   int buff_size;
   int written_size;
   int read_size;
@@ -66,9 +67,19 @@ class Socket {
   std::string full_path;
   Socket(int fd, const std::vector<ServerContext>& context);
   ~Socket();
-  void CgiReadAndWaitPid();
+  int CgiReadAndStoreToBuf();
   bool CgiFinished();
   Event* PrepareNextEventProcess();
 };
+class ErrorResponse {
+ private:
+  std::string err_msg_;
+  ResponseCode rescode_;
 
+ public:
+  ErrorResponse(const std::string& msg, ResponseCode rescode);
+  ~ErrorResponse();
+  ResponseCode GetErrResponseCode() const;
+  std::string Msg() const throw();
+};
 #endif  // SRCS_SERVER_SOCKET_HPP_

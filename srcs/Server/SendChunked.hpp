@@ -2,6 +2,7 @@
 #define SRCS_SERVER_SENDCHUNKED_HPP_
 #include <unistd.h>
 
+#include <iostream>
 #include <sstream>
 #include <string>
 class SendChunked {

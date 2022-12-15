@@ -3,57 +3,68 @@
 #include "CgiResponse.hpp"
 #include "ResponseToTheClient.hpp"
 CgiRead::CgiRead(Socket *socket)
-    : created_next_event_(false), socket_(socket) {}
+    : created_next_event_(false), socket_(socket), del_(false) {}
 
-CgiRead::~CgiRead() {}
+CgiRead::~CgiRead() { std::cout << "destructor cgi read" << std::endl; }
 void CgiRead::Do() {
   try {
-    socket_->CgiReadAndWaitPid();
+    if (socket_->CgiReadAndStoreToBuf() == -1) return;
     cgi_parser_.Parse(socket_->cgi_res.buf);
     cgi_parser_.UpdateData(socket_);
-  } catch (...) {
-    socket_->response_code = kKk500internalServerError;
+    std::cout << "cgi read ok" << std::endl;
+  } catch (ErrorResponse &e) {
+    std::cout << e.Msg() << std::endl;
+    socket_->response_code = e.GetErrResponseCode();
   }
 }
 Event *CgiRead::NextEvent() { return NULL; }
 
 std::pair<Event *, epoll_event> CgiRead::PublishNewEvent() {
-  ResponseType res = cgi_parser_.GetResponseType();
-  Event *new_ev = NULL;
-  epoll_event new_epo = Epoll::Create(socket_->sock_fd, EPOLLOUT);
-  if (res == kToBeDetermined || created_next_event_)
-    return std::make_pair(new_ev, new_epo);
+  if (created_next_event_) {
+    return std::make_pair(static_cast<Event *>(NULL), epoll_event());
+  }
+  created_next_event_ = true;
   if (socket_->response_code != kKkNotSet) {
-    created_next_event_ = true;
+    return std::make_pair(new ResponseToTheClient(socket_),
+                          Epoll::Create(socket_->sock_fd, EPOLLOUT));
+  }
+  switch (cgi_parser_.GetResponseType()) {
+    case kDocumentResponse:
+      return CreateClientEvent();
+    case kClientRedirResponse:
+      return CreateClientEvent();
+    case kClientRediredocResponse:
+      return CreateClientEvent();
+    case kLocalRedirResponse:
+      return CreateLocalRedirEvent();
+    default:
+      return std::make_pair(static_cast<Event *>(NULL), epoll_event());
+  }
+  return std::make_pair(static_cast<Event *>(NULL), epoll_event());
+}
+std::pair<Event *, epoll_event> CgiRead::CreateLocalRedirEvent() {
+  Event *new_ev = socket_->PrepareNextEventProcess();
+  epoll_event new_epo = Epoll::Create(socket_->sock_fd, EPOLLOUT);
+  del_ = true;
+  if (new_ev == NULL) {
     new_ev = new ResponseToTheClient(socket_);
-  } else if (res == kDocumentResponse || res == kClientRedirResponse ||
-             res == kClientRediredocResponse) {
-    created_next_event_ = true;
-    new_ev = new CgiResponse(socket_);
-  } else if (res == kLocalRedirResponse) {
-    created_next_event_ = true;
-    if (!socket_->CgiFinished()) {
-      socket_->response_code = kKk500internalServerError;
-      new_ev = new ResponseToTheClient(socket_);
-    } else {
-      Event *cgi = socket_->PrepareNextEventProcess();
-      if (cgi == NULL) {
-        new_ev = new ResponseToTheClient(socket_);
-      } else {
-        new_ev = new CgiRead(socket_);
-        new_epo = Epoll::Create(socket_->sock_fd, EPOLLIN);
-      }
-    }
+  } else {
+    std::cout << "localredirevent cgi" << std::endl;
+    new_epo = Epoll::Create(socket_->cgi_res.cgi_fd, EPOLLIN);
   }
   return std::make_pair(new_ev, new_epo);
 }
-void CgiRead::Handle(Epoll *epoll) {
-  if (socket_->cgi_res.read_size > 0 || socket_->CgiFinished()) {
-    epoll->Mod(socket_->sock_fd, EPOLLOUT);
-  }
+std::pair<Event *, epoll_event> CgiRead::CreateClientEvent() {
+  return std::make_pair(new CgiResponse(socket_),
+                        Epoll::Create(socket_->sock_fd, EPOLLOUT));
 }
+void CgiRead::Handle(Epoll *epoll) { static_cast<void>(epoll); }
 EventState CgiRead::State() {
-  if (socket_->CgiFinished()) return kDel;
+  std::cout << "cgiread size " << socket_->cgi_res.read_size << std::endl;
+  if (socket_->cgi_res.read_size <= 0) {
+    std::cout << "cgi del" << std::endl;
+    return kDel;
+  }
   return kRead;
 }
 Socket *CgiRead::GetSocket() const { return socket_; }

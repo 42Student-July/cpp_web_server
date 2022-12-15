@@ -42,3 +42,17 @@ bool LocationContext::IsUploadPath(const std::string &path) const {
   return path.substr(0, path.find_last_of("/")) ==
          upload_path.substr(0, path.find_last_of("/"));
 }
+
+std::string MethodToStr(Method m) {
+  switch (m) {
+    case kGet:
+      return "GET";
+    case kDelete:
+      return "DELETE";
+    case kPost:
+      return "POST";
+    default:
+      break;
+  }
+  return "";
+}

@@ -16,15 +16,11 @@ void ReceiveRequestFromClient::Do() {
     stat_ = kReadComplete;
     cgi_ = socket_->PrepareNextEventProcess();
   }
-  std::cout << socket_->pr.request_path << std::endl;
 }
 
 Event *ReceiveRequestFromClient::NextEvent() {
-  // if (cgi_ != NULL) {
-  //   return new CgiResponse(socket_);
-  // }
   if (cgi_ == NULL && IsReadFinished(stat_)) {
-    // std::cout << "retu response" << std::endl;
+    std::cout << "not cgi response" << std::endl;
     return new ResponseToTheClient(socket_);
   }
   return NULL;
@@ -42,14 +38,13 @@ std::pair<Event *, epoll_event> ReceiveRequestFromClient::PublishNewEvent() {
 }
 void ReceiveRequestFromClient::Handle(Epoll *epoll) {
   // cgiなら in out 一旦外す
-  if (cgi_ != NULL) {
-    epoll->Mod(socket_->sock_fd, 0);
-  } else if (IsReadFinished(stat_)) {
+  if (IsReadFinished(stat_)) {
     epoll->Mod(socket_->sock_fd, EPOLLOUT);
   }
 }
 
 EventState ReceiveRequestFromClient::State() {
+  if (cgi_ != NULL) return kDel;
   if (stat_ == kUnread) return kRead;
   if (IsReadComplete(stat_)) return kReadFinished;
   if (IsReadErr(stat_)) return kErr;
