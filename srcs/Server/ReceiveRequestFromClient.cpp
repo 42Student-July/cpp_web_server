@@ -52,6 +52,7 @@ EventState ReceiveRequestFromClient::State() {
 }
 EventType ReceiveRequestFromClient::Type() const { return kConn; }
 Socket *ReceiveRequestFromClient::GetSocket() const { return socket_; }
+void ReceiveRequestFromClient::SetSocket(Socket *socket) { socket_ = socket; }
 bool ReceiveRequestFromClient::IsReadErr(const ReadStat &st) {
   return (st == kErrorRequest || st == kErrorBody || st == kErrorHeader ||
           st == kReadError);

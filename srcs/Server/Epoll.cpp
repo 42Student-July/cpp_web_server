@@ -10,8 +10,8 @@ void Epoll::Init() {
 Epoll::~Epoll() { Close(); }
 
 int Epoll::Wait() {
-  int num_fd = epoll_wait(GetFd(), events_, MAX_EVENT, -1);
-  if (num_fd < 0) std::cout << "wait err " << std::endl;
+  int num_fd = epoll_wait(GetFd(), events_, MAX_EVENT, 1000);
+  // if (num_fd < 0) std::cout << "wait err " << std::endl;
   return num_fd;
 }
 

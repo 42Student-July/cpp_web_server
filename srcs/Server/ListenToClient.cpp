@@ -31,3 +31,4 @@ std::pair<Event*, epoll_event> ListenToClient::PublishNewEvent() {
 }
 void ListenToClient::Handle(Epoll* epoll) { static_cast<void>(epoll); }
 int ListenToClient::NewEventFd() const { return conn_fd_; }
+void ListenToClient::SetSocket(Socket* socket) { socket_ = socket; }

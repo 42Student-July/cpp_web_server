@@ -69,3 +69,4 @@ EventState CgiRead::State() {
 }
 Socket *CgiRead::GetSocket() const { return socket_; }
 EventType CgiRead::Type() const { return kCgiReadd; }
+void CgiRead::SetSocket(Socket *socket) { socket_ = socket; }

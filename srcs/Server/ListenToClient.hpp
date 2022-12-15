@@ -26,6 +26,7 @@ class ListenToClient : public Event {
   std::pair<Event *, epoll_event> PublishNewEvent();
   void Handle(Epoll *epoll);
   int NewEventFd() const;
+  void SetSocket(Socket *socket);
 };
 
 #endif  // SRCS_SERVER_LISTENTOCLIENT_HPP_

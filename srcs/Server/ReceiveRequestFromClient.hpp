@@ -28,6 +28,7 @@ class ReceiveRequestFromClient : public Event {
   EventType Type() const;
   std::pair<Event *, epoll_event> PublishNewEvent();
   void Handle(Epoll *epoll);
+  void SetSocket(Socket *socket);
 };
 
 #endif  // SRCS_SERVER_RECEIVEREQUESTFROMCLIENT_HPP_

@@ -37,7 +37,7 @@ class Event {
   virtual void Handle(Epoll *epoll) = 0;
   virtual EventState State() = 0;
   virtual Socket *GetSocket() const = 0;
-
+  virtual void SetSocket(Socket *socket) = 0;
   virtual EventType Type() const = 0;
   static bool IsNotDelete(const EventState &state);
   static bool IsFinished(const EventState &state);

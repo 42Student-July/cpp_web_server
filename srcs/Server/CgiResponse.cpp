@@ -68,3 +68,4 @@ EventState CgiResponse::State() {
 }
 Socket *CgiResponse::GetSocket() const { return socket_; }
 EventType CgiResponse::Type() const { return kCgiWrite; }
+void CgiResponse::SetSocket(Socket *socket) { socket_ = socket; }

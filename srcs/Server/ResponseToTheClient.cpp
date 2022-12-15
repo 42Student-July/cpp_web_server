@@ -30,3 +30,4 @@ void ResponseToTheClient::Handle(Epoll *epoll) { static_cast<void>(epoll); }
 EventState ResponseToTheClient::State() { return state_; }
 Socket *ResponseToTheClient::GetSocket() const { return socket_; }
 EventType ResponseToTheClient::Type() const { return kConn; }
+void ResponseToTheClient::SetSocket(Socket *socket) { socket_ = socket; }

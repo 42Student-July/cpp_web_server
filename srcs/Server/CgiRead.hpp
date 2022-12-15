@@ -24,6 +24,7 @@ class CgiRead : public Event {
   EventState State();
   Socket *GetSocket() const;
   EventType Type() const;
+  void SetSocket(Socket *socket);
 };
 
 #endif  // SRCS_SERVER_CGIREAD_HPP_

@@ -25,3 +25,4 @@ EventState CgiWrite::State() {
 }
 Socket *CgiWrite::GetSocket() const { return socket_; }
 EventType CgiWrite::Type() const { return kCgiWrite; }
+void CgiWrite::SetSocket(Socket *socket) { socket_ = socket; }

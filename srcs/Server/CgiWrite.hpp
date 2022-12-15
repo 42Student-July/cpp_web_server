@@ -21,5 +21,6 @@ class CgiWrite : public Event {
   EventState State();
   Socket *GetSocket() const;
   EventType Type() const;
+  void SetSocket(Socket *socket);
 };
 #endif  // SRCS_SERVER_CGIWRITE_HPP_
