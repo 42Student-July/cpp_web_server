@@ -8,8 +8,7 @@ void ReceiveRequestFromClient::Do() {
   stat_ = request_.ReadHttpRequest(socket_->sock_fd, &socket_->pr,
                                    socket_->vec_context);
   if (IsReadErr(stat_)) {
-    std::cout << "read error" << std::endl;
-    std::cout << stat_ << std::endl;
+    std::cout << "stat_ err :" << stat_ << std::endl;
     socket_->response_code = kKk400BadRequest;
   } else if (IsReadComplete(stat_)) {
     std::cout << "read complete" << std::endl;
@@ -34,12 +33,9 @@ std::pair<Event *, epoll_event> ReceiveRequestFromClient::PublishNewEvent() {
     else
       epo_ev = Epoll::Create(socket_->cgi_res.cgi_fd, EPOLLOUT);
   }
-  std::pair<Event *, epoll_event> p(cgi_,epo_ev);
-  std::cout << "pair :" << p.first << std::endl;
-  return p;
+  return std::make_pair(cgi_, epo_ev);
 }
 void ReceiveRequestFromClient::Handle(Epoll *epoll) {
-  // cgiなら in out 一旦外す
   if (IsReadFinished(stat_)) {
     epoll->Mod(socket_->sock_fd, EPOLLOUT);
   }

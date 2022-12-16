@@ -6,14 +6,13 @@
 #include "Event.hpp"
 #include "Socket.hpp"
 class CgiRead : public Event {
- //private:
- public:
+ private:
   bool created_next_event_;
   Socket *socket_;
   CgiParser cgi_parser_;
   bool del_;
   std::pair<Event *, epoll_event> CreateLocalRedirEvent();
-  std::pair<Event *, epoll_event> CreateClientEvent();
+  std::pair<Event *, epoll_event> CreateClientEvent() const;
 
  public:
   explicit CgiRead(Socket *socket);

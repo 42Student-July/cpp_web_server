@@ -87,7 +87,7 @@ void Cgi::Run(const std::string &full_path, Socket *socket) {
   ParseArgv(socket);
   SetEnv(socket);
   SockPair();
-  //SetSockopt();
+  // SetSockopt();
   socket->cgi_res.cgi_fd = fd_[0];
   Fork(socket);
   if (socket->cgi_res.process_id == 0) {

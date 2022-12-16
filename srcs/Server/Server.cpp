@@ -38,7 +38,7 @@ void Server::Run() {
 void Server::EventExec(int ready) {
   for (int i = 0; i < ready; i++) {
     try {
-      usleep(1000);
+      // usleep(1000);
       epoll_event epoll = epoll_.Find(i);
       Event *event = event_map_[epoll.data.fd];
       event->Do();
@@ -51,6 +51,8 @@ void Server::EventExec(int ready) {
         delete event_map_[e.GetFd()];
         event_map_.erase(e.GetFd());
       }
+    } catch (std::runtime_error &e) {
+      std::cerr << e.what() << std::endl;
     }
   }
 }
@@ -58,7 +60,6 @@ void Server::RegisterNewEvent(Event *event) {
   // ここの返り値はもう少し考える
   std::pair<Event *, epoll_event> new_event = event->PublishNewEvent();
   if (new_event.first == NULL) return;
-
   AddEventToMonitored(new_event.second.data.fd, new_event.first,
                       &(new_event.second));
 }
@@ -73,9 +74,6 @@ void Server::NextEvent(Event *event, epoll_event *epoll) {
     epoll_.Del(epoll->data.fd, epoll);
     delete event_map_[epoll->data.fd];
     event_map_.erase(epoll->data.fd);
-
-    // レスポンスを返し終える　cgi read読み切る　cgi write終わる
-    // epollから監視対象外す
   }
 }
 // void Server::CheckTimeOut() {

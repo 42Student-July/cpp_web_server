@@ -54,7 +54,7 @@ std::pair<Event *, epoll_event> CgiRead::CreateLocalRedirEvent() {
   }
   return std::make_pair(new_ev, new_epo);
 }
-std::pair<Event *, epoll_event> CgiRead::CreateClientEvent() {
+std::pair<Event *, epoll_event> CgiRead::CreateClientEvent() const {
   return std::make_pair(new CgiResponse(socket_),
                         Epoll::Create(socket_->sock_fd, EPOLLOUT));
 }
