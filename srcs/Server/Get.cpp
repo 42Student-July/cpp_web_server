@@ -1,5 +1,7 @@
 #include "Get.hpp"
 
+#include <vector>
+
 #include "File.hpp"
 #include "Utils.hpp"
 #include "fcntl.h"
@@ -88,21 +90,6 @@ void Get::Run(const std::string &path, Socket *sock) {
     rescode_ = kKk200Ok;
     return;
   }
-  // File f(path);
-  // if (f.IsFile()) {
-  //   if (!f.CanRead()) {
-  //     body_ = f.ReadFileLines();
-  //     rescode_ = kKk200Ok;
-  //   } else {
-  //     rescode_ = kKk403Forbidden;
-  //   }
-  // } else
-  // if (f.IsDir() && sock->location_context.auto_index == "on") {
-  //   // directry 挿入
-  //   body_ = "autoindex";
-  // } else {
-  //   rescode_ = kKk404NotFound;
-  // }
 }
 void Get::UpdateSocketData(Socket *sock) {
   sock->response_body = body_;
