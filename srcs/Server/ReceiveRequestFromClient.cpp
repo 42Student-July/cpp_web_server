@@ -34,7 +34,9 @@ std::pair<Event *, epoll_event> ReceiveRequestFromClient::PublishNewEvent() {
     else
       epo_ev = Epoll::Create(socket_->cgi_res.cgi_fd, EPOLLOUT);
   }
-  return std::make_pair(cgi_, epo_ev);
+  std::pair<Event *, epoll_event> p(cgi_,epo_ev);
+  std::cout << "pair :" << p.first << std::endl;
+  return p;
 }
 void ReceiveRequestFromClient::Handle(Epoll *epoll) {
   // cgiなら in out 一旦外す

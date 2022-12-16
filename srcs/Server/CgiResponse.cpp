@@ -38,8 +38,7 @@ void CgiResponse::Do() {
     std::cout << "send header" << std::endl;
     sender_.Send(socket_->sock_fd);
   } else {
-    if (chunked_.SentByte() == socket_->response_body.size() &&
-        socket_->CgiFinished()) {
+    if (chunked_.SentByte() == socket_->response_body.size() && socket_->cgi_res.read_size == 0) {
       std::cout << "last chunk" << std::endl;
       chunked_.SendLastChunk(socket_->sock_fd);
     } else {
@@ -61,7 +60,6 @@ void CgiResponse::Handle(Epoll *epoll) {
 }
 EventState CgiResponse::State() {
   if (chunked_.SentLastChunk()) {
-    std::cout << "cgi response del" << std::endl;
     return kDel;
   }
   return kWrite;

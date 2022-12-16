@@ -31,7 +31,7 @@ struct EventData {
 class Server {
  private:
   // static const int kNotDoneYet = -1;
-  std::map<int, EventData> event_map_;
+  std::map<int, Event *> event_map_;
   Epoll epoll_;
   // ReceiveHttpRequest receive_request_;
   // std::map<int, std::string> response_;
@@ -39,10 +39,10 @@ class Server {
   void InitListen(const ContextMap &contexts);
   void GenerateCgi(epoll_event *ev);
   void ReadFromCgi(epoll_event *ev);
-  void AddEventToMonitored(const int fd, Event *event, uint32_t event_flag,
-                           size_t time_out);
-  void AddEventToMonitored(const int fd, Event *event, epoll_event *new_ev,
-                           size_t time_out);
+  void AddEventToMonitored(const int fd, Event *event, uint32_t event_flag
+                           );
+  void AddEventToMonitored(const int fd, Event *event, epoll_event *new_ev
+                           );
   void NextEvent(Event *event, epoll_event *epoll);
   void RegisterNewEvent(Event *event);
   void DeleteEvent(Event *event, epoll_event *epoll);

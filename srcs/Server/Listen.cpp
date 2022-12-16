@@ -18,6 +18,8 @@ int Listen::GenerateConnectableFd() {
   if (!host_.empty()) {
     addr_.sin_addr.s_addr = inet_addr(host_.c_str());
   }
+  int optval = 1;
+  setsockopt(listen_fd, SOL_SOCKET, SO_REUSEADDR, &optval, sizeof(int));
   if (bind(listen_fd, (const sockaddr *)&addr_, sizeof(addr_)) == -1) {
     throw std::runtime_error("bind err");
   }

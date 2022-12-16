@@ -1,0 +1,5943 @@
+new connecting fd: 5
+read complete
+cgi run
+ created read go:0
+tukutta0x55c9c07ef080
+pair :0x55c9c07ef080
+cgi read ok
+0x55c9c07ef080
+get restype :1
+created next event :0
+HTTP/1.1 303 abc
+CONTENT-TYPE: text/html
+Transfer-Encoding: chunked
+Connection: keep-alive
+
+
+cgiread size 50
+Content-type: text/html 
+Status: 303 abc 
+
+decunko
+destructor cgi read
+send header
+send body
+
+7
+decunko
+
+wrriten 12
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten -1
+write err
+cgi response destructor
+new connecting fd: 5
+read complete
+cgi run
+ created read go:0
+tukutta0x55c9c07ef080
+pair :0x55c9c07ef080
+cgi read ok
+0x55c9c07ef080
+get restype :1
+created next event :0
+HTTP/1.1 303 abc
+CONTENT-TYPE: text/html
+Transfer-Encoding: chunked
+Connection: keep-alive
+
+
+cgiread size 50
+Content-type: text/html 
+Status: 303 abc 
+
+decunko
+destructor cgi read
+send header
+send body
+
+7
+decunko
+
+wrriten 12
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten -1
+write err
+cgi response destructor
+new connecting fd: 5
+read complete
+cgi run
+ created read go:0
+tukutta0x55c9c07ef080
+pair :0x55c9c07ef080
+cgi read ok
+0x55c9c07ef080
+get restype :1
+created next event :0
+HTTP/1.1 303 abc
+CONTENT-TYPE: text/html
+Transfer-Encoding: chunked
+Connection: keep-alive
+
+
+cgiread size 50
+Content-type: text/html 
+Status: 303 abc 
+
+decunko
+destructor cgi read
+send header
+send body
+
+7
+decunko
+
+wrriten 12
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten -1
+write err
+cgi response destructor
+new connecting fd: 5
+read complete
+cgi run
+ created read go:0
+tukutta0x55c9c07ef080
+pair :0x55c9c07ef080
+cgi read ok
+0x55c9c07ef080
+get restype :1
+created next event :0
+HTTP/1.1 303 abc
+CONTENT-TYPE: text/html
+Transfer-Encoding: chunked
+Connection: keep-alive
+
+
+cgiread size 50
+Content-type: text/html 
+Status: 303 abc 
+
+decunko
+destructor cgi read
+send header
+send body
+
+7
+decunko
+
+wrriten 12
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten -1
+write err
+cgi response destructor
+new connecting fd: 5
+read complete
+cgi run
+ created read go:0
+tukutta0x55c9c07ef080
+pair :0x55c9c07ef080
+cgi read ok
+0x55c9c07ef080
+get restype :1
+created next event :0
+HTTP/1.1 303 abc
+CONTENT-TYPE: text/html
+Transfer-Encoding: chunked
+Connection: keep-alive
+
+
+cgiread size 50
+Content-type: text/html 
+Status: 303 abc 
+
+decunko
+destructor cgi read
+send header
+send body
+
+7
+decunko
+
+wrriten 12
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten -1
+write err
+cgi response destructor
+new connecting fd: 5
+read complete
+cgi run
+ created read go:0
+tukutta0x55c9c07ef080
+pair :0x55c9c07ef080
+cgi read ok
+0x55c9c07ef080
+get restype :1
+created next event :0
+HTTP/1.1 303 abc
+CONTENT-TYPE: text/html
+Transfer-Encoding: chunked
+Connection: keep-alive
+
+
+cgiread size 50
+Content-type: text/html 
+Status: 303 abc 
+
+decunko
+send header
+send body
+
+7
+decunko
+
+wrriten 12
+cgi read ok
+0x55c9c07ef080
+get restype :1
+created next event :1
+cgiread size 0
+
+destructor cgi read
+last chunk
+cgi response destructor
+new connecting fd: 5
+read complete
+cgi run
+ created read go:0
+tukutta0x55c9c07ef080
+pair :0x55c9c07ef080
+cgi read ok
+0x55c9c07ef080
+get restype :1
+created next event :0
+HTTP/1.1 303 abc
+CONTENT-TYPE: text/html
+Transfer-Encoding: chunked
+Connection: keep-alive
+
+
+cgiread size 50
+Content-type: text/html 
+Status: 303 abc 
+
+decunko
+send header
+send body
+
+7
+decunko
+
+wrriten 12
+cgi read ok
+0x55c9c07ef080
+get restype :1
+created next event :1
+cgiread size 0
+
+destructor cgi read
+last chunk
+cgi response destructor
+new connecting fd: 5
+read complete
+cgi run
+ created read go:0
+tukutta0x55c9c07ef080
+pair :0x55c9c07ef080
+cgi read ok
+0x55c9c07ef080
+get restype :1
+created next event :0
+HTTP/1.1 303 abc
+CONTENT-TYPE: text/html
+Transfer-Encoding: chunked
+Connection: keep-alive
+
+
+cgiread size 50
+Content-type: text/html 
+Status: 303 abc 
+
+decunko
+destructor cgi read
+send header
+send body
+
+7
+decunko
+
+wrriten 12
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten -1
+write err
+cgi response destructor
+new connecting fd: 5
+read complete
+cgi run
+ created read go:0
+tukutta0x55c9c07ef080
+pair :0x55c9c07ef080
+cgi read ok
+0x55c9c07ef080
+get restype :1
+created next event :0
+HTTP/1.1 303 abc
+CONTENT-TYPE: text/html
+Transfer-Encoding: chunked
+Connection: keep-alive
+
+
+cgiread size 50
+Content-type: text/html 
+Status: 303 abc 
+
+decunko
+send header
+send body
+
+7
+decunko
+
+wrriten 12
+cgi read ok
+0x55c9c07ef080
+get restype :1
+created next event :1
+cgiread size 0
+
+destructor cgi read
+last chunk
+cgi response destructor
+new connecting fd: 5
+read complete
+cgi run
+ created read go:0
+tukutta0x55c9c07ef080
+pair :0x55c9c07ef080
+cgi read ok
+0x55c9c07ef080
+get restype :1
+created next event :0
+HTTP/1.1 303 abc
+CONTENT-TYPE: text/html
+Transfer-Encoding: chunked
+Connection: keep-alive
+
+
+cgiread size 50
+Content-type: text/html 
+Status: 303 abc 
+
+decunko
+send header
+send body
+
+7
+decunko
+
+wrriten 12
+cgi read ok
+0x55c9c07ef080
+get restype :1
+created next event :1
+cgiread size 0
+
+destructor cgi read
+last chunk
+cgi response destructor
+new connecting fd: 5
+read complete
+cgi run
+ created read go:0
+tukutta0x55c9c07ef080
+pair :0x55c9c07ef080
+cgi read ok
+0x55c9c07ef080
+get restype :1
+created next event :0
+HTTP/1.1 303 abc
+CONTENT-TYPE: text/html
+Transfer-Encoding: chunked
+Connection: keep-alive
+
+
+cgiread size 50
+Content-type: text/html 
+Status: 303 abc 
+
+decunko
+destructor cgi read
+send header
+send body
+
+7
+decunko
+
+wrriten 12
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten -1
+write err
+cgi response destructor
+new connecting fd: 5
+read complete
+cgi run
+ created read go:0
+tukutta0x55c9c07ef080
+pair :0x55c9c07ef080
+cgi read ok
+0x55c9c07ef080
+get restype :1
+created next event :0
+HTTP/1.1 303 abc
+CONTENT-TYPE: text/html
+Transfer-Encoding: chunked
+Connection: keep-alive
+
+
+cgiread size 50
+Content-type: text/html 
+Status: 303 abc 
+
+decunko
+destructor cgi read
+send header
+send body
+
+7
+decunko
+
+wrriten 12
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten -1
+write err
+cgi response destructor
+new connecting fd: 5
+read complete
+cgi run
+ created read go:0
+tukutta0x55c9c07ef080
+pair :0x55c9c07ef080
+cgi read ok
+0x55c9c07ef080
+get restype :1
+created next event :0
+HTTP/1.1 303 abc
+CONTENT-TYPE: text/html
+Transfer-Encoding: chunked
+Connection: keep-alive
+
+
+cgiread size 50
+Content-type: text/html 
+Status: 303 abc 
+
+decunko
+cgi read ok
+0x55c9c07ef080
+get restype :1
+created next event :1
+cgiread size 0
+
+destructor cgi read
+send header
+send body
+
+7
+decunko
+
+wrriten 12
+last chunk
+cgi response destructor
+new connecting fd: 5
+read complete
+cgi run
+ created read go:0
+tukutta0x55c9c07ef080
+pair :0x55c9c07ef080
+cgi read ok
+0x55c9c07ef080
+get restype :1
+created next event :0
+HTTP/1.1 303 abc
+CONTENT-TYPE: text/html
+Transfer-Encoding: chunked
+Connection: keep-alive
+
+
+cgiread size 50
+Content-type: text/html 
+Status: 303 abc 
+
+decunko
+destructor cgi read
+send header
+send body
+
+7
+decunko
+
+wrriten 12
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten -1
+write err
+cgi response destructor
+new connecting fd: 5
+read complete
+cgi run
+ created read go:0
+tukutta0x55c9c07ef080
+pair :0x55c9c07ef080
+cgi read ok
+0x55c9c07ef080
+get restype :1
+created next event :0
+HTTP/1.1 303 abc
+CONTENT-TYPE: text/html
+Transfer-Encoding: chunked
+Connection: keep-alive
+
+
+cgiread size 50
+Content-type: text/html 
+Status: 303 abc 
+
+decunko
+destructor cgi read
+send header
+send body
+
+7
+decunko
+
+wrriten 12
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten -1
+write err
+cgi response destructor
+new connecting fd: 5
+read complete
+cgi run
+ created read go:0
+tukutta0x55c9c07ef080
+pair :0x55c9c07ef080
+cgi read ok
+0x55c9c07ef080
+get restype :1
+created next event :0
+HTTP/1.1 303 abc
+CONTENT-TYPE: text/html
+Transfer-Encoding: chunked
+Connection: keep-alive
+
+
+cgiread size 50
+Content-type: text/html 
+Status: 303 abc 
+
+decunko
+destructor cgi read
+send header
+send body
+
+7
+decunko
+
+wrriten 12
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten -1
+write err
+cgi response destructor
+new connecting fd: 5
+read complete
+cgi run
+ created read go:0
+tukutta0x55c9c07ef080
+pair :0x55c9c07ef080
+cgi read ok
+0x55c9c07ef080
+get restype :1
+created next event :0
+HTTP/1.1 303 abc
+CONTENT-TYPE: text/html
+Transfer-Encoding: chunked
+Connection: keep-alive
+
+
+cgiread size 50
+Content-type: text/html 
+Status: 303 abc 
+
+decunko
+destructor cgi read
+send header
+send body
+
+7
+decunko
+
+wrriten 12
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten -1
+write err
+cgi response destructor
+new connecting fd: 5
+read complete
+cgi run
+ created read go:0
+tukutta0x55c9c07ef080
+pair :0x55c9c07ef080
+cgi read ok
+0x55c9c07ef080
+get restype :1
+created next event :0
+HTTP/1.1 303 abc
+CONTENT-TYPE: text/html
+Transfer-Encoding: chunked
+Connection: keep-alive
+
+
+cgiread size 50
+Content-type: text/html 
+Status: 303 abc 
+
+decunko
+destructor cgi read
+send header
+send body
+
+7
+decunko
+
+wrriten 12
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten -1
+write err
+cgi response destructor
+new connecting fd: 5
+read complete
+cgi run
+ created read go:0
+tukutta0x55c9c07ef080
+pair :0x55c9c07ef080
+cgi read ok
+0x55c9c07ef080
+get restype :1
+created next event :0
+HTTP/1.1 303 abc
+CONTENT-TYPE: text/html
+Transfer-Encoding: chunked
+Connection: keep-alive
+
+
+cgiread size 50
+Content-type: text/html 
+Status: 303 abc 
+
+decunko
+destructor cgi read
+send header
+send body
+
+7
+decunko
+
+wrriten 12
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten -1
+write err
+cgi response destructor
+new connecting fd: 5
+read complete
+cgi run
+ created read go:0
+tukutta0x55c9c07ef080
+pair :0x55c9c07ef080
+cgi read ok
+0x55c9c07ef080
+get restype :1
+created next event :0
+HTTP/1.1 303 abc
+CONTENT-TYPE: text/html
+Transfer-Encoding: chunked
+Connection: keep-alive
+
+
+cgiread size 50
+Content-type: text/html 
+Status: 303 abc 
+
+decunko
+destructor cgi read
+send header
+send body
+
+7
+decunko
+
+wrriten 12
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten -1
+write err
+cgi response destructor
+new connecting fd: 5
+read complete
+cgi run
+ created read go:0
+tukutta0x55c9c07ef080
+pair :0x55c9c07ef080
+cgi read ok
+0x55c9c07ef080
+get restype :1
+created next event :0
+HTTP/1.1 303 abc
+CONTENT-TYPE: text/html
+Transfer-Encoding: chunked
+Connection: keep-alive
+
+
+cgiread size 50
+Content-type: text/html 
+Status: 303 abc 
+
+decunko
+cgi read ok
+0x55c9c07ef080
+get restype :1
+created next event :1
+cgiread size 0
+
+destructor cgi read
+send header
+send body
+
+7
+decunko
+
+wrriten 12
+last chunk
+cgi response destructor
+new connecting fd: 5
+read complete
+cgi run
+ created read go:0
+tukutta0x55c9c07ef080
+pair :0x55c9c07ef080
+cgi read ok
+0x55c9c07ef080
+get restype :1
+created next event :0
+HTTP/1.1 303 abc
+CONTENT-TYPE: text/html
+Transfer-Encoding: chunked
+Connection: keep-alive
+
+
+cgiread size 50
+Content-type: text/html 
+Status: 303 abc 
+
+decunko
+destructor cgi read
+send header
+send body
+
+7
+decunko
+
+wrriten 12
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten -1
+write err
+cgi response destructor
+new connecting fd: 5
+read complete
+cgi run
+ created read go:0
+tukutta0x55c9c07ef080
+pair :0x55c9c07ef080
+cgi read ok
+0x55c9c07ef080
+get restype :1
+created next event :0
+HTTP/1.1 303 abc
+CONTENT-TYPE: text/html
+Transfer-Encoding: chunked
+Connection: keep-alive
+
+
+cgiread size 50
+Content-type: text/html 
+Status: 303 abc 
+
+decunko
+destructor cgi read
+send header
+send body
+
+7
+decunko
+
+wrriten 12
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten -1
+write err
+cgi response destructor
+new connecting fd: 5
+read complete
+cgi run
+ created read go:0
+tukutta0x55c9c07ef080
+pair :0x55c9c07ef080
+cgi read ok
+0x55c9c07ef080
+get restype :1
+created next event :0
+HTTP/1.1 303 abc
+CONTENT-TYPE: text/html
+Transfer-Encoding: chunked
+Connection: keep-alive
+
+
+cgiread size 50
+Content-type: text/html 
+Status: 303 abc 
+
+decunko
+destructor cgi read
+send header
+send body
+
+7
+decunko
+
+wrriten 12
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten -1
+write err
+cgi response destructor
+new connecting fd: 5
+read complete
+cgi run
+ created read go:0
+tukutta0x55c9c07ef080
+pair :0x55c9c07ef080
+cgi read ok
+0x55c9c07ef080
+get restype :1
+created next event :0
+HTTP/1.1 303 abc
+CONTENT-TYPE: text/html
+Transfer-Encoding: chunked
+Connection: keep-alive
+
+
+cgiread size 50
+Content-type: text/html 
+Status: 303 abc 
+
+decunko
+destructor cgi read
+send header
+send body
+
+7
+decunko
+
+wrriten 12
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten -1
+write err
+cgi response destructor
+new connecting fd: 5
+read complete
+cgi run
+ created read go:0
+tukutta0x55c9c07ef080
+pair :0x55c9c07ef080
+cgi read ok
+0x55c9c07ef080
+get restype :1
+created next event :0
+HTTP/1.1 303 abc
+CONTENT-TYPE: text/html
+Transfer-Encoding: chunked
+Connection: keep-alive
+
+
+cgiread size 50
+Content-type: text/html 
+Status: 303 abc 
+
+decunko
+destructor cgi read
+send header
+send body
+
+7
+decunko
+
+wrriten 12
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten -1
+write err
+cgi response destructor
+new connecting fd: 5
+read complete
+cgi run
+ created read go:0
+tukutta0x55c9c07ef080
+pair :0x55c9c07ef080
+cgi read ok
+0x55c9c07ef080
+get restype :1
+created next event :0
+HTTP/1.1 303 abc
+CONTENT-TYPE: text/html
+Transfer-Encoding: chunked
+Connection: keep-alive
+
+
+cgiread size 50
+Content-type: text/html 
+Status: 303 abc 
+
+decunko
+destructor cgi read
+send header
+send body
+
+7
+decunko
+
+wrriten 12
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten -1
+write err
+cgi response destructor
+new connecting fd: 5
+read complete
+cgi run
+ created read go:0
+tukutta0x55c9c07ef080
+pair :0x55c9c07ef080
+cgi read ok
+0x55c9c07ef080
+get restype :1
+created next event :0
+HTTP/1.1 303 abc
+CONTENT-TYPE: text/html
+Transfer-Encoding: chunked
+Connection: keep-alive
+
+
+cgiread size 50
+Content-type: text/html 
+Status: 303 abc 
+
+decunko
+destructor cgi read
+send header
+send body
+
+7
+decunko
+
+wrriten 12
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten -1
+write err
+cgi response destructor
+new connecting fd: 5
+read complete
+cgi run
+ created read go:0
+tukutta0x55c9c07ef080
+pair :0x55c9c07ef080
+cgi read ok
+0x55c9c07ef080
+get restype :1
+created next event :0
+HTTP/1.1 303 abc
+CONTENT-TYPE: text/html
+Transfer-Encoding: chunked
+Connection: keep-alive
+
+
+cgiread size 50
+Content-type: text/html 
+Status: 303 abc 
+
+decunko
+send header
+send body
+
+7
+decunko
+
+wrriten 12
+cgi read ok
+0x55c9c07ef080
+get restype :1
+created next event :1
+cgiread size 0
+
+destructor cgi read
+last chunk
+cgi response destructor
+new connecting fd: 5
+read complete
+cgi run
+ created read go:0
+tukutta0x55c9c07ef080
+pair :0x55c9c07ef080
+cgi read ok
+0x55c9c07ef080
+get restype :1
+created next event :0
+HTTP/1.1 303 abc
+CONTENT-TYPE: text/html
+Transfer-Encoding: chunked
+Connection: keep-alive
+
+
+cgiread size 50
+Content-type: text/html 
+Status: 303 abc 
+
+decunko
+destructor cgi read
+send header
+send body
+
+7
+decunko
+
+wrriten 12
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten -1
+write err
+cgi response destructor
+new connecting fd: 5
+read complete
+cgi run
+ created read go:0
+tukutta0x55c9c07ef080
+pair :0x55c9c07ef080
+cgi read ok
+0x55c9c07ef080
+get restype :1
+created next event :0
+HTTP/1.1 303 abc
+CONTENT-TYPE: text/html
+Transfer-Encoding: chunked
+Connection: keep-alive
+
+
+cgiread size 50
+Content-type: text/html 
+Status: 303 abc 
+
+decunko
+destructor cgi read
+send header
+send body
+
+7
+decunko
+
+wrriten 12
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten -1
+write err
+cgi response destructor
+new connecting fd: 5
+read complete
+cgi run
+ created read go:0
+tukutta0x55c9c07ef080
+pair :0x55c9c07ef080
+cgi read ok
+0x55c9c07ef080
+get restype :1
+created next event :0
+HTTP/1.1 303 abc
+CONTENT-TYPE: text/html
+Transfer-Encoding: chunked
+Connection: keep-alive
+
+
+cgiread size 50
+Content-type: text/html 
+Status: 303 abc 
+
+decunko
+destructor cgi read
+send header
+send body
+
+7
+decunko
+
+wrriten 12
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten -1
+write err
+cgi response destructor
+new connecting fd: 5
+read complete
+cgi run
+ created read go:0
+tukutta0x55c9c07ef080
+pair :0x55c9c07ef080
+cgi read ok
+0x55c9c07ef080
+get restype :1
+created next event :0
+HTTP/1.1 303 abc
+CONTENT-TYPE: text/html
+Transfer-Encoding: chunked
+Connection: keep-alive
+
+
+cgiread size 50
+Content-type: text/html 
+Status: 303 abc 
+
+decunko
+destructor cgi read
+send header
+send body
+
+7
+decunko
+
+wrriten 12
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten -1
+write err
+cgi response destructor
+new connecting fd: 5
+read complete
+cgi run
+ created read go:0
+tukutta0x55c9c07ef080
+pair :0x55c9c07ef080
+cgi read ok
+0x55c9c07ef080
+get restype :1
+created next event :0
+HTTP/1.1 303 abc
+CONTENT-TYPE: text/html
+Transfer-Encoding: chunked
+Connection: keep-alive
+
+
+cgiread size 50
+Content-type: text/html 
+Status: 303 abc 
+
+decunko
+destructor cgi read
+send header
+send body
+
+7
+decunko
+
+wrriten 12
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten -1
+write err
+cgi response destructor
+new connecting fd: 5
+read complete
+cgi run
+ created read go:0
+tukutta0x55c9c07ef080
+pair :0x55c9c07ef080
+cgi read ok
+0x55c9c07ef080
+get restype :1
+created next event :0
+HTTP/1.1 303 abc
+CONTENT-TYPE: text/html
+Transfer-Encoding: chunked
+Connection: keep-alive
+
+
+cgiread size 50
+Content-type: text/html 
+Status: 303 abc 
+
+decunko
+destructor cgi read
+send header
+send body
+
+7
+decunko
+
+wrriten 12
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten -1
+write err
+cgi response destructor
+new connecting fd: 5
+read complete
+cgi run
+ created read go:0
+tukutta0x55c9c07ef080
+pair :0x55c9c07ef080
+cgi read ok
+0x55c9c07ef080
+get restype :1
+created next event :0
+HTTP/1.1 303 abc
+CONTENT-TYPE: text/html
+Transfer-Encoding: chunked
+Connection: keep-alive
+
+
+cgiread size 50
+Content-type: text/html 
+Status: 303 abc 
+
+decunko
+destructor cgi read
+send header
+send body
+
+7
+decunko
+
+wrriten 12
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten -1
+write err
+cgi response destructor
+new connecting fd: 5
+read complete
+cgi run
+ created read go:0
+tukutta0x55c9c07ef080
+pair :0x55c9c07ef080
+cgi read ok
+0x55c9c07ef080
+get restype :1
+created next event :0
+HTTP/1.1 303 abc
+CONTENT-TYPE: text/html
+Transfer-Encoding: chunked
+Connection: keep-alive
+
+
+cgiread size 50
+Content-type: text/html 
+Status: 303 abc 
+
+decunko
+destructor cgi read
+send header
+send body
+
+7
+decunko
+
+wrriten 12
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten -1
+write err
+cgi response destructor
+new connecting fd: 5
+read complete
+cgi run
+ created read go:0
+tukutta0x55c9c07ef080
+pair :0x55c9c07ef080
+cgi read ok
+0x55c9c07ef080
+get restype :1
+created next event :0
+HTTP/1.1 303 abc
+CONTENT-TYPE: text/html
+Transfer-Encoding: chunked
+Connection: keep-alive
+
+
+cgiread size 50
+Content-type: text/html 
+Status: 303 abc 
+
+decunko
+destructor cgi read
+send header
+send body
+
+7
+decunko
+
+wrriten 12
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten -1
+write err
+cgi response destructor
+new connecting fd: 5
+read complete
+cgi run
+ created read go:0
+tukutta0x55c9c07ef080
+pair :0x55c9c07ef080
+cgi read ok
+0x55c9c07ef080
+get restype :1
+created next event :0
+HTTP/1.1 303 abc
+CONTENT-TYPE: text/html
+Transfer-Encoding: chunked
+Connection: keep-alive
+
+
+cgiread size 50
+Content-type: text/html 
+Status: 303 abc 
+
+decunko
+send header
+send body
+
+7
+decunko
+
+wrriten 12
+cgi read ok
+0x55c9c07ef080
+get restype :1
+created next event :1
+cgiread size 0
+
+destructor cgi read
+last chunk
+cgi response destructor
+new connecting fd: 5
+read complete
+cgi run
+ created read go:0
+tukutta0x55c9c07ef080
+pair :0x55c9c07ef080
+cgi read ok
+0x55c9c07ef080
+get restype :1
+created next event :0
+HTTP/1.1 303 abc
+CONTENT-TYPE: text/html
+Transfer-Encoding: chunked
+Connection: keep-alive
+
+
+cgiread size 50
+Content-type: text/html 
+Status: 303 abc 
+
+decunko
+destructor cgi read
+send header
+send body
+
+7
+decunko
+
+wrriten 12
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten -1
+write err
+cgi response destructor
+new connecting fd: 5
+read complete
+cgi run
+ created read go:0
+tukutta0x55c9c07ef080
+pair :0x55c9c07ef080
+cgi read ok
+0x55c9c07ef080
+get restype :1
+created next event :0
+HTTP/1.1 303 abc
+CONTENT-TYPE: text/html
+Transfer-Encoding: chunked
+Connection: keep-alive
+
+
+cgiread size 50
+Content-type: text/html 
+Status: 303 abc 
+
+decunko
+send header
+send body
+
+7
+decunko
+
+wrriten 12
+cgi read ok
+0x55c9c07ef080
+get restype :1
+created next event :1
+cgiread size 0
+
+destructor cgi read
+last chunk
+cgi response destructor
+new connecting fd: 5
+read complete
+cgi run
+ created read go:0
+tukutta0x55c9c07ef080
+pair :0x55c9c07ef080
+cgi read ok
+0x55c9c07ef080
+get restype :1
+created next event :0
+HTTP/1.1 303 abc
+CONTENT-TYPE: text/html
+Transfer-Encoding: chunked
+Connection: keep-alive
+
+
+cgiread size 50
+Content-type: text/html 
+Status: 303 abc 
+
+decunko
+destructor cgi read
+send header
+send body
+
+7
+decunko
+
+wrriten 12
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten -1
+write err
+cgi response destructor
+new connecting fd: 5
+read complete
+cgi run
+ created read go:0
+tukutta0x55c9c07ef080
+pair :0x55c9c07ef080
+cgi read ok
+0x55c9c07ef080
+get restype :1
+created next event :0
+HTTP/1.1 303 abc
+CONTENT-TYPE: text/html
+Transfer-Encoding: chunked
+Connection: keep-alive
+
+
+cgiread size 50
+Content-type: text/html 
+Status: 303 abc 
+
+decunko
+destructor cgi read
+send header
+send body
+
+7
+decunko
+
+wrriten 12
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten -1
+write err
+cgi response destructor
+new connecting fd: 5
+read complete
+cgi run
+ created read go:0
+tukutta0x55c9c07ef080
+pair :0x55c9c07ef080
+cgi read ok
+0x55c9c07ef080
+get restype :1
+created next event :0
+HTTP/1.1 303 abc
+CONTENT-TYPE: text/html
+Transfer-Encoding: chunked
+Connection: keep-alive
+
+
+cgiread size 50
+Content-type: text/html 
+Status: 303 abc 
+
+decunko
+send header
+send body
+
+7
+decunko
+
+wrriten 12
+cgi read ok
+0x55c9c07ef080
+get restype :1
+created next event :1
+cgiread size 0
+
+destructor cgi read
+last chunk
+cgi response destructor
+new connecting fd: 5
+read complete
+cgi run
+ created read go:0
+tukutta0x55c9c07ef080
+pair :0x55c9c07ef080
+cgi read ok
+0x55c9c07ef080
+get restype :1
+created next event :0
+HTTP/1.1 303 abc
+CONTENT-TYPE: text/html
+Transfer-Encoding: chunked
+Connection: keep-alive
+
+
+cgiread size 50
+Content-type: text/html 
+Status: 303 abc 
+
+decunko
+destructor cgi read
+send header
+send body
+
+7
+decunko
+
+wrriten 12
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten -1
+write err
+cgi response destructor
+new connecting fd: 5
+read complete
+cgi run
+ created read go:0
+tukutta0x55c9c07ef080
+pair :0x55c9c07ef080
+cgi read ok
+0x55c9c07ef080
+get restype :1
+created next event :0
+HTTP/1.1 303 abc
+CONTENT-TYPE: text/html
+Transfer-Encoding: chunked
+Connection: keep-alive
+
+
+cgiread size 50
+Content-type: text/html 
+Status: 303 abc 
+
+decunko
+destructor cgi read
+send header
+send body
+
+7
+decunko
+
+wrriten 12
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten -1
+write err
+cgi response destructor
+new connecting fd: 5
+read complete
+cgi run
+ created read go:0
+tukutta0x55c9c07ef080
+pair :0x55c9c07ef080
+cgi read ok
+0x55c9c07ef080
+get restype :1
+created next event :0
+HTTP/1.1 303 abc
+CONTENT-TYPE: text/html
+Transfer-Encoding: chunked
+Connection: keep-alive
+
+
+cgiread size 50
+Content-type: text/html 
+Status: 303 abc 
+
+decunko
+destructor cgi read
+send header
+send body
+
+7
+decunko
+
+wrriten 12
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten -1
+write err
+cgi response destructor
+new connecting fd: 5
+read complete
+cgi run
+ created read go:0
+tukutta0x55c9c07ef080
+pair :0x55c9c07ef080
+cgi read ok
+0x55c9c07ef080
+get restype :1
+created next event :0
+HTTP/1.1 303 abc
+CONTENT-TYPE: text/html
+Transfer-Encoding: chunked
+Connection: keep-alive
+
+
+cgiread size 50
+Content-type: text/html 
+Status: 303 abc 
+
+decunko
+cgi read ok
+0x55c9c07ef080
+get restype :1
+created next event :1
+cgiread size 0
+
+destructor cgi read
+send header
+send body
+
+7
+decunko
+
+wrriten 12
+last chunk
+cgi response destructor
+new connecting fd: 5
+read complete
+cgi run
+ created read go:0
+tukutta0x55c9c07ef080
+pair :0x55c9c07ef080
+cgi read ok
+0x55c9c07ef080
+get restype :1
+created next event :0
+HTTP/1.1 303 abc
+CONTENT-TYPE: text/html
+Transfer-Encoding: chunked
+Connection: keep-alive
+
+
+cgiread size 50
+Content-type: text/html 
+Status: 303 abc 
+
+decunko
+send header
+send body
+
+7
+decunko
+
+wrriten 12
+cgi read ok
+0x55c9c07ef080
+get restype :1
+created next event :1
+cgiread size 0
+
+destructor cgi read
+last chunk
+cgi response destructor
+new connecting fd: 5
+read complete
+cgi run
+ created read go:0
+tukutta0x55c9c07ef080
+pair :0x55c9c07ef080
+cgi read ok
+0x55c9c07ef080
+get restype :1
+created next event :0
+HTTP/1.1 303 abc
+CONTENT-TYPE: text/html
+Transfer-Encoding: chunked
+Connection: keep-alive
+
+
+cgiread size 50
+Content-type: text/html 
+Status: 303 abc 
+
+decunko
+destructor cgi read
+send header
+send body
+
+7
+decunko
+
+wrriten 12
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten -1
+write err
+cgi response destructor
+new connecting fd: 5
+read complete
+cgi run
+ created read go:0
+tukutta0x55c9c07ef080
+pair :0x55c9c07ef080
+cgi read ok
+0x55c9c07ef080
+get restype :1
+created next event :0
+HTTP/1.1 303 abc
+CONTENT-TYPE: text/html
+Transfer-Encoding: chunked
+Connection: keep-alive
+
+
+cgiread size 50
+Content-type: text/html 
+Status: 303 abc 
+
+decunko
+destructor cgi read
+send header
+send body
+
+7
+decunko
+
+wrriten 12
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten -1
+write err
+cgi response destructor
+new connecting fd: 5
+read complete
+cgi run
+ created read go:0
+tukutta0x55c9c07ef080
+pair :0x55c9c07ef080
+cgi read ok
+0x55c9c07ef080
+get restype :1
+created next event :0
+HTTP/1.1 303 abc
+CONTENT-TYPE: text/html
+Transfer-Encoding: chunked
+Connection: keep-alive
+
+
+cgiread size 50
+Content-type: text/html 
+Status: 303 abc 
+
+decunko
+destructor cgi read
+send header
+send body
+
+7
+decunko
+
+wrriten 12
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten -1
+write err
+cgi response destructor
+new connecting fd: 5
+read complete
+cgi run
+ created read go:0
+tukutta0x55c9c07ef080
+pair :0x55c9c07ef080
+cgi read ok
+0x55c9c07ef080
+get restype :1
+created next event :0
+HTTP/1.1 303 abc
+CONTENT-TYPE: text/html
+Transfer-Encoding: chunked
+Connection: keep-alive
+
+
+cgiread size 50
+Content-type: text/html 
+Status: 303 abc 
+
+decunko
+destructor cgi read
+send header
+send body
+
+7
+decunko
+
+wrriten 12
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten -1
+write err
+cgi response destructor
+new connecting fd: 5
+read complete
+cgi run
+ created read go:0
+tukutta0x55c9c07ef080
+pair :0x55c9c07ef080
+cgi read ok
+0x55c9c07ef080
+get restype :1
+created next event :0
+HTTP/1.1 303 abc
+CONTENT-TYPE: text/html
+Transfer-Encoding: chunked
+Connection: keep-alive
+
+
+cgiread size 50
+Content-type: text/html 
+Status: 303 abc 
+
+decunko
+destructor cgi read
+send header
+send body
+
+7
+decunko
+
+wrriten 12
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten -1
+write err
+cgi response destructor
+new connecting fd: 5
+read complete
+cgi run
+ created read go:0
+tukutta0x55c9c07ef080
+pair :0x55c9c07ef080
+cgi read ok
+0x55c9c07ef080
+get restype :1
+created next event :0
+HTTP/1.1 303 abc
+CONTENT-TYPE: text/html
+Transfer-Encoding: chunked
+Connection: keep-alive
+
+
+cgiread size 50
+Content-type: text/html 
+Status: 303 abc 
+
+decunko
+destructor cgi read
+send header
+send body
+
+7
+decunko
+
+wrriten 12
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten -1
+write err
+cgi response destructor
+new connecting fd: 5
+read complete
+cgi run
+ created read go:0
+tukutta0x55c9c07ef080
+pair :0x55c9c07ef080
+cgi read ok
+0x55c9c07ef080
+get restype :1
+created next event :0
+HTTP/1.1 303 abc
+CONTENT-TYPE: text/html
+Transfer-Encoding: chunked
+Connection: keep-alive
+
+
+cgiread size 50
+Content-type: text/html 
+Status: 303 abc 
+
+decunko
+send header
+send body
+
+7
+decunko
+
+wrriten 12
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten -1
+write err
+cgi response destructor
+new connecting fd: 5
+read complete
+cgi run
+ created read go:0
+tukutta0x55c9c07efa60
+pair :0x55c9c07efa60
+cgi read ok
+0x55c9c07efa60
+get restype :1
+created next event :0
+HTTP/1.1 303 abc
+CONTENT-TYPE: text/html
+Transfer-Encoding: chunked
+Connection: keep-alive
+
+
+cgiread size 50
+Content-type: text/html 
+Status: 303 abc 
+
+decunko
+destructor cgi read
+send header
+send body
+
+7
+decunko
+
+wrriten 12
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten -1
+write err
+cgi response destructor
+new connecting fd: 5
+read complete
+cgi run
+ created read go:0
+tukutta0x55c9c07efa60
+pair :0x55c9c07efa60
+cgi read ok
+0x55c9c07efa60
+get restype :1
+created next event :0
+HTTP/1.1 303 abc
+CONTENT-TYPE: text/html
+Transfer-Encoding: chunked
+Connection: keep-alive
+
+
+cgiread size 50
+Content-type: text/html 
+Status: 303 abc 
+
+decunko
+destructor cgi read
+send header
+send body
+
+7
+decunko
+
+wrriten 12
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten -1
+write err
+cgi response destructor
+new connecting fd: 5
+read complete
+cgi run
+ created read go:0
+tukutta0x55c9c07efa60
+pair :0x55c9c07efa60
+cgi read ok
+0x55c9c07efa60
+get restype :1
+created next event :0
+HTTP/1.1 303 abc
+CONTENT-TYPE: text/html
+Transfer-Encoding: chunked
+Connection: keep-alive
+
+
+cgiread size 50
+Content-type: text/html 
+Status: 303 abc 
+
+decunko
+destructor cgi read
+send header
+send body
+
+7
+decunko
+
+wrriten 12
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten -1
+write err
+cgi response destructor
+new connecting fd: 5
+read complete
+cgi run
+ created read go:0
+tukutta0x55c9c07efa60
+pair :0x55c9c07efa60
+cgi read ok
+0x55c9c07efa60
+get restype :1
+created next event :0
+HTTP/1.1 303 abc
+CONTENT-TYPE: text/html
+Transfer-Encoding: chunked
+Connection: keep-alive
+
+
+cgiread size 50
+Content-type: text/html 
+Status: 303 abc 
+
+decunko
+destructor cgi read
+send header
+send body
+
+7
+decunko
+
+wrriten 12
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten -1
+write err
+cgi response destructor
+new connecting fd: 5
+read complete
+cgi run
+ created read go:0
+tukutta0x55c9c07efa60
+pair :0x55c9c07efa60
+cgi read ok
+0x55c9c07efa60
+get restype :1
+created next event :0
+HTTP/1.1 303 abc
+CONTENT-TYPE: text/html
+Transfer-Encoding: chunked
+Connection: keep-alive
+
+
+cgiread size 50
+Content-type: text/html 
+Status: 303 abc 
+
+decunko
+destructor cgi read
+send header
+send body
+
+7
+decunko
+
+wrriten 12
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten -1
+write err
+cgi response destructor
+new connecting fd: 5
+read complete
+cgi run
+ created read go:0
+tukutta0x55c9c07efa60
+pair :0x55c9c07efa60
+cgi read ok
+0x55c9c07efa60
+get restype :1
+created next event :0
+HTTP/1.1 303 abc
+CONTENT-TYPE: text/html
+Transfer-Encoding: chunked
+Connection: keep-alive
+
+
+cgiread size 50
+Content-type: text/html 
+Status: 303 abc 
+
+decunko
+destructor cgi read
+send header
+send body
+
+7
+decunko
+
+wrriten 12
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten -1
+write err
+cgi response destructor
+new connecting fd: 5
+read complete
+cgi run
+ created read go:0
+tukutta0x55c9c07efa60
+pair :0x55c9c07efa60
+cgi read ok
+0x55c9c07efa60
+get restype :1
+created next event :0
+HTTP/1.1 303 abc
+CONTENT-TYPE: text/html
+Transfer-Encoding: chunked
+Connection: keep-alive
+
+
+cgiread size 50
+Content-type: text/html 
+Status: 303 abc 
+
+decunko
+destructor cgi read
+send header
+send body
+
+7
+decunko
+
+wrriten 12
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten -1
+write err
+cgi response destructor
+new connecting fd: 5
+read complete
+cgi run
+ created read go:0
+tukutta0x55c9c07efa60
+pair :0x55c9c07efa60
+cgi read ok
+0x55c9c07efa60
+get restype :1
+created next event :0
+HTTP/1.1 303 abc
+CONTENT-TYPE: text/html
+Transfer-Encoding: chunked
+Connection: keep-alive
+
+
+cgiread size 50
+Content-type: text/html 
+Status: 303 abc 
+
+decunko
+destructor cgi read
+send header
+send body
+
+7
+decunko
+
+wrriten 12
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten -1
+write err
+cgi response destructor
+new connecting fd: 5
+read complete
+cgi run
+ created read go:0
+tukutta0x55c9c07efa60
+pair :0x55c9c07efa60
+cgi read ok
+0x55c9c07efa60
+get restype :1
+created next event :0
+HTTP/1.1 303 abc
+CONTENT-TYPE: text/html
+Transfer-Encoding: chunked
+Connection: keep-alive
+
+
+cgiread size 50
+Content-type: text/html 
+Status: 303 abc 
+
+decunko
+destructor cgi read
+send header
+send body
+
+7
+decunko
+
+wrriten 12
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten -1
+write err
+cgi response destructor
+new connecting fd: 5
+read complete
+cgi run
+ created read go:0
+tukutta0x55c9c07efa60
+pair :0x55c9c07efa60
+cgi read ok
+0x55c9c07efa60
+get restype :1
+created next event :0
+HTTP/1.1 303 abc
+CONTENT-TYPE: text/html
+Transfer-Encoding: chunked
+Connection: keep-alive
+
+
+cgiread size 50
+Content-type: text/html 
+Status: 303 abc 
+
+decunko
+destructor cgi read
+send header
+send body
+
+7
+decunko
+
+wrriten 12
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten -1
+write err
+cgi response destructor
+new connecting fd: 5
+read complete
+cgi run
+ created read go:0
+tukutta0x55c9c07efa60
+pair :0x55c9c07efa60
+cgi read ok
+0x55c9c07efa60
+get restype :1
+created next event :0
+HTTP/1.1 303 abc
+CONTENT-TYPE: text/html
+Transfer-Encoding: chunked
+Connection: keep-alive
+
+
+cgiread size 50
+Content-type: text/html 
+Status: 303 abc 
+
+decunko
+destructor cgi read
+send header
+send body
+
+7
+decunko
+
+wrriten 12
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten -1
+write err
+cgi response destructor
+new connecting fd: 5
+read complete
+cgi run
+ created read go:0
+tukutta0x55c9c07efa60
+pair :0x55c9c07efa60
+cgi read ok
+0x55c9c07efa60
+get restype :1
+created next event :0
+HTTP/1.1 303 abc
+CONTENT-TYPE: text/html
+Transfer-Encoding: chunked
+Connection: keep-alive
+
+
+cgiread size 50
+Content-type: text/html 
+Status: 303 abc 
+
+decunko
+destructor cgi read
+send header
+send body
+
+7
+decunko
+
+wrriten 12
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten -1
+write err
+cgi response destructor
+new connecting fd: 5
+read complete
+cgi run
+ created read go:0
+tukutta0x55c9c07efa60
+pair :0x55c9c07efa60
+cgi read ok
+0x55c9c07efa60
+get restype :1
+created next event :0
+HTTP/1.1 303 abc
+CONTENT-TYPE: text/html
+Transfer-Encoding: chunked
+Connection: keep-alive
+
+
+cgiread size 50
+Content-type: text/html 
+Status: 303 abc 
+
+decunko
+cgi read ok
+0x55c9c07efa60
+get restype :1
+created next event :1
+cgiread size 0
+
+destructor cgi read
+send header
+send body
+
+7
+decunko
+
+wrriten 12
+last chunk
+cgi response destructor
+new connecting fd: 5
+read complete
+cgi run
+ created read go:0
+tukutta0x55c9c07efa60
+pair :0x55c9c07efa60
+cgi read ok
+0x55c9c07efa60
+get restype :1
+created next event :0
+HTTP/1.1 303 abc
+CONTENT-TYPE: text/html
+Transfer-Encoding: chunked
+Connection: keep-alive
+
+
+cgiread size 50
+Content-type: text/html 
+Status: 303 abc 
+
+decunko
+destructor cgi read
+send header
+send body
+
+7
+decunko
+
+wrriten 12
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten -1
+write err
+cgi response destructor
+new connecting fd: 5
+read complete
+cgi run
+ created read go:0
+tukutta0x55c9c07efa60
+pair :0x55c9c07efa60
+cgi read ok
+0x55c9c07efa60
+get restype :1
+created next event :0
+HTTP/1.1 303 abc
+CONTENT-TYPE: text/html
+Transfer-Encoding: chunked
+Connection: keep-alive
+
+
+cgiread size 50
+Content-type: text/html 
+Status: 303 abc 
+
+decunko
+cgi read ok
+0x55c9c07efa60
+get restype :1
+created next event :1
+cgiread size 0
+
+destructor cgi read
+send header
+send body
+
+7
+decunko
+
+wrriten 12
+last chunk
+cgi response destructor
+new connecting fd: 5
+read complete
+cgi run
+ created read go:0
+tukutta0x55c9c07efa60
+pair :0x55c9c07efa60
+cgi read ok
+0x55c9c07efa60
+get restype :1
+created next event :0
+HTTP/1.1 303 abc
+CONTENT-TYPE: text/html
+Transfer-Encoding: chunked
+Connection: keep-alive
+
+
+cgiread size 50
+Content-type: text/html 
+Status: 303 abc 
+
+decunko
+cgi read ok
+0x55c9c07efa60
+get restype :1
+created next event :1
+cgiread size 0
+
+destructor cgi read
+send header
+send body
+
+7
+decunko
+
+wrriten 12
+last chunk
+cgi response destructor
+new connecting fd: 5
+read complete
+cgi run
+ created read go:0
+tukutta0x55c9c07efa60
+pair :0x55c9c07efa60
+cgi read ok
+0x55c9c07efa60
+get restype :1
+created next event :0
+HTTP/1.1 303 abc
+CONTENT-TYPE: text/html
+Transfer-Encoding: chunked
+Connection: keep-alive
+
+
+cgiread size 50
+Content-type: text/html 
+Status: 303 abc 
+
+decunko
+destructor cgi read
+send header
+send body
+
+7
+decunko
+
+wrriten 12
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten -1
+write err
+cgi response destructor
+new connecting fd: 5
+read complete
+cgi run
+ created read go:0
+tukutta0x55c9c07efa60
+pair :0x55c9c07efa60
+cgi read ok
+0x55c9c07efa60
+get restype :1
+created next event :0
+HTTP/1.1 303 abc
+CONTENT-TYPE: text/html
+Transfer-Encoding: chunked
+Connection: keep-alive
+
+
+cgiread size 50
+Content-type: text/html 
+Status: 303 abc 
+
+decunko
+destructor cgi read
+send header
+send body
+
+7
+decunko
+
+wrriten 12
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten -1
+write err
+cgi response destructor
+new connecting fd: 5
+read complete
+cgi run
+ created read go:0
+tukutta0x55c9c07efa60
+pair :0x55c9c07efa60
+cgi read ok
+0x55c9c07efa60
+get restype :1
+created next event :0
+HTTP/1.1 303 abc
+CONTENT-TYPE: text/html
+Transfer-Encoding: chunked
+Connection: keep-alive
+
+
+cgiread size 50
+Content-type: text/html 
+Status: 303 abc 
+
+decunko
+destructor cgi read
+send header
+send body
+
+7
+decunko
+
+wrriten 12
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten -1
+write err
+cgi response destructor
+new connecting fd: 5
+read complete
+cgi run
+ created read go:0
+tukutta0x55c9c07efa60
+pair :0x55c9c07efa60
+cgi read ok
+0x55c9c07efa60
+get restype :1
+created next event :0
+HTTP/1.1 303 abc
+CONTENT-TYPE: text/html
+Transfer-Encoding: chunked
+Connection: keep-alive
+
+
+cgiread size 50
+Content-type: text/html 
+Status: 303 abc 
+
+decunko
+destructor cgi read
+send header
+send body
+
+7
+decunko
+
+wrriten 12
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten -1
+write err
+cgi response destructor
+new connecting fd: 5
+read complete
+cgi run
+ created read go:0
+tukutta0x55c9c07efa60
+pair :0x55c9c07efa60
+cgi read ok
+0x55c9c07efa60
+get restype :1
+created next event :0
+HTTP/1.1 303 abc
+CONTENT-TYPE: text/html
+Transfer-Encoding: chunked
+Connection: keep-alive
+
+
+cgiread size 50
+Content-type: text/html 
+Status: 303 abc 
+
+decunko
+destructor cgi read
+send header
+send body
+
+7
+decunko
+
+wrriten 12
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten -1
+write err
+cgi response destructor
+new connecting fd: 5
+read complete
+cgi run
+ created read go:0
+tukutta0x55c9c07efa60
+pair :0x55c9c07efa60
+cgi read ok
+0x55c9c07efa60
+get restype :1
+created next event :0
+HTTP/1.1 303 abc
+CONTENT-TYPE: text/html
+Transfer-Encoding: chunked
+Connection: keep-alive
+
+
+cgiread size 50
+Content-type: text/html 
+Status: 303 abc 
+
+decunko
+destructor cgi read
+send header
+send body
+
+7
+decunko
+
+wrriten 12
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten -1
+write err
+cgi response destructor
+new connecting fd: 5
+read complete
+cgi run
+ created read go:0
+tukutta0x55c9c07efa60
+pair :0x55c9c07efa60
+cgi read ok
+0x55c9c07efa60
+get restype :1
+created next event :0
+HTTP/1.1 303 abc
+CONTENT-TYPE: text/html
+Transfer-Encoding: chunked
+Connection: keep-alive
+
+
+cgiread size 50
+Content-type: text/html 
+Status: 303 abc 
+
+decunko
+destructor cgi read
+send header
+send body
+
+7
+decunko
+
+wrriten 12
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten -1
+write err
+cgi response destructor
+new connecting fd: 5
+read complete
+cgi run
+ created read go:0
+tukutta0x55c9c07efa60
+pair :0x55c9c07efa60
+cgi read ok
+0x55c9c07efa60
+get restype :1
+created next event :0
+HTTP/1.1 303 abc
+CONTENT-TYPE: text/html
+Transfer-Encoding: chunked
+Connection: keep-alive
+
+
+cgiread size 50
+Content-type: text/html 
+Status: 303 abc 
+
+decunko
+send header
+send body
+
+7
+decunko
+
+wrriten 12
+cgi read ok
+0x55c9c07efa60
+get restype :1
+created next event :1
+cgiread size 0
+
+destructor cgi read
+last chunk
+cgi response destructor
+new connecting fd: 5
+read complete
+cgi run
+ created read go:0
+tukutta0x55c9c07efa60
+pair :0x55c9c07efa60
+cgi read ok
+0x55c9c07efa60
+get restype :1
+created next event :0
+HTTP/1.1 303 abc
+CONTENT-TYPE: text/html
+Transfer-Encoding: chunked
+Connection: keep-alive
+
+
+cgiread size 50
+Content-type: text/html 
+Status: 303 abc 
+
+decunko
+destructor cgi read
+send header
+send body
+
+7
+decunko
+
+wrriten 12
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten -1
+write err
+cgi response destructor
+new connecting fd: 5
+read complete
+cgi run
+ created read go:0
+tukutta0x55c9c07efa60
+pair :0x55c9c07efa60
+cgi read ok
+0x55c9c07efa60
+get restype :1
+created next event :0
+HTTP/1.1 303 abc
+CONTENT-TYPE: text/html
+Transfer-Encoding: chunked
+Connection: keep-alive
+
+
+cgiread size 50
+Content-type: text/html 
+Status: 303 abc 
+
+decunko
+send header
+send body
+
+7
+decunko
+
+wrriten 12
+cgi read ok
+0x55c9c07efa60
+get restype :1
+created next event :1
+cgiread size 0
+
+destructor cgi read
+last chunk
+cgi response destructor
+new connecting fd: 5
+read complete
+cgi run
+ created read go:0
+tukutta0x55c9c07efa60
+pair :0x55c9c07efa60
+cgi read ok
+0x55c9c07efa60
+get restype :1
+created next event :0
+HTTP/1.1 303 abc
+CONTENT-TYPE: text/html
+Transfer-Encoding: chunked
+Connection: keep-alive
+
+
+cgiread size 50
+Content-type: text/html 
+Status: 303 abc 
+
+decunko
+destructor cgi read
+send header
+send body
+
+7
+decunko
+
+wrriten 12
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten -1
+write err
+cgi response destructor
+new connecting fd: 5
+read complete
+cgi run
+ created read go:0
+tukutta0x55c9c07efa60
+pair :0x55c9c07efa60
+cgi read ok
+0x55c9c07efa60
+get restype :1
+created next event :0
+HTTP/1.1 303 abc
+CONTENT-TYPE: text/html
+Transfer-Encoding: chunked
+Connection: keep-alive
+
+
+cgiread size 50
+Content-type: text/html 
+Status: 303 abc 
+
+decunko
+destructor cgi read
+send header
+send body
+
+7
+decunko
+
+wrriten 12
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten -1
+write err
+cgi response destructor
+new connecting fd: 5
+read complete
+cgi run
+ created read go:0
+tukutta0x55c9c07efa60
+pair :0x55c9c07efa60
+cgi read ok
+0x55c9c07efa60
+get restype :1
+created next event :0
+HTTP/1.1 303 abc
+CONTENT-TYPE: text/html
+Transfer-Encoding: chunked
+Connection: keep-alive
+
+
+cgiread size 50
+Content-type: text/html 
+Status: 303 abc 
+
+decunko
+destructor cgi read
+send header
+send body
+
+7
+decunko
+
+wrriten 12
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten -1
+write err
+cgi response destructor
+new connecting fd: 5
+read complete
+cgi run
+ created read go:0
+tukutta0x55c9c07efa60
+pair :0x55c9c07efa60
+cgi read ok
+0x55c9c07efa60
+get restype :1
+created next event :0
+HTTP/1.1 303 abc
+CONTENT-TYPE: text/html
+Transfer-Encoding: chunked
+Connection: keep-alive
+
+
+cgiread size 50
+Content-type: text/html 
+Status: 303 abc 
+
+decunko
+destructor cgi read
+send header
+send body
+
+7
+decunko
+
+wrriten 12
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten -1
+write err
+cgi response destructor
+new connecting fd: 5
+read complete
+cgi run
+ created read go:0
+tukutta0x55c9c07efa60
+pair :0x55c9c07efa60
+cgi read ok
+0x55c9c07efa60
+get restype :1
+created next event :0
+HTTP/1.1 303 abc
+CONTENT-TYPE: text/html
+Transfer-Encoding: chunked
+Connection: keep-alive
+
+
+cgiread size 50
+Content-type: text/html 
+Status: 303 abc 
+
+decunko
+destructor cgi read
+send header
+send body
+
+7
+decunko
+
+wrriten 12
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten -1
+write err
+cgi response destructor
+new connecting fd: 5
+read complete
+cgi run
+ created read go:0
+tukutta0x55c9c07efa60
+pair :0x55c9c07efa60
+cgi read ok
+0x55c9c07efa60
+get restype :1
+created next event :0
+HTTP/1.1 303 abc
+CONTENT-TYPE: text/html
+Transfer-Encoding: chunked
+Connection: keep-alive
+
+
+cgiread size 50
+Content-type: text/html 
+Status: 303 abc 
+
+decunko
+destructor cgi read
+send header
+send body
+
+7
+decunko
+
+wrriten 12
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten -1
+write err
+cgi response destructor
+new connecting fd: 5
+read complete
+cgi run
+ created read go:0
+tukutta0x55c9c07efa60
+pair :0x55c9c07efa60
+cgi read ok
+0x55c9c07efa60
+get restype :1
+created next event :0
+HTTP/1.1 303 abc
+CONTENT-TYPE: text/html
+Transfer-Encoding: chunked
+Connection: keep-alive
+
+
+cgiread size 50
+Content-type: text/html 
+Status: 303 abc 
+
+decunko
+cgi read ok
+0x55c9c07efa60
+get restype :1
+created next event :1
+cgiread size 0
+
+destructor cgi read
+send header
+send body
+
+7
+decunko
+
+wrriten 12
+last chunk
+cgi response destructor
+new connecting fd: 5
+read complete
+cgi run
+ created read go:0
+tukutta0x55c9c07efa60
+pair :0x55c9c07efa60
+cgi read ok
+0x55c9c07efa60
+get restype :1
+created next event :0
+HTTP/1.1 303 abc
+CONTENT-TYPE: text/html
+Transfer-Encoding: chunked
+Connection: keep-alive
+
+
+cgiread size 50
+Content-type: text/html 
+Status: 303 abc 
+
+decunko
+send header
+send body
+
+7
+decunko
+
+wrriten 12
+cgi read ok
+0x55c9c07efa60
+get restype :1
+created next event :1
+cgiread size 0
+
+destructor cgi read
+last chunk
+cgi response destructor
+new connecting fd: 5
+read complete
+cgi run
+ created read go:0
+tukutta0x55c9c07efa60
+pair :0x55c9c07efa60
+cgi read ok
+0x55c9c07efa60
+get restype :1
+created next event :0
+HTTP/1.1 303 abc
+CONTENT-TYPE: text/html
+Transfer-Encoding: chunked
+Connection: keep-alive
+
+
+cgiread size 50
+Content-type: text/html 
+Status: 303 abc 
+
+decunko
+destructor cgi read
+send header
+send body
+
+7
+decunko
+
+wrriten 12
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten -1
+write err
+cgi response destructor
+new connecting fd: 5
+read complete
+cgi run
+ created read go:0
+tukutta0x55c9c07efa60
+pair :0x55c9c07efa60
+cgi read ok
+0x55c9c07efa60
+get restype :1
+created next event :0
+HTTP/1.1 303 abc
+CONTENT-TYPE: text/html
+Transfer-Encoding: chunked
+Connection: keep-alive
+
+
+cgiread size 50
+Content-type: text/html 
+Status: 303 abc 
+
+decunko
+destructor cgi read
+send header
+send body
+
+7
+decunko
+
+wrriten 12
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten -1
+write err
+cgi response destructor
+new connecting fd: 5
+read complete
+cgi run
+ created read go:0
+tukutta0x55c9c07efa60
+pair :0x55c9c07efa60
+cgi read ok
+0x55c9c07efa60
+get restype :1
+created next event :0
+HTTP/1.1 303 abc
+CONTENT-TYPE: text/html
+Transfer-Encoding: chunked
+Connection: keep-alive
+
+
+cgiread size 50
+Content-type: text/html 
+Status: 303 abc 
+
+decunko
+destructor cgi read
+send header
+send body
+
+7
+decunko
+
+wrriten 12
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten -1
+write err
+cgi response destructor
+new connecting fd: 5
+read complete
+cgi run
+ created read go:0
+tukutta0x55c9c07efa60
+pair :0x55c9c07efa60
+cgi read ok
+0x55c9c07efa60
+get restype :1
+created next event :0
+HTTP/1.1 303 abc
+CONTENT-TYPE: text/html
+Transfer-Encoding: chunked
+Connection: keep-alive
+
+
+cgiread size 50
+Content-type: text/html 
+Status: 303 abc 
+
+decunko
+destructor cgi read
+send header
+send body
+
+7
+decunko
+
+wrriten 12
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten -1
+write err
+cgi response destructor
+new connecting fd: 5
+read complete
+cgi run
+ created read go:0
+tukutta0x55c9c07efa60
+pair :0x55c9c07efa60
+cgi read ok
+0x55c9c07efa60
+get restype :1
+created next event :0
+HTTP/1.1 303 abc
+CONTENT-TYPE: text/html
+Transfer-Encoding: chunked
+Connection: keep-alive
+
+
+cgiread size 50
+Content-type: text/html 
+Status: 303 abc 
+
+decunko
+destructor cgi read
+send header
+send body
+
+7
+decunko
+
+wrriten 12
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten -1
+write err
+cgi response destructor
+new connecting fd: 5
+read complete
+cgi run
+ created read go:0
+tukutta0x55c9c07efa60
+pair :0x55c9c07efa60
+cgi read ok
+0x55c9c07efa60
+get restype :1
+created next event :0
+HTTP/1.1 303 abc
+CONTENT-TYPE: text/html
+Transfer-Encoding: chunked
+Connection: keep-alive
+
+
+cgiread size 50
+Content-type: text/html 
+Status: 303 abc 
+
+decunko
+destructor cgi read
+send header
+send body
+
+7
+decunko
+
+wrriten 12
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten -1
+write err
+cgi response destructor
+new connecting fd: 5
+read complete
+cgi run
+ created read go:0
+tukutta0x55c9c07efa60
+pair :0x55c9c07efa60
+cgi read ok
+0x55c9c07efa60
+get restype :1
+created next event :0
+HTTP/1.1 303 abc
+CONTENT-TYPE: text/html
+Transfer-Encoding: chunked
+Connection: keep-alive
+
+
+cgiread size 50
+Content-type: text/html 
+Status: 303 abc 
+
+decunko
+destructor cgi read
+send header
+send body
+
+7
+decunko
+
+wrriten 12
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten -1
+write err
+cgi response destructor
+new connecting fd: 5
+read complete
+cgi run
+ created read go:0
+tukutta0x55c9c07efa60
+pair :0x55c9c07efa60
+cgi read ok
+0x55c9c07efa60
+get restype :1
+created next event :0
+HTTP/1.1 303 abc
+CONTENT-TYPE: text/html
+Transfer-Encoding: chunked
+Connection: keep-alive
+
+
+cgiread size 50
+Content-type: text/html 
+Status: 303 abc 
+
+decunko
+destructor cgi read
+send header
+send body
+
+7
+decunko
+
+wrriten 12
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten -1
+write err
+cgi response destructor
+new connecting fd: 5
+read complete
+cgi run
+ created read go:0
+tukutta0x55c9c07efa60
+pair :0x55c9c07efa60
+cgi read ok
+0x55c9c07efa60
+get restype :1
+created next event :0
+HTTP/1.1 303 abc
+CONTENT-TYPE: text/html
+Transfer-Encoding: chunked
+Connection: keep-alive
+
+
+cgiread size 50
+Content-type: text/html 
+Status: 303 abc 
+
+decunko
+destructor cgi read
+send header
+send body
+
+7
+decunko
+
+wrriten 12
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten -1
+write err
+cgi response destructor
+new connecting fd: 5
+read complete
+cgi run
+ created read go:0
+tukutta0x55c9c07efa60
+pair :0x55c9c07efa60
+cgi read ok
+0x55c9c07efa60
+get restype :1
+created next event :0
+HTTP/1.1 303 abc
+CONTENT-TYPE: text/html
+Transfer-Encoding: chunked
+Connection: keep-alive
+
+
+cgiread size 50
+Content-type: text/html 
+Status: 303 abc 
+
+decunko
+destructor cgi read
+send header
+send body
+
+7
+decunko
+
+wrriten 12
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten 5
+send body
+
+0
+
+
+wrriten -1
+write err
+cgi response destructor

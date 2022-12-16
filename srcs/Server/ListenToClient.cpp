@@ -17,7 +17,7 @@ ListenToClient::~ListenToClient() {}
 void ListenToClient::Do() {
   conn_fd_ = accept(listen_fd_, NULL, NULL);
   if (conn_fd_ == -1) throw std::runtime_error("accept");
-  std::cout << "new connecting: " << conn_fd_ << std::endl;
+  std::cout << "new connecting fd: " << conn_fd_ << std::endl;
 }
 Event* ListenToClient::NextEvent() { return NULL; }
 EventState ListenToClient::State() { return kRead; }

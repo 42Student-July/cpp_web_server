@@ -6,7 +6,8 @@
 #include "Event.hpp"
 #include "Socket.hpp"
 class CgiRead : public Event {
- private:
+ //private:
+ public:
   bool created_next_event_;
   Socket *socket_;
   CgiParser cgi_parser_;

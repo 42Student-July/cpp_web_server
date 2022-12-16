@@ -58,11 +58,16 @@ std::pair<Event *, epoll_event> CgiRead::CreateClientEvent() {
   return std::make_pair(new CgiResponse(socket_),
                         Epoll::Create(socket_->sock_fd, EPOLLOUT));
 }
-void CgiRead::Handle(Epoll *epoll) { static_cast<void>(epoll); }
+void CgiRead::Handle(Epoll *epoll) {
+  static_cast<void>(epoll);
+  // if(created_next_event_ == false)
+  //   return ;
+  // if (socket_->cgi_res.read_size >= 0) {
+  //   epoll->Mod(socket_->sock_fd, EPOLLOUT);
+  // }
+}
 EventState CgiRead::State() {
-  std::cout << "cgiread size " << socket_->cgi_res.read_size << std::endl;
   if (socket_->cgi_res.read_size <= 0) {
-    std::cout << "cgi del" << std::endl;
     return kDel;
   }
   return kRead;

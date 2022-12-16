@@ -24,8 +24,7 @@ Socket::~Socket() {
 int Socket::CgiReadAndStoreToBuf() {
   if ((cgi_res.read_size = read(cgi_res.cgi_fd, cgi_res.buf, kBuffSize)) ==
       -1) {
-    std::cout << "cgi read err" << std::endl;
-    // throw std::runtime_error("cgi read err");
+    std::cerr << "cgi read err" << std::endl;
     return -1;
   }
   cgi_res.buf[cgi_res.read_size] = '\0';
@@ -45,7 +44,9 @@ Event* Socket::PrepareNextEventProcess() {
       Cgi c;
       c.Run(pre.GetFullPath(), this);
       std::cout << "cgi run" << std::endl;
-      if (pr.request_body.empty()) return new CgiRead(this);
+      if (pr.request_body.empty()) {
+        return new CgiRead(this);
+      }
       return new CgiWrite(this);
     }
     HttpMethod* m = HttpMethod::Build(pr.m);
