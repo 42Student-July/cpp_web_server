@@ -36,7 +36,6 @@ void HttpProcessor::ProcessHttpRequestGet(
                                              parsed_request.request_path);
 
   std::cout << full_path << std::endl;
-  selected_location_context.second.root += parsed_request.request_path;
   File file(full_path);
   if (!file.IsExist()) {
     result->SetStatusCode(404);
