@@ -21,20 +21,20 @@
 #include "Timer.hpp"
 class Event;
 enum ResponseCode {
-  kKk200Ok,
-  kKk201Created,
-  kKk204NoContent,
-  kKk400BadRequest,
-  kKk401Unauthorized,
-  kKk403Forbidden,
-  kKk404NotFound,
-  kKk405MethodNotAllowed,
-  kKk413RequestEntityTooLarge,
-  kKk429TooManyRequest,
-  kKk500internalServerError,
-  kKk501NotImplemented,
-  kKk503ServerUnavailable,
-  kKkNotSet
+  kKk200Ok = 200,
+  kKk201Created = 201,
+  kKk204NoContent = 204,
+  kKk400BadRequest = 400,
+  kKk401Unauthorized = 401,
+  kKk403Forbidden = 403,
+  kKk404NotFound = 404,
+  kKk405MethodNotAllowed = 405,
+  kKk413RequestEntityTooLarge = 413,
+  kKk429TooManyRequest = 429,
+  kKk500internalServerError = 500,
+  kKk501NotImplemented = 501,
+  kKk503ServerUnavailable = 503,
+  kKkNotSet = 0
 };
 struct CgiRes {
   explicit CgiRes(int fd) : cgi_fd(fd) {}

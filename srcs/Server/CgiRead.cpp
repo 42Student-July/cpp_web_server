@@ -23,11 +23,12 @@ std::pair<Event *, epoll_event> CgiRead::PublishNewEvent() {
   if (created_next_event_) {
     return std::make_pair(static_cast<Event *>(NULL), epoll_event());
   }
-  created_next_event_ = true;
-  if (socket_->response_code != kKkNotSet) {
+  if (socket_->response_code != kKkNotSet && !created_next_event_) {
+    created_next_event_ = true;
     return std::make_pair(new ResponseToTheClient(socket_),
                           Epoll::Create(socket_->sock_fd, EPOLLOUT));
   }
+  created_next_event_ = true;
   switch (cgi_parser_.GetResponseType()) {
     case kDocumentResponse:
       return CreateClientEvent();
