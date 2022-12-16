@@ -37,6 +37,7 @@ class CgiParser {
   ParseState parse_state_;
   std::string query_;
   std::string local_path_;
+  std::string new_line_;
   void ParseHeader();
   void ParseBody();
   static HeaderPair MakeHeader(const std::string &str);

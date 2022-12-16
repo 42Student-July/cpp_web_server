@@ -47,7 +47,7 @@ LocationPair Path::FindBestLocation(const Locationmap &locations,
     }
   }
   if (selected_location.first.empty()) {
-    throw std::runtime_error("location not found");  // LocationNotFound();
+    throw LocationNotFound();
   }
   return selected_location;
 }
@@ -68,7 +68,7 @@ std::string Path::GetAliasPath(const LocationPair &location_pair,
   return alias_path;
 }
 
-const char *Path::LocationNotFound::what() const throw() {
+const char *LocationNotFound::what() const throw() {
   return "Location Context not found";
 }
 

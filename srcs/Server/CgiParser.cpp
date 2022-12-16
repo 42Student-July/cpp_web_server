@@ -7,9 +7,14 @@ void CgiParser::Parse(const std::string &str) {
   }
   if (parse_state_ == kHeader) {
     header_ += str;
-    size_t header_end_pos = header_.find("\n\n");
+    size_t header_end_pos = 0;
+    if ((header_end_pos = header_.find("\r\n\r\n")) != std::string::npos)
+      new_line_ = "\r\n";
+    else if ((header_end_pos = header_.find("\n\n")) != std::string::npos)
+      new_line_ = "\n";
+    std::cout << "endpos  :" << header_end_pos << std::endl;
     if (header_end_pos != std::string::npos) {
-      body_ = header_.substr(header_end_pos + 2);
+      body_ = header_.substr(header_end_pos + (new_line_.size() * 2));
       header_ = header_.substr(0, header_end_pos);
       parse_state_ = kBody;
       ParseHeader();
@@ -112,7 +117,7 @@ bool CgiParser::IsExist(const std::string &key) {
 }
 void CgiParser::ParseHeader() {
   std::vector<std::string> headers =
-      utils::SplitWithMultipleSpecifier(header_, "\n");
+      utils::SplitWithMultipleSpecifier(header_, new_line_);
   for (std::vector<std::string>::iterator it = headers.begin();
        it != headers.end(); it++) {
     HeaderPair p = MakeHeader(*it);
@@ -174,6 +179,6 @@ void CgiParser::UpdateData(Socket *socket) {
 std::string CgiParser::HeaderPairToStr(const HeaderPair &header) {
   std::string str = header.first;
   str += ": ";
-  str += header.second + "\n";
+  str += header.second + "\r\n";
   return str;
 }

@@ -27,7 +27,9 @@ int Socket::CgiReadAndStoreToBuf() {
     std::cerr << "cgi read err" << std::endl;
     return -1;
   }
+  std::cout << "read size :" << cgi_res.read_size << std::endl;
   cgi_res.buf[cgi_res.read_size] = '\0';
+  std::cout << cgi_res.buf << std::endl;
   return cgi_res.read_size;
 }
 

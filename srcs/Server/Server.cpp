@@ -51,8 +51,9 @@ void Server::EventExec(int ready) {
         delete event_map_[e.GetFd()];
         event_map_.erase(e.GetFd());
       }
-    } catch (std::runtime_error &e) {
-      std::cerr << e.what() << std::endl;
+      // } catch (std::runtime_error &e) {
+      //   std::cerr << e.what() << std::endl;
+      // }
     }
   }
 }
