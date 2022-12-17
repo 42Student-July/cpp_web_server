@@ -2,10 +2,18 @@
 
 #include "CgiParser.hpp"
 CgiResponse::CgiResponse(Socket *sock) : socket_(sock) {
-  response_state_and_header_ = MakeResponseStatusCode();
-  response_state_and_header_ +=
-      MakeResponseHeader();  // contentlength sakujo chunked tuika
-  std::cout << response_state_and_header_ << std::endl;
+  if (socket_->cgi_res.type != kClientRedirResponse) {
+    response_state_and_header_ = MakeResponseStatusCode();
+  } else {
+    response_state_and_header_ = "HTTP/1.1 302 Found\r\n";
+  }
+  response_state_and_header_ += MakeResponseHeader();
+  if (socket_->cgi_res.type != kClientRedirResponse) {
+    response_state_and_header_ +=
+        "Transfer-Encoding: chunked\r\nConnection: keep-alive\r\n\r\n";
+  } else {
+    response_state_and_header_ += "Connection: close\r\n";
+  }
   sender_.Init(response_state_and_header_);
 }
 
@@ -24,7 +32,6 @@ std::string CgiResponse::MakeResponseHeader() {
     if (it->first == "STATUS") continue;
     res += CgiParser::HeaderPairToStr(*it);
   }
-  res += "Transfer-Encoding: chunked\r\nConnection: keep-alive\r\n\r\n";
   return res;
 }
 
@@ -37,7 +44,7 @@ void CgiResponse::Do() {
   if (sender_.HasMoreToSend()) {
     std::cout << "send header" << std::endl;
     sender_.Send(socket_->sock_fd);
-  } else {
+  } else if (socket_->cgi_res.type != kClientRedirResponse) {
     if (chunked_.SentByte() == socket_->response_body.size() &&
         socket_->cgi_res.read_size == 0) {
       std::cout << "last chunk" << std::endl;
@@ -60,7 +67,8 @@ void CgiResponse::Handle(Epoll *epoll) {
   // }
 }
 EventState CgiResponse::State() {
-  if (chunked_.SentLastChunk()) {
+  if (chunked_.SentLastChunk() ||
+      socket_->cgi_res.type == kClientRedirResponse) {
     return kDel;
   }
   return kWrite;

@@ -100,7 +100,8 @@ bool CgiParser::ClinetRedirectResponseWithDocument() {
   HeaderPair status_p = FindByKey(header_vec_, "STATUS");
   HeaderPair content_p = FindByKey(header_vec_, "CONTENT-TYPE");
   return !status_p.first.empty() && !content_p.first.empty() &&
-         IsValidStatusCode(status_p.second) && ClientRedirectResponse();
+         status_p.second == "302 Found" && IsValidStatusCode(status_p.second) &&
+         ClientRedirectResponse();
 }
 std::pair<std::string, std::string> CgiParser::FindByKey(
     const HeaderVec &vec, const std::string &key) {
@@ -171,8 +172,9 @@ void CgiParser::UpdateData(Socket *socket) {
   socket->response_body = body_;
   socket->pr.query_string = query_;
   socket->response_headder = header_vec_;
+  socket->cgi_res.type = restype_;
   if (restype_ == kLocalRedirResponse) {
-    std::cout << "local_path :" << local_path_ << std::endl;
+    // std::cout << "local_path :" << local_path_ << std::endl;
     socket->pr.request_path = local_path_;
   }
 }

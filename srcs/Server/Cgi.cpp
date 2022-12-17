@@ -2,6 +2,7 @@
 
 #include <fcntl.h>
 
+#include "CgiParser.hpp"
 #include "File.hpp"
 Cgi::Cgi() {}
 
@@ -23,18 +24,24 @@ void Cgi::StoreStrIfNotEmpty(const std::string &str) {
   argv_.push_back(str);
 }
 void Cgi::SetEnv(Socket *socket) {
-  // if(!socket_.pr.headder(contentlength))
-  env_map_["CONTENT_LENGTH"] =
-      std::string("CONTENT_LENGTH=") + std::string("50");  // headder
-  env_map_["AUTH_TYPE"] = std::string("AUTH_TYPE=");
-  env_map_["CONTENT_TYPE"] = std::string("CONTENT_TYPE=") +
-                             std::string("type");  //  headder ni attara must
+  if (!socket->pr.request_body.empty()) {
+    env_map_["CONTENT_LENGTH"] =
+        std::string("CONTENT_LENGTH=") +
+        utils::UIntToString(socket->pr.request_body.size());  // headder
+  }
+  if (!CgiParser::FindByKey(socket->pr.request_header, "content-type")
+           .first.empty()) {
+    env_map_["CONTENT_TYPE"] =
+        std::string("CONTENT_TYPE=") +
+        CgiParser::FindByKey(socket->pr.request_header, "content-type")
+            .second;  //  headder ni attara must
+  }
   env_map_["PATH_INFO"] =
-      std::string("PATH_INFO=") +
+      std::string("PATH_INFO= ") +
       path_info_;  // request line cgiファイル名の後ろにつくあれ
   env_map_["QUERY_STRING"] = std::string("QUERY_STRING=") +
                              socket->pr.query_string;  // ?の後に=があったら
-  env_map_["REMOTE_ADDR"] = std::string("REMOTE_ADDR=");  // host addr
+  env_map_["REMOTE_ADDR"] = std::string("REMOTE_ADDR=127.0.0.1");  // host addr
 
   env_map_["REQUEST_METHOD"] = std::string("REQUEST_METHOD=") +
                                utils::ToStr(socket->pr.m);  // method name
@@ -85,13 +92,13 @@ void Cgi::Run(const std::string &full_path, Socket *socket) {
   File f(full_path);
   if (!f.CanExec()) throw ErrorResponse("cgi permission", kKk403Forbidden);
   path_info_ = full_path;
-  ParseArgv(socket);
-  SetEnv(socket);
+  std::cout << socket->pr.query_string << std::endl;
   SockPair();
-  // SetSockopt();
   socket->cgi_res.cgi_fd = fd_[0];
   Fork(socket);
   if (socket->cgi_res.process_id == 0) {
+    ParseArgv(socket);
+    SetEnv(socket);
     close(fd_[0]);
     char **argv = utils::VecToCharDoublePtr(argv_);
     char **env = utils::MapToCharDoublePtr(env_map_);

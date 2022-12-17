@@ -20,8 +20,6 @@ void CgiRead::Do() {
 Event *CgiRead::NextEvent() { return NULL; }
 
 std::pair<Event *, epoll_event> CgiRead::PublishNewEvent() {
-  std::cout << "restype  :" << cgi_parser_.GetResponseType() << std::endl;
-  std::cout << "res_code  :" << socket_->response_code << std::endl;
   if (created_next_event_) {
     return std::make_pair(static_cast<Event *>(NULL), epoll_event());
   }

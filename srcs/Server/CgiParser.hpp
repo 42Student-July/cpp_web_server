@@ -11,14 +11,8 @@
 #include "Path.hpp"
 #include "Socket.hpp"
 #include "Utils.hpp"
-enum ResponseType {
-  kToBeDetermined,
-  kDocumentResponse,
-  kLocalRedirResponse,
-  kClientRedirResponse,
-  kClientRediredocResponse,
-  kErrType
-};
+class Socket;
+
 enum ParseState { kHeader, kBody };
 class CgiParser {
  public:

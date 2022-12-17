@@ -19,7 +19,16 @@
 #include "Sender.hpp"
 #include "ServerContext.hpp"
 #include "Timer.hpp"
+
 class Event;
+enum ResponseType {
+  kToBeDetermined,
+  kDocumentResponse,
+  kLocalRedirResponse,
+  kClientRedirResponse,
+  kClientRediredocResponse,
+  kErrType
+};
 enum ResponseCode {
   kKk200Ok = 200,
   kKk201Created = 201,
@@ -44,7 +53,7 @@ struct CgiRes {
   pid_t process_id;
   int pid_exit_status;
   int cgi_fd;
-
+  ResponseType type;
   char buf[2048];
 };
 
