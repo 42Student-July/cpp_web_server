@@ -1,11 +1,15 @@
 #include "main.hpp"
 int main(int ac, char **av) {
-  if (ac != 2) {
+  if (ac > 2) {
     std::cout << "usage : ./webserv [config file]" << std::endl;
     return 1;
   }
+  std::string conf_path = "./conf/webserv/default.conf";
+  if (ac == 2) {
+    conf_path = av[1];
+  }
   try {
-    Lexer lexer(av[1]);
+    Lexer lexer(conf_path);
     lexer.Tokenize();
     Parser parser(lexer);
     parser.Parse();
