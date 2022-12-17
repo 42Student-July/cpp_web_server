@@ -63,6 +63,18 @@ std::string HttpResponse::GetStatusMessage() const {
   switch (this->statusCode_) {
     case 200:
       return "OK";
+    case 201:
+      return "Created";
+
+    case 301:
+      return "Moved Permanently";
+    case 302:
+      return "Found";
+    case 304:
+      return "Not Modified";
+    case 307:
+      return "Temporary Redirect";
+
     case 400:
       return "Bad Request";
     case 403:
@@ -120,9 +132,11 @@ void HttpResponse::SetHttpResponse200() {
 
 HttpResponse::~HttpResponse() {}
 
-void HttpResponse::SetHttpResponse(int status_code, std::string const &body) {
+void HttpResponse::SetHttpResponse(int status_code, std::string const &body,
+                                   const HttpHeaders &headers) {
   this->SetStatusCode(status_code);
   this->SetBody(body);
+  this->headers_.insert(headers.begin(), headers.end());
   this->SetHeader("Content-Type", "text/html");
   this->SetHeader("Connection", "close");
   this->SetHeader("Content-Length", this->GetBody().size());
