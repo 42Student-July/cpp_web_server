@@ -122,6 +122,7 @@ TEST(HttpResponseTest_Default, SetHttPresponse_Default) {
 
   std::string expected =
       "HTTP/1.1 200 OK\r\n"
+      "Connection: close\r\n"
       "Content-Length: 11\r\n"
       "Content-Type: text/html\r\n"
       "\r\n"
