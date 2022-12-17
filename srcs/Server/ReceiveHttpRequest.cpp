@@ -52,6 +52,7 @@ ReceiveHttpRequest::ReceiveHttpRequest() {
   fd_data_.s = kUnread;
   fd_data_.pr.m = kError;
   fd_data_.pr.status_code = 0;
+  fd_data_.is_chunked = false;
 }
 
 ReceiveHttpRequest::ReceiveHttpRequest(ReceiveHttpRequest const &other) {
