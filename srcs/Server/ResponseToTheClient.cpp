@@ -8,8 +8,7 @@ void ResponseToTheClient::Do() {
   std::cout << "response" << std::endl;
   if (state_ == kWrite) {
     HttpResponse res;
-    HttpProcessor::ProcessHttpRequest(socket_->pr,
-                                      socket_->server_context.locations, &res);
+    res.SetHttpResponse(socket_->response_code, socket_->response_body);
     sender_.Init(res.GetRawResponse());
   }
   sender_.Send(socket_->sock_fd);
