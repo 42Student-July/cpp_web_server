@@ -3,8 +3,8 @@
 #include <string>
 
 #include "File.hpp"
+#include "HttpMethod.hpp"
 #include "HttpResponse.hpp"
-#include "Method.hpp"
 class Get : public HttpMethod {
  private:
   ResponseCode rescode_;

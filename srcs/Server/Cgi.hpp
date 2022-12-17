@@ -20,20 +20,19 @@
 class Cgi {
  private:
   int fd_[2];
-  Socket *socket_;
   std::string path_info_;  // request parser
   std::vector<std::string> argv_;
   std::map<std::string, std::string> env_map_;
   void SockPair();
   void SetSockopt();
-  void SetEnv();
+  void SetEnv(Socket *socket);
   void StoreStrIfNotEmpty(const std::string &str);
-  void ParseArgv();
-  void Fork();
+  void ParseArgv(Socket *socket);
+  void Fork(CgiRes *cgires);
 
  public:
-  explicit Cgi(Socket *socket);
+  Cgi();
   ~Cgi();
-  void Run();
+  void Run(const std::string &full_path, Socket *socket, CgiRes *cgires);
 };
 #endif  // SRCS_SERVER_CGI_HPP_

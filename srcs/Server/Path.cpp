@@ -68,7 +68,7 @@ std::string Path::GetAliasPath(const LocationPair &location_pair,
   return alias_path;
 }
 
-const char *Path::LocationNotFound::what() const throw() {
+const char *LocationNotFound::what() const throw() {
   return "Location Context not found";
 }
 
@@ -90,4 +90,14 @@ bool Path::IsValidPath(const std::string &path) {
 bool Path::IsFullPath(const std::string &path) {
   if (path.empty()) return false;
   return path[0] == '/';
+}
+bool Path::IsAbsoluteUri(const std::string &uri) {
+  if (uri.empty()) return false;
+  size_t colon_pos = uri.find(":");
+  if (colon_pos == std::string::npos) return false;
+  std::string scheme = uri.substr(0, colon_pos);
+  std::string path = uri.substr(colon_pos + 1);
+  if (scheme != "https" && scheme != "http") return false;
+  if (path.size() < 2 || (path[0] != '/' || path[1] != '/')) return false;
+  return true;
 }

@@ -15,7 +15,6 @@
 // #include "Connecting.hpp"
 #include "Epoll.hpp"
 #include "Event.hpp"
-#include "HttpProcessor.hpp"
 #include "HttpResponse.hpp"
 #include "Listen.hpp"
 #include "ListenToClient.hpp"
@@ -23,13 +22,15 @@
 #include "ReceiveHttpRequest.hpp"
 #include "ServerContext.hpp"
 #include "Socket.hpp"
+struct EventData {
+  EventData(Event *ev, size_t time_out) : time(time_out) { event = ev; }
+  Event *event;
+  Timer time;
+};
 class Server {
  private:
-  // static const int kNotDoneYet = -1;
   std::map<int, Event *> event_map_;
   Epoll epoll_;
-  // ReceiveHttpRequest receive_request_;
-  // std::map<int, std::string> response_;
   Server();
   void InitListen(const ContextMap &contexts);
   void GenerateCgi(epoll_event *ev);
@@ -39,6 +40,8 @@ class Server {
   void NextEvent(Event *event, epoll_event *epoll);
   void RegisterNewEvent(Event *event);
   void DeleteEvent(Event *event, epoll_event *epoll);
+  void CheckTimeOut();
+  void EventExec(int ready);
 
  public:
   explicit Server(const ContextMap &contexts);

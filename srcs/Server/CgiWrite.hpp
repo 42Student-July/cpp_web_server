@@ -10,9 +10,10 @@ class CgiWrite : public Event {
  private:
   Socket *socket_;
   Sender sender_;
+  size_t cgi_pos_;
 
  public:
-  explicit CgiWrite(Socket *socket);
+  explicit CgiWrite(Socket *socket, size_t cgi_pos);
   ~CgiWrite();
   void Do();
   Event *NextEvent();
@@ -21,5 +22,6 @@ class CgiWrite : public Event {
   EventState State();
   Socket *GetSocket() const;
   EventType Type() const;
+  void SetSocket(Socket *socket);
 };
 #endif  // SRCS_SERVER_CGIWRITE_HPP_

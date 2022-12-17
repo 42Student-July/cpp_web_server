@@ -3,6 +3,8 @@ Server::Server(const ContextMap &contexts) { InitListen(contexts); }
 Server::~Server() {
   for (std::map<int, Event *>::iterator it = event_map_.begin();
        it != event_map_.end(); it++) {
+    delete it->second->GetSocket();
+    it->second->SetSocket(NULL);
     delete it->second;
   }
 }
@@ -23,24 +25,38 @@ void Server::AddEventToMonitored(const int fd, Event *event,
 }
 void Server::AddEventToMonitored(const int fd, Event *event,
                                  epoll_event *new_ev) {
-  event_map_.insert(std::make_pair(fd, event));
+  event_map_[fd] = event;
   epoll_.Add(fd, new_ev);
 }
 void Server::Run() {
+  signal(SIGPIPE, SIG_IGN);
   while (true) {
     int ready = epoll_.Wait();
-    for (int i = 0; i < ready; i++) {
+    EventExec(ready);
+  }
+}
+void Server::EventExec(int ready) {
+  for (int i = 0; i < ready; i++) {
+    try {
+      // usleep(1000);
       epoll_event epoll = epoll_.Find(i);
-      Event *event =
-          event_map_[epoll.data.fd];  // static_cast<Event *>(epoll.data.ptr);
+      Event *event = event_map_[epoll.data.fd];
       event->Do();
       event->Handle(&epoll_);
       RegisterNewEvent(event);
       NextEvent(event, &epoll);
+    } catch (EpollErr &e) {
+      std::cout << e.Msg() << std::endl;
+      if (event_map_.find(e.GetFd()) != event_map_.end()) {
+        delete event_map_[e.GetFd()];
+        event_map_.erase(e.GetFd());
+      }
+      // } catch (std::runtime_error &e) {
+      //   std::cerr << e.what() << std::endl;
+      // }
     }
   }
 }
-
 void Server::RegisterNewEvent(Event *event) {
   // ここの返り値はもう少し考える
   std::pair<Event *, epoll_event> new_event = event->PublishNewEvent();
@@ -52,13 +68,30 @@ void Server::RegisterNewEvent(Event *event) {
 void Server::NextEvent(Event *event, epoll_event *epoll) {
   Event *next_event = event->NextEvent();
   if (next_event != NULL) {
-    event_map_[epoll->data.fd] = next_event;
-    delete event;
-  } else if (Event::IsDelete(event->State())) {
+    delete event_map_[epoll->data.fd];
     event_map_.erase(epoll->data.fd);
+    event_map_[epoll->data.fd] = next_event;
+  } else if (Event::IsDelete(event->State())) {
     epoll_.Del(epoll->data.fd, epoll);
-    delete event;
-    // レスポンスを返し終える　cgi read読み切る　cgi write終わる
-    // epollから監視対象外す
+    delete event_map_[epoll->data.fd];
+    event_map_.erase(epoll->data.fd);
   }
 }
+// void Server::CheckTimeOut() {
+//   std::map<int, EventData>::iterator it = event_map_.begin();
+//   while (it != event_map_.end()) {
+//     if (it->second.time.TimeOver()) {
+//       try {
+//         int del_fd = it->first;
+//         delete it->second.event->GetSocket();
+//         it->second.event->SetSocket(NULL);
+//         delete it->second.event;
+//         event_map_.erase(it);
+//         epoll_event ev = epoll_.FindFromFd(del_fd);
+//         epoll_.Del(del_fd, &ev);
+//       } catch (EpollErr &e) {
+//         std::cout << e.Msg() << std::endl;
+//       }
+//     }
+//   }
+// }

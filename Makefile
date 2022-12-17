@@ -51,6 +51,10 @@ nginx_down:
 	make nginx_down -C $(TESTSPATH)
 test_compose_down: fclean
 	make down -C ./tests/docker
+
+N = 10
+req:
+	bash -c 'for i in {1..${N}}; do curl localhost:8087/cgi-bin/document_res.cgi; echo $${i} ; done'
 .PHONY: all fclean clean re bonus integration unit
 
 -include $(DEPS)
@@ -98,3 +102,4 @@ dc-down: ## Down docker container
 
 .PHONY: dc-re
 dc-re: dc-down dc-build dc-up ## Rebuild docker image and run container
+

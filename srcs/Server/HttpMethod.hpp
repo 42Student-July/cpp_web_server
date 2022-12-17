@@ -1,5 +1,5 @@
-#ifndef SRCS_SERVER_METHOD_HPP_
-#define SRCS_SERVER_METHOD_HPP_
+#ifndef SRCS_SERVER_HTTPMETHOD_HPP_
+#define SRCS_SERVER_HTTPMETHOD_HPP_
 #include <string>
 
 #include "ReceiveHttpRequest.hpp"
@@ -12,4 +12,4 @@ class HttpMethod {
   static HttpMethod *Build(const Method &m);
 };
 
-#endif  // SRCS_SERVER_METHOD_HPP_
+#endif  // SRCS_SERVER_HTTPMETHOD_HPP_

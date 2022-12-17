@@ -2,7 +2,7 @@
 #define SRCS_SERVER_POST_HPP_
 #include <string>
 
-#include "Method.hpp"
+#include "HttpMethod.hpp"
 class Post : public HttpMethod {
  private:
   ResponseCode rescode_;

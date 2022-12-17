@@ -19,7 +19,7 @@ std::string CreateHttpAutoIndexHtml(const std::string &request_path,
   body += "</h1><hr><pre><a href=\"../\">../</a>\n";
 
   File file(full_path);
-  std::vector<FileInfo> file_list = file.GetFileListInDir();
+  std::vector<FileInfo> file_list(file.GetFileListInDir());
   for (std::vector<FileInfo>::iterator it = file_list.begin();
        it != file_list.end(); ++it) {
     FileInfo &file_info = *it;

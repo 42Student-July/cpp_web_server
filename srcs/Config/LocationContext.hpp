@@ -37,6 +37,7 @@ class LocationContext {
   bool IsAllowMethod(const Method &m);
   bool IsAllowExtensionCgi(const std::string &file_nmae);
   bool IsUploadPath(const std::string &path) const;
+  static std::string MethodToStr(Method m);
 };
 
 #endif  // SRCS_CONFIG_LOCATIONCONTEXT_HPP_

@@ -1,15 +1,15 @@
 #include "Cgi.hpp"
 
 #include <fcntl.h>
-Cgi::Cgi(Socket *sock) : socket_(sock) {
-  // set up
-  ParseArgv();
-  SetEnv();
-}
+
+#include "CgiParser.hpp"
+#include "File.hpp"
+Cgi::Cgi() {}
+
 Cgi::~Cgi() {}
 
-void Cgi::ParseArgv() {
-  std::string query = socket_->pr.query_string;
+void Cgi::ParseArgv(Socket *socket) {
+  std::string query = socket->pr.query_string;
   if (query.find('=') != std::string::npos) return;
   size_t pos = 0;
   while ((pos = query.find_first_of("+")) != std::string::npos) {
@@ -23,30 +23,34 @@ void Cgi::StoreStrIfNotEmpty(const std::string &str) {
   if (str.empty()) return;
   argv_.push_back(str);
 }
-void Cgi::SetEnv() {
-  // if(!socket_.pr.headder(contentlength))
-  env_map_["CONTENT_LENGTH"] =
-      std::string("CONTENT_LENGTH=") + std::string("50");  // headder
-  env_map_["AUTH_TYPE"] =
-      std::string("AUTH_TYPE=") +
-      std::string("auth");  // hedderの authenticationの値を使う
-  env_map_["CONTENT_TYPE"] = std::string("CONTENT_TYPE=") +
-                             std::string("type");  //  headder ni attara must
+void Cgi::SetEnv(Socket *socket) {
+  if (!socket->pr.request_body.empty()) {
+    env_map_["CONTENT_LENGTH"] =
+        std::string("CONTENT_LENGTH=") +
+        utils::UIntToString(socket->pr.request_body.size());  // headder
+  }
+  if (!CgiParser::FindByKey(socket->pr.request_header, "content-type")
+           .first.empty()) {
+    env_map_["CONTENT_TYPE"] =
+        std::string("CONTENT_TYPE=") +
+        CgiParser::FindByKey(socket->pr.request_header, "content-type")
+            .second;  //  headder ni attara must
+  }
   env_map_["PATH_INFO"] =
-      std::string("PATH_INFO=") +
-      socket_->full_path;  // request line cgiファイル名の後ろにつくあれ
+      std::string("PATH_INFO= ") +
+      path_info_;  // request line cgiファイル名の後ろにつくあれ
   env_map_["QUERY_STRING"] = std::string("QUERY_STRING=") +
-                             socket_->pr.query_string;  // ?の後に=があったら
-  env_map_["REMOTE_ADDR"] = std::string("REMOTE_ADDR=");  // host addr
+                             socket->pr.query_string;  // ?の後に=があったら
+  env_map_["REMOTE_ADDR"] = std::string("REMOTE_ADDR=127.0.0.1");  // host addr
 
   env_map_["REQUEST_METHOD"] = std::string("REQUEST_METHOD=") +
-                               utils::ToStr(socket_->pr.m);  // method name
+                               utils::ToStr(socket->pr.m);  // method name
   env_map_["SCRIPT_NAME"] = std::string("SCRIPT_NAME=") +
-                            socket_->pr.request_path;  // encode してないuri
-  env_map_["SERVER_NAME"] = std::string("SERVER_NAME=") +
-                            socket_->server_context.server_name;  // 必須
+                            socket->pr.request_path;  // encode してないuri
+  env_map_["SERVER_NAME"] =
+      std::string("SERVER_NAME=") + socket->server_context.server_name;  // 必須
   env_map_["SERVER_PORT"] =
-      std::string("SERVER_PORT=") + socket_->server_context.GetPort();  // 必須
+      std::string("SERVER_PORT=") + socket->server_context.GetPort();  // 必須
   env_map_["SERVER_PROTOCOL"] =
       std::string("SERVER_PROTOCOL=") + std::string("HTTP/1.1");
   env_map_["SERVER_SOFTWARE"] = std::string("SERVER_SOFTWARE=") +
@@ -64,16 +68,16 @@ void Cgi::SetEnv() {
 // // std::cout << *ptr << std::endl;
 // // }
 // // }
-void Cgi::Fork() {
-  if ((socket_->cgi_res.process_id = fork()) == -1) {
+void Cgi::Fork(CgiRes *cgires) {
+  if ((cgires->process_id = fork()) == -1) {
     close(fd_[0]);
     close(fd_[1]);
-    throw std::runtime_error("fork");
+    throw ErrorResponse("fork", kKk500internalServerError);
   }
 }
 void Cgi::SockPair() {
   if (socketpair(AF_UNIX, SOCK_STREAM, 0, fd_) == -1)
-    throw std::runtime_error("socketpair");
+    throw ErrorResponse("socketpair", kKk500internalServerError);
 }
 void Cgi::SetSockopt() {
   int flag = 0;
@@ -81,25 +85,28 @@ void Cgi::SetSockopt() {
       fcntl(fd_[0], F_SETFL, flag | O_NONBLOCK) == -1) {
     close(fd_[0]);
     close(fd_[1]);
-    throw std::runtime_error("fcntl");
+    throw ErrorResponse("fcntl", kKk500internalServerError);
   }
 }
-void Cgi::Run() {
+void Cgi::Run(const std::string &full_path, Socket *socket, CgiRes *cgires) {
+  File f(full_path);
+  if (!f.CanExec()) throw ErrorResponse("cgi permission", kKk403Forbidden);
+  path_info_ = full_path;
   SockPair();
-  // SetSockopt();
-  socket_->cgi_res.cgi_fd = fd_[0];
-  Fork();
-  if (socket_->cgi_res.process_id == 0) {
+  cgires->cgi_fd = fd_[0];
+  Fork(cgires);
+  if (cgires->process_id == 0) {
+    ParseArgv(socket);
+    SetEnv(socket);
     close(fd_[0]);
     char **argv = utils::VecToCharDoublePtr(argv_);
     char **env = utils::MapToCharDoublePtr(env_map_);
     if (dup2(fd_[1], STDIN_FILENO) == -1 || dup2(fd_[1], STDOUT_FILENO) == -1)
       exit(1);
-    execve(socket_->pr.request_path.c_str(), argv, env);
+    execve(full_path.c_str(), argv, env);
     utils::DelPtr(argv);
     utils::DelPtr(env);
-    std::cout << socket_->pr.request_path.c_str() << std::endl;
-    std::cout << "sippai" << std::endl;
+    std::cout << "cgi sippai" << std::endl;
     exit(1);
   }
   close(fd_[1]);

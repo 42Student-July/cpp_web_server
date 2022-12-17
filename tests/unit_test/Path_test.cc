@@ -38,7 +38,7 @@ TEST(Path, 3) {
   };
   std::string request = "/a/bbb/abc.html";
   EXPECT_THROW(Path::FindBestLocation(mapList, request),
-               Path::LocationNotFound);
+               LocationNotFound);
 }
 
 TEST(Path, 4) {
@@ -49,7 +49,7 @@ TEST(Path, 4) {
   };
   std::string request = "/kapounet/pouic/toto/pounet.html";
   EXPECT_THROW(Path::FindBestLocation(mapList, request),
-               Path::LocationNotFound);
+               LocationNotFound);
 }
 
 TEST(Path, 5) {
@@ -73,7 +73,7 @@ TEST(Path, 6) {
   };
   std::string request = "/kapounet/pouic/toto/pounet.html";
   EXPECT_THROW(Path::FindBestLocation(mapList, request),
-               Path::LocationNotFound);
+               LocationNotFound);
 }
 
 TEST(Path, 7) {
@@ -85,7 +85,7 @@ TEST(Path, 7) {
   };
   std::string request = "/kapounet/pouic/toto/pounet.html";
   EXPECT_THROW(Path::FindBestLocation(mapList, request),
-               Path::LocationNotFound);
+               LocationNotFound);
 }
 
 TEST(Path, 8) {

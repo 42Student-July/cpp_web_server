@@ -1,4 +1,4 @@
-#include "Method.hpp"
+#include "HttpMethod.hpp"
 
 #include "Delete.hpp"
 #include "Get.hpp"
@@ -9,5 +9,6 @@ HttpMethod *HttpMethod::Build(const Method &m) {
   if (m == kDelete) return new Delete();
   if (m == kGet) return new Get();
   if (m == kPost) return new Post();
+  throw ErrorResponse("not implemented", kKk501NotImplemented);
   return NULL;
 }

@@ -3,7 +3,7 @@
 #include <sys/socket.h>
 
 #include "Epoll.hpp"
-#include "ReceveRequestFromClient.hpp"
+#include "ReceiveRequestFromClient.hpp"
 ListenToClient::ListenToClient(const int fd,
                                const std::vector<ServerContext>& context)
     : listen_fd_(fd), context_(context), conn_fd_(-1), socket_(NULL) {}
@@ -17,7 +17,7 @@ ListenToClient::~ListenToClient() {}
 void ListenToClient::Do() {
   conn_fd_ = accept(listen_fd_, NULL, NULL);
   if (conn_fd_ == -1) throw std::runtime_error("accept");
-  std::cout << "new connecting: " << conn_fd_ << std::endl;
+  std::cout << "new connecting fd: " << conn_fd_ << std::endl;
 }
 Event* ListenToClient::NextEvent() { return NULL; }
 EventState ListenToClient::State() { return kRead; }
@@ -26,8 +26,9 @@ EventType ListenToClient::Type() const { return kListen; }
 
 std::pair<Event*, epoll_event> ListenToClient::PublishNewEvent() {
   socket_ = new Socket(conn_fd_, context_);
-  return std::make_pair(new ReceveRequestFromClient(socket_),
+  return std::make_pair(new ReceiveRequestFromClient(socket_),
                         Epoll::Create(conn_fd_, EPOLLIN));  // recive request
 }
 void ListenToClient::Handle(Epoll* epoll) { static_cast<void>(epoll); }
 int ListenToClient::NewEventFd() const { return conn_fd_; }
+void ListenToClient::SetSocket(Socket* socket) { socket_ = socket; }

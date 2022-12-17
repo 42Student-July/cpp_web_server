@@ -27,10 +27,12 @@ class Path {
                                   const std::string &request_uri);
   static bool IsValidPath(const std::string &path);
   static bool IsFullPath(const std::string &path);
-  class LocationNotFound : public std::exception {
-   public:
-    const char *what() const throw();
-  };
+  static bool IsAbsoluteUri(const std::string &uri);
+};
+
+class LocationNotFound : public std::exception {
+ public:
+  const char *what() const throw();
 };
 
 #endif  // SRCS_SERVER_PATH_HPP_
