@@ -2,6 +2,7 @@
 
 #include <vector>
 
+#include "ErrorPage.hpp"
 #include "File.hpp"
 #include "Utils.hpp"
 #include "fcntl.h"
@@ -43,18 +44,25 @@ std::string CreateHttpAutoIndexHtml(const std::string &request_path,
 
 Get::Get() {}
 Get::~Get() {}
+
+void Get::SetErrorPage(const ResponseCode error_code, Socket *sock) {
+  HttpResponseTmp response;
+  response =
+      ErrorPage::GetErrorPage(error_code, sock->server_context.error_page);
+  SetResponseCode(response.rescode);
+  SetResponseBody(response.body);
+}
 void Get::Run(const std::string &path, Socket *sock) {
   // outindex_
   File file(path);
   if (!file.IsExist()) {
-    rescode_ = kKk404NotFound;
+    SetErrorPage(kKk404NotFound, sock);
     return;
   }
 
   // fileがfileの場合
   if (file.IsFile()) {
     if (!file.CanRead()) {
-      rescode_ = kKk403Forbidden;
       return;
     }
     body_ = file.ReadFileLines();
@@ -79,11 +87,11 @@ void Get::Run(const std::string &path, Socket *sock) {
     }
     File index_file(path + index_path);
     if (!index_file.IsExist()) {
-      rescode_ = kKk404NotFound;
+      SetErrorPage(kKk404NotFound, sock);
       return;
     }
     if (!index_file.CanRead()) {
-      rescode_ = kKk403Forbidden;
+      SetErrorPage(kKk403Forbidden, sock);
       return;
     }
     body_ = index_file.ReadFileLines();
@@ -95,3 +103,6 @@ void Get::UpdateSocketData(Socket *sock) {
   sock->response_body = body_;
   sock->response_code = rescode_;
 }
+
+void Get::SetResponseBody(const std::string &body) { body_ = body; }
+void Get::SetResponseCode(const ResponseCode &rescode) { rescode_ = rescode; }
