@@ -1,6 +1,5 @@
 #include "ResponseToTheClient.hpp"
 
-#include "HttpProcessor.hpp"
 ResponseToTheClient::ResponseToTheClient(Socket *sock)
     : socket_(sock), state_(kWrite) {}
 ResponseToTheClient::~ResponseToTheClient() { delete socket_; }
