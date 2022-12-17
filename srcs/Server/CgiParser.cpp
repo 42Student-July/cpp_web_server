@@ -33,15 +33,15 @@ void CgiParser::ValidateHeader() {
     throw ErrorResponse("header content-length connection exist",
                         kKk500internalServerError);
   }
-  if (DocumentResponse()) {
+  if (ClinetRedirectResponseWithDocument()) {
+    restype_ = kClientRediredocResponse;
+  } else if (DocumentResponse()) {
     restype_ = kDocumentResponse;
   } else if (LocalRedirectResponse()) {
     ParseQuery();
     restype_ = kLocalRedirResponse;
   } else if (ClientRedirectResponse()) {
     restype_ = kClientRedirResponse;
-  } else if (ClinetRedirectResponseWithDocument()) {
-    restype_ = kClientRediredocResponse;
   } else {
     restype_ = kErrType;
     throw ErrorResponse("bad cgi resopnse", kKk500internalServerError);
@@ -56,14 +56,12 @@ void CgiParser::ParseQuery() {
 }
 
 bool CgiParser::DocumentResponse() {
-  if (header_vec_.empty() || "CONTENT-TYPE" != header_vec_[0].first)
+  if (header_vec_.empty() ||
+      "CONTENT-TYPE" != FindByKey(header_vec_, "CONTENT-TYPE").first)
     return false;
-  if (header_vec_.size() > 1 && IsExist("STATUS")) {
-    if (header_vec_[1].first != "STATUS" ||
-        !IsValidStatusCode(header_vec_[1].second))
-      return false;
-  }
-  return true;
+  HeaderPair status_pair = FindByKey(header_vec_, "STATUS");
+  return !(!status_pair.first.empty() &&
+           !IsValidStatusCode(status_pair.second));
 }
 
 bool CgiParser::IsValidStatusCode(const std::string &str) {
@@ -93,14 +91,16 @@ bool CgiParser::LocalRedirectResponse() {
          Path::IsFullPath(header_vec_[0].second);
 }
 bool CgiParser::ClientRedirectResponse() {
-  return header_vec_.size() > 0 && header_vec_[0].first == "LOCATION" &&
-         Path::IsAbsoluteUri(header_vec_[0].second);
+  if (header_vec_.empty()) return false;
+  HeaderPair location_p = FindByKey(header_vec_, "LOCATION");
+  return !location_p.first.empty() && Path::IsAbsoluteUri(location_p.second);
 }
 bool CgiParser::ClinetRedirectResponseWithDocument() {
-  return header_vec_.size() > 2 && ClientRedirectResponse() &&
-         header_vec_[1].first == "STATUS" &&
-         IsValidStatusCode(header_vec_[1].second) &&
-         header_vec_[2].first == "CONTENT-TYPE";
+  if (header_vec_.size() < 3) return false;
+  HeaderPair status_p = FindByKey(header_vec_, "STATUS");
+  HeaderPair content_p = FindByKey(header_vec_, "CONTENT-TYPE");
+  return !status_p.first.empty() && !content_p.first.empty() &&
+         IsValidStatusCode(status_p.second) && ClientRedirectResponse();
 }
 std::pair<std::string, std::string> CgiParser::FindByKey(
     const HeaderVec &vec, const std::string &key) {

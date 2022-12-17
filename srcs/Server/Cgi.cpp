@@ -31,7 +31,7 @@ void Cgi::SetEnv(Socket *socket) {
                              std::string("type");  //  headder ni attara must
   env_map_["PATH_INFO"] =
       std::string("PATH_INFO=") +
-      socket->full_path;  // request line cgiファイル名の後ろにつくあれ
+      path_info_;  // request line cgiファイル名の後ろにつくあれ
   env_map_["QUERY_STRING"] = std::string("QUERY_STRING=") +
                              socket->pr.query_string;  // ?の後に=があったら
   env_map_["REMOTE_ADDR"] = std::string("REMOTE_ADDR=");  // host addr
@@ -84,6 +84,7 @@ void Cgi::SetSockopt() {
 void Cgi::Run(const std::string &full_path, Socket *socket) {
   File f(full_path);
   if (!f.CanExec()) throw ErrorResponse("cgi permission", kKk403Forbidden);
+  path_info_ = full_path;
   ParseArgv(socket);
   SetEnv(socket);
   SockPair();
