@@ -68,8 +68,8 @@ void Cgi::SetEnv(Socket *socket) {
 // // std::cout << *ptr << std::endl;
 // // }
 // // }
-void Cgi::Fork(Socket *socket) {
-  if ((socket->cgi_res.process_id = fork()) == -1) {
+void Cgi::Fork(CgiRes *cgires) {
+  if ((cgires->process_id = fork()) == -1) {
     close(fd_[0]);
     close(fd_[1]);
     throw ErrorResponse("fork", kKk500internalServerError);
@@ -88,15 +88,14 @@ void Cgi::SetSockopt() {
     throw ErrorResponse("fcntl", kKk500internalServerError);
   }
 }
-void Cgi::Run(const std::string &full_path, Socket *socket) {
+void Cgi::Run(const std::string &full_path, Socket *socket, CgiRes *cgires) {
   File f(full_path);
   if (!f.CanExec()) throw ErrorResponse("cgi permission", kKk403Forbidden);
   path_info_ = full_path;
-  std::cout << socket->pr.query_string << std::endl;
   SockPair();
-  socket->cgi_res.cgi_fd = fd_[0];
-  Fork(socket);
-  if (socket->cgi_res.process_id == 0) {
+  cgires->cgi_fd = fd_[0];
+  Fork(cgires);
+  if (cgires->process_id == 0) {
     ParseArgv(socket);
     SetEnv(socket);
     close(fd_[0]);

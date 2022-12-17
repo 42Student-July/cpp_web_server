@@ -33,7 +33,7 @@ void SendChunked::SendLastChunk(int fd) {
 }
 
 ssize_t SendChunked::WriteAndSubStr(int fd, std::string *str) {
-  std::cout << *str << std::endl;
+  // std::cout << *str << std::endl;
   ssize_t wrriten = write(fd, str->c_str(), str->size());
   if (wrriten == -1) throw std::runtime_error("write err");
   if (static_cast<size_t>(wrriten) == str->size()) {

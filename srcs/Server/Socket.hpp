@@ -46,7 +46,7 @@ enum ResponseCode {
   kKkNotSet = 0
 };
 struct CgiRes {
-  explicit CgiRes(int fd) : cgi_fd(fd) {}
+  // explicit CgiRes(int fd) : cgi_fd(fd) {}
   int buff_size;
   int written_size;
   int read_size;
@@ -54,7 +54,8 @@ struct CgiRes {
   int pid_exit_status;
   int cgi_fd;
   ResponseType type;
-  char buf[2048];
+  // char buf[2048];
+  std::string buf;
 };
 
 class Socket {
@@ -72,12 +73,12 @@ class Socket {
   ResponseCode response_code;
   bool can_write;
   std::string response_body;
-  CgiRes cgi_res;
+  std::vector<CgiRes> cgi_res;
   std::string full_path;
   Socket(int fd, const std::vector<ServerContext>& context);
   ~Socket();
-  int CgiReadAndStoreToBuf();
-  bool CgiFinished();
+  int CgiReadAndStoreToBuf(size_t pos);
+  bool CgiFinished(size_t pos);
   Event* PrepareNextEventProcess();
 };
 class ErrorResponse {

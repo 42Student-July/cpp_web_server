@@ -28,11 +28,11 @@ class Cgi {
   void SetEnv(Socket *socket);
   void StoreStrIfNotEmpty(const std::string &str);
   void ParseArgv(Socket *socket);
-  void Fork(Socket *socket);
+  void Fork(CgiRes *cgires);
 
  public:
   Cgi();
   ~Cgi();
-  void Run(const std::string &full_path, Socket *socket);
+  void Run(const std::string &full_path, Socket *socket, CgiRes *cgires);
 };
 #endif  // SRCS_SERVER_CGI_HPP_

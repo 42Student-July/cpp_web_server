@@ -19,7 +19,6 @@ void ReceiveRequestFromClient::Do() {
 
 Event *ReceiveRequestFromClient::NextEvent() {
   if (cgi_ == NULL && IsReadFinished(stat_)) {
-    std::cout << "not cgi response" << std::endl;
     return new ResponseToTheClient(socket_);
   }
   return NULL;
@@ -29,9 +28,11 @@ std::pair<Event *, epoll_event> ReceiveRequestFromClient::PublishNewEvent() {
   epoll_event epo_ev;
   if (cgi_ != NULL) {
     if (socket_->pr.request_body.empty())
-      epo_ev = Epoll::Create(socket_->cgi_res.cgi_fd, EPOLLIN);
+      epo_ev = Epoll::Create(
+          socket_->cgi_res[socket_->cgi_res.size() - 1].cgi_fd, EPOLLIN);
     else
-      epo_ev = Epoll::Create(socket_->cgi_res.cgi_fd, EPOLLOUT);
+      epo_ev = Epoll::Create(
+          socket_->cgi_res[socket_->cgi_res.size() - 1].cgi_fd, EPOLLOUT);
   }
   return std::make_pair(cgi_, epo_ev);
 }

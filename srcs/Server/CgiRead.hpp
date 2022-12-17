@@ -10,12 +10,12 @@ class CgiRead : public Event {
   bool created_next_event_;
   Socket *socket_;
   CgiParser cgi_parser_;
-  bool del_;
+  size_t cgi_pos_;
   std::pair<Event *, epoll_event> CreateLocalRedirEvent();
-  std::pair<Event *, epoll_event> CreateClientEvent() const;
+  std::pair<Event *, epoll_event> CreateClientEvent();
 
  public:
-  explicit CgiRead(Socket *socket);
+  explicit CgiRead(Socket *socket, size_t cgi_pos);
   ~CgiRead();
   void Do();
   Event *NextEvent();

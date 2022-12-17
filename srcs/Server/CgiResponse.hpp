@@ -15,9 +15,10 @@ class CgiResponse : public Event {
   std::string response_state_and_header_;
   std::string MakeResponseStatusCode();
   std::string MakeResponseHeader();
+  size_t cgi_pos_;
 
  public:
-  explicit CgiResponse(Socket *sock);
+  explicit CgiResponse(Socket *sock, size_t cgi_pos);
   ~CgiResponse();
   void Do();
   Event *NextEvent();

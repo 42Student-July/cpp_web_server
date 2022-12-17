@@ -1,14 +1,15 @@
 #include "CgiResponse.hpp"
 
 #include "CgiParser.hpp"
-CgiResponse::CgiResponse(Socket *sock) : socket_(sock) {
-  if (socket_->cgi_res.type != kClientRedirResponse) {
+CgiResponse::CgiResponse(Socket *sock, size_t cgi_pos)
+    : socket_(sock), cgi_pos_(cgi_pos) {
+  if (socket_->cgi_res[cgi_pos_].type != kClientRedirResponse) {
     response_state_and_header_ = MakeResponseStatusCode();
   } else {
     response_state_and_header_ = "HTTP/1.1 302 Found\r\n";
   }
   response_state_and_header_ += MakeResponseHeader();
-  if (socket_->cgi_res.type != kClientRedirResponse) {
+  if (socket_->cgi_res[cgi_pos_].type != kClientRedirResponse) {
     response_state_and_header_ +=
         "Transfer-Encoding: chunked\r\nConnection: keep-alive\r\n\r\n";
   } else {
@@ -42,16 +43,16 @@ CgiResponse::~CgiResponse() {
 
 void CgiResponse::Do() {
   if (sender_.HasMoreToSend()) {
-    std::cout << "send header" << std::endl;
+    // std::cout << "send header" << std::endl;
     sender_.Send(socket_->sock_fd);
-  } else if (socket_->cgi_res.type != kClientRedirResponse) {
+  } else if (socket_->cgi_res[cgi_pos_].type != kClientRedirResponse) {
     if (chunked_.SentByte() == socket_->response_body.size() &&
-        socket_->cgi_res.read_size == 0) {
-      std::cout << "last chunk" << std::endl;
+        socket_->cgi_res[cgi_pos_].read_size == 0) {
+      // std::cout << "last chunk" << std::endl;
       chunked_.SendLastChunk(socket_->sock_fd);
     } else {
-      std::cout << "send body" << std::endl;
-      std::cout << socket_->response << std::endl;
+      // std::cout << "send body" << std::endl;
+      // std::cout << socket_->response << std::endl;
       chunked_.Send(socket_->sock_fd, socket_->response_body);
     }
   }
@@ -68,7 +69,7 @@ void CgiResponse::Handle(Epoll *epoll) {
 }
 EventState CgiResponse::State() {
   if (chunked_.SentLastChunk() ||
-      socket_->cgi_res.type == kClientRedirResponse) {
+      socket_->cgi_res[cgi_pos_].type == kClientRedirResponse) {
     return kDel;
   }
   return kWrite;

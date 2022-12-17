@@ -32,6 +32,7 @@ class CgiParser {
   std::string query_;
   std::string local_path_;
   std::string new_line_;
+
   void ParseHeader();
   void ParseBody();
   static HeaderPair MakeHeader(const std::string &str);
@@ -51,7 +52,7 @@ class CgiParser {
   ~CgiParser();
   void Parse(const std::string &str);
   ResponseType GetResponseType() const;
-  void UpdateData(Socket *socket);
+  void UpdateData(Socket *socket, size_t cgi_pos);
   static HeaderPair FindByKey(const HeaderVec &vec, const std::string &key);
   static std::string HeaderPairToStr(const HeaderPair &header);
 };

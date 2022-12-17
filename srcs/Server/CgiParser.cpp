@@ -12,7 +12,6 @@ void CgiParser::Parse(const std::string &str) {
       new_line_ = "\r\n";
     else if ((header_end_pos = header_.find("\n\n")) != std::string::npos)
       new_line_ = "\n";
-    std::cout << "endpos  :" << header_end_pos << std::endl;
     if (header_end_pos != std::string::npos) {
       body_ = header_.substr(header_end_pos + (new_line_.size() * 2));
       header_ = header_.substr(0, header_end_pos);
@@ -20,7 +19,7 @@ void CgiParser::Parse(const std::string &str) {
       ParseHeader();
       ValidateHeader();
     } else if (header_.size() > kMaxHeaderSize) {
-      throw ErrorResponse("header size", kKk500internalServerError);
+      throw ErrorResponse("header size error", kKk500internalServerError);
     }
   } else if (parse_state_ == kBody) {
     body_ += str;
@@ -168,11 +167,11 @@ std::pair<std::string, std::string> CgiParser::MakeHeader(
   // oomozini
 }
 ResponseType CgiParser::GetResponseType() const { return restype_; }
-void CgiParser::UpdateData(Socket *socket) {
+void CgiParser::UpdateData(Socket *socket, size_t cgi_pos) {
   socket->response_body = body_;
   socket->pr.query_string = query_;
   socket->response_headder = header_vec_;
-  socket->cgi_res.type = restype_;
+  socket->cgi_res[cgi_pos].type = restype_;
   if (restype_ == kLocalRedirResponse) {
     // std::cout << "local_path :" << local_path_ << std::endl;
     socket->pr.request_path = local_path_;

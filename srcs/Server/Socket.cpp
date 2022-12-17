@@ -7,30 +7,30 @@
 #include "HttpMethod.hpp"
 #include "PrepareNextEventFromRequestAndConfig.hpp"
 Socket::Socket(const int fd, const std::vector<ServerContext>& context)
-    : vec_context(context), sock_fd(fd), response_code(kKkNotSet), cgi_res(-1) {
+    : vec_context(context), sock_fd(fd), response_code(kKkNotSet) {
   server_context = context[0];
 }
 Socket::~Socket() {
-  if (cgi_res.cgi_fd != -1) {
-    if (!CgiFinished()) {
-      kill(cgi_res.process_id, SIGTERM);
+  for (size_t i = 0; i < cgi_res.size(); i++) {
+    if (!CgiFinished(i)) {
+      kill(cgi_res[i].process_id, SIGTERM);
     }
-    if (cgi_res.cgi_fd != 0) {
-      close(cgi_res.cgi_fd);
-    }
+    close(cgi_res[i].cgi_fd);
   }
   close(sock_fd);
 }
-int Socket::CgiReadAndStoreToBuf() {
-  if ((cgi_res.read_size = read(cgi_res.cgi_fd, cgi_res.buf, kBuffSize)) ==
-      -1) {
+int Socket::CgiReadAndStoreToBuf(size_t pos) {
+  char read_buf[kBuffSize];
+  if ((cgi_res[pos].read_size =
+           read(cgi_res[pos].cgi_fd, read_buf, kBuffSize)) == -1) {
     std::cerr << "cgi read err" << std::endl;
     return -1;
   }
   // std::cout << "read size :" << cgi_res.read_size << std::endl;
-  cgi_res.buf[cgi_res.read_size] = '\0';
+  read_buf[cgi_res[pos].read_size] = '\0';
+  cgi_res[pos].buf = read_buf;
   // std::cout << cgi_res.buf << std::endl;
-  return cgi_res.read_size;
+  return cgi_res[pos].read_size;
 }
 
 Event* Socket::PrepareNextEventProcess() {
@@ -44,12 +44,14 @@ Event* Socket::PrepareNextEventProcess() {
     }
     if (pre.IsRequestCgi()) {
       Cgi c;
-      c.Run(pre.GetFullPath(), this);
+      CgiRes cres;
+      c.Run(pre.GetFullPath(), this, &cres);
       std::cout << "cgi run" << std::endl;
+      cgi_res.push_back(cres);
       if (pr.request_body.empty()) {
-        return new CgiRead(this);
+        return new CgiRead(this, cgi_res.size() - 1);
       }
-      return new CgiWrite(this);
+      return new CgiWrite(this, cgi_res.size() - 1);
     }
     HttpMethod* m = HttpMethod::Build(pr.m);
     std::cout << "method run" << std::endl;
@@ -63,8 +65,9 @@ Event* Socket::PrepareNextEventProcess() {
   return NULL;
 }
 
-bool Socket::CgiFinished() {
-  return waitpid(cgi_res.process_id, &(cgi_res.pid_exit_status), WNOHANG) > 0;
+bool Socket::CgiFinished(size_t pos) {
+  return waitpid(cgi_res[pos].process_id, &(cgi_res[pos].pid_exit_status),
+                 WNOHANG) > 0;
 }
 
 ErrorResponse::ErrorResponse(const std::string& errmsg, ResponseCode rescode)
