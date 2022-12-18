@@ -32,13 +32,14 @@ void Server::Run() {
   signal(SIGPIPE, SIG_IGN);
   while (true) {
     int ready = epoll_.Wait();
+    std::cout << ready << std::endl;
     EventExec(ready);
   }
 }
 void Server::EventExec(int ready) {
   for (int i = 0; i < ready; i++) {
     try {
-      // usleep(1000);
+      // usleep(5000);
       epoll_event epoll = epoll_.Find(i);
       Event *event = event_map_[epoll.data.fd];
       event->Do();
@@ -51,12 +52,12 @@ void Server::EventExec(int ready) {
         delete event_map_[e.GetFd()];
         event_map_.erase(e.GetFd());
       }
-      // } catch (std::runtime_error &e) {
-      //   std::cerr << e.what() << std::endl;
-      // }
+    } catch (std::runtime_error &e) {
+      std::cerr << e.what() << std::endl;
     }
   }
 }
+
 void Server::RegisterNewEvent(Event *event) {
   // ここの返り値はもう少し考える
   std::pair<Event *, epoll_event> new_event = event->PublishNewEvent();

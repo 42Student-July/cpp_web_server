@@ -61,19 +61,22 @@ def replace_newline(file_list:list)->str:
         str += line.replace("\n","\r\n")
     return str
 def list_diff(list1:list,list2:list)->list:
+    
     res = list1.copy()
     for val in list2:
+        print(val)
         if val in res:
             res.remove(val)
     return res
 def run(test_name:str, filepath:str)->str:
     try:
         nginx_data = send_request(filepath, config.SERVER_ADDR, config.NGINX_PORT).split("\r\n")
-        webserv_data = send_request(filepath, config.SERVER_NAME2, config.WEBSERV_PORT).split("\r\n")
+        webserv_data = send_request(filepath, config.SERVER_NAME, config.WEBSERV_PORT).split("\r\n")
         #webserv_data = send_request(filepath, config.SERVER_ADDR, config.NGINX_PORT).split("\r\n")
         #webserv_data = ["a","b"]
     except:
-        print("{}Cannot connect to the server on port {}{}".format(C_B_RED, config.SERVER_PORT, RESET))
+        print("{}Cannot connect to the server on port {}{}".format(C_B_RED, config.NGINX_PORT, RESET))
+        print("{}Cannot connect to the server on port {}{}".format(C_B_RED, config.WEBSERV_PORT, RESET))
         exit(1)
     res = list_diff(nginx_data, webserv_data)
     char = ""
@@ -85,7 +88,7 @@ def run(test_name:str, filepath:str)->str:
         char =  "❌"
     print(r"{}{:40}{} {}{} {}".format(C_B_GRAY,test_name,RESET, color, char , RESET))
     if len(res) != 0:
-        diff(nginx_data,webserv_data)
+        diff(nginx_data, webserv_data)
 
 def diff(l1:list,l2:list)->None:
     print("{}disaccord{}\n".format(C_B_YELLOW,RESET))

@@ -1,2 +1,2 @@
 #!/usr/bin/perl
-print "Location: /cgi-bin/env.cgi?abc=abc\n\n";
+print "Location: /cgi-bin/env.cgi \n\n";

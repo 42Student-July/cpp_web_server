@@ -4,9 +4,9 @@ WEBSERVDIR = ../
 UNIT_TEST_PATH = ./unit_test
 .PHONY: integra
 integra:
-	@make up -C $(DOCKERPATH)
+	@make nginx_up -C $(DOCKERPATH)
 	@make run -C $(INTEGRATIONPATH)
-	@make down -C $(DOCKERPATH)
+	@make nginx_down -C $(DOCKERPATH)
 
 .PHONY: unittest
 unittest:

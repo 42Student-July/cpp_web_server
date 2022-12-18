@@ -49,6 +49,7 @@ void CgiParser::ValidateHeader() {
 void CgiParser::ParseQuery() {
   HeaderPair p = FindByKey(header_vec_, "LOCATION");
   size_t pos = p.second.find("?");
+  local_path_ = p.second;
   if (pos == std::string::npos) return;
   local_path_ = p.second.substr(0, pos);
   query_ = p.second.substr(pos + 1);
