@@ -247,17 +247,13 @@ ReadStat ReceiveHttpRequest::ReadHttpRequest(const int &fd, ParsedRequest *pr,
 
   if (fd_data_.s == kWaitBody && IsNeededBody(fd_data_.pr.m)) {
     if (!fd_data_.is_chunked) {
-      fd_data_.pr.request_body = fd_data_.buf;
-      size_t size = fd_data_.pr.request_body.length();
+      size_t size = fd_data_.buf.length();
       if (size >= content_size_) {
-        if (size == content_size_) {
-          *pr = fd_data_.pr;
-          fd_data_.s = kReadComplete;
-          return kReadComplete;
-        }
+        fd_data_.pr.request_body = fd_data_.buf.substr(0, content_size_);
+        fd_data_.buf = "";
         *pr = fd_data_.pr;
-        fd_data_.s = kErrorBody;
-        return kErrorBody;
+        fd_data_.s = kReadComplete;
+        return kReadComplete;
       }
     } else {
       ds_ = cb_.DecodeChunkedBody(&fd_data_.buf);
