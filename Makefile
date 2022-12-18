@@ -54,9 +54,9 @@ test_compose_down: fclean
 
 N = 10
 req:
-	bash -c 'for i in {1..${N}}; do curl localhost:8087/cgi-bin/document_res.cgi; echo $${i} ; done'
+	bash -c 'for i in {1..${N}}; do telnet localhost 8087 ; done'
 .PHONY: all fclean clean re bonus integration unit
-
+#curl localhost:8087/cgi-bin/document_res.cgi
 -include $(DEPS)
 
 # --------- sourcecodes ---------

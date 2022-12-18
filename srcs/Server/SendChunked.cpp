@@ -10,8 +10,8 @@ void SendChunked::Send(int fd, const std::string &str) {
       WriteAndSubStr(fd, &send_chunk_);
     } else {
       size_t length = 0;
-      if (sent_byte_ + 16 < str.size()) {
-        length = 16;
+      if (sent_byte_ + 15 < str.size()) {
+        length = 15;
       } else {
         length = str.size() - sent_byte_;
       }
