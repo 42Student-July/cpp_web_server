@@ -62,7 +62,6 @@ void Get::Run(const std::string &path, Socket *sock) {
   // redirect が存在する場合
 
   if (sock->location_context.redirect.first != -1) {
-    //
     Redirect(static_cast<ResponseCode>(sock->location_context.redirect.first),
              sock->location_context.redirect.second);
     return;
