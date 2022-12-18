@@ -20,6 +20,21 @@ Header expected_full = {{"host", "hoge.com"},
                         {"accept-encoding", "gzip, deflate"},
                         {"accept-language", "ja,en-us;q=0.8,en;q=0.6"}};
 
+Header expected_full2 = {{"host", "hoge.com"},
+                         {"connection", "keep-alive"},
+                         {"content-length", "173"},
+                         {"cache-control", "max-age=0"},
+                         {"origin", "http://hoge.com"},
+                         {"upgrade-insecure-requests", "1"},
+                         {"user-agent", "hoge"},
+                         {"content-type", "application/x-www-form-urlencoded"},
+                         {"accept",
+                          "text/html,application/xhtml+xml,application/"
+                          "xml;q=0.9,image/webp,image/apng,*/*;q=0.8"},
+                         {"referer", "http://hoge.com/index.html"},
+                         {"accept-encoding", "gzip, deflate"},
+                         {"accept-language", "ja,en-us;q=0.8,en;q=0.6"}};
+
 void copy_fd(int dst, const char *src) {
   char buf[BUFFER_SIZE];
   std::string file = DIR;
@@ -55,6 +70,30 @@ TEST(ReceiveHttpRequest, full) {
   EXPECT_EQ("HTTP/1.1", pr.version);
   EXPECT_EQ(pr.request_header, expected_full);
   EXPECT_EQ("q=test&submitSearch=%E6%A4%9C%E7%B4%A2", pr.request_body);
+  EXPECT_EQ(38, rhr.GetContentLength());
+  close(fd);
+}
+
+TEST(ReceiveHttpRequest, full2) {
+  ReceiveHttpRequest rhr;
+  ParsedRequest pr;
+  ReadStat rs;
+  std::vector<ServerContext> sc;
+  int fd = open_pseudo_socket();
+  copy_fd(fd, "FullRequest2");
+  rs = rhr.ReadHttpRequest(fd, &pr, sc);
+
+  EXPECT_EQ(kReadComplete, rs);
+  EXPECT_EQ(kPost, pr.m);
+  EXPECT_EQ("/search.html", pr.request_path);
+  EXPECT_EQ("HTTP/1.1", pr.version);
+  EXPECT_EQ(pr.request_header, expected_full2);
+  EXPECT_EQ(
+      "hogehogehogehogehogehogehogehogehogehogehogehogehogehoge\r\nhogehogehoge"
+      "hogehogehogehogehogehogehogehogehogehogehoge\r\nhogehogehogehogehogehoge"
+      "hogehogehogehogehogehogehogehogeh",
+      pr.request_body);
+  EXPECT_EQ(173, rhr.GetContentLength());
   close(fd);
 }
 
@@ -68,7 +107,7 @@ TEST(ReceiveHttpRequest, empty_then_full) {
   copy_fd(fd, "EmptyRequest");
   rs = rhr.ReadHttpRequest(fd, &pr, sc);
 
-  EXPECT_EQ(kWaitRequest, rs);
+  EXPECT_EQ(kReadNoRequest, rs);
 
   copy_fd(fd, "FullRequest");
   rs = rhr.ReadHttpRequest(fd, &pr, sc);
@@ -80,6 +119,7 @@ TEST(ReceiveHttpRequest, empty_then_full) {
   EXPECT_EQ("HTTP/1.1", pr.version);
   EXPECT_EQ(pr.request_header, expected_full);
   EXPECT_EQ("q=test&submitSearch=%E6%A4%9C%E7%B4%A2", pr.request_body);
+  EXPECT_EQ(38, rhr.GetContentLength());
   close(fd);
   remove("./text/ReceiveHttpRequest/pseudo_socket.txt");
 }
@@ -99,6 +139,7 @@ TEST(ReceiveHttpRequest, only_request_line) {
   EXPECT_EQ(kPost, pr.m);
   EXPECT_EQ("/search.html", pr.request_path);
   EXPECT_EQ("HTTP/1.1", pr.version);
+  EXPECT_EQ(0, rhr.GetContentLength());
   close(fd);
   remove("./text/ReceiveHttpRequest/pseudo_socket.txt");
 }
@@ -124,7 +165,7 @@ TEST(ReceiveHttpRequest, half_then_half) {
   EXPECT_EQ("/search.html", pr.request_path);
   EXPECT_EQ("HTTP/1.1", pr.version);
   EXPECT_EQ("", rhr.GetBuf());
-
+  EXPECT_EQ(0, rhr.GetContentLength());
   close(fd);
   remove("./text/ReceiveHttpRequest/pseudo_socket.txt");
 }
@@ -137,6 +178,8 @@ TEST(ReceiveHttpRequest, invalid_request1) {
   int fd = open_pseudo_socket();
   copy_fd(fd, "invalidrequest1");
   rs = rhr.ReadHttpRequest(fd, &pr, sc);
+  EXPECT_EQ(kErrorRequest, rs);
+  EXPECT_EQ(0, rhr.GetContentLength());
   close(fd);
   remove("./text/ReceiveHttpRequest/pseudo_socket.txt");
 }
@@ -151,6 +194,7 @@ TEST(ReceiveHttpRequest, invalid_request2) {
   rs = rhr.ReadHttpRequest(fd, &pr, sc);
 
   EXPECT_EQ(kErrorHeader, rs);
+  EXPECT_EQ(0, rhr.GetContentLength());
   close(fd);
 }
 
@@ -162,6 +206,7 @@ TEST(ReceiveHttpRequest, request_then_nobody) {
   int fd = open_pseudo_socket();
   copy_fd(fd, "request_then_nobody");
   rs = rhr.ReadHttpRequest(fd, &pr, sc);
+  EXPECT_EQ(0, rhr.GetContentLength());
   close(fd);
   remove("./text/ReceiveHttpRequest/pseudo_socket.txt");
 }
@@ -175,6 +220,7 @@ TEST(ReceiveHttpRequest, curl) {
   copy_fd(fd, "curl_request");
   rs = rhr.ReadHttpRequest(fd, &pr, sc);
   EXPECT_EQ(kReadComplete, rs);
+  EXPECT_EQ(0, rhr.GetContentLength());
   close(fd);
   remove("./text/ReceiveHttpRequest/pseudo_socket.txt");
 }
@@ -191,6 +237,7 @@ TEST(ReceiveHttpRequest, request_chunked) {
   EXPECT_EQ("hogehogefugapiyopfoofoofoofoofoofoofoo",
             rhr.GetParsedRequest().request_body);
   EXPECT_EQ(kDecodeComplete, rhr.GetDecodeStat());
+  EXPECT_EQ(0, rhr.GetContentLength());
   close(fd);
 }
 
@@ -210,6 +257,7 @@ TEST(ReceiveHttpRequest, request_chunked2) {
   rs = rhr.ReadHttpRequest(fd, &pr, sc);
   EXPECT_EQ(expext, rhr.GetParsedRequest().request_body);
   EXPECT_EQ(kDecodeComplete, rhr.GetDecodeStat());
+  EXPECT_EQ(0, rhr.GetContentLength());
   close(fd);
 }
 
@@ -223,5 +271,6 @@ TEST(ReceiveHttpRequest, request_chunked_error) {
   copy_fd(fd, "ChunkedRequestError");
   rs = rhr.ReadHttpRequest(fd, &pr, sc);
   EXPECT_EQ(kChunkError, rhr.GetDecodeStat());
+  EXPECT_EQ(0, rhr.GetContentLength());
   close(fd);
 }

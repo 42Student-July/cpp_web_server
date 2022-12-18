@@ -24,31 +24,41 @@ static size_t CountHeaderField(Header *rh, const std::string &key) {
   return count;
 }
 
-static bool IsNeededBody(const Method &m) { return (m == kGet || m == kHead); }
+static bool IsNeededBody(const Method &m) {
+  return (!(m == kGet || m == kHead));
+}
 
-bool IsValidHeader(HttpRequestData *fd_data) {
-  Header rh = fd_data->pr.request_header;
+bool ReceiveHttpRequest::IsValidHeader() {
+  Header rh = fd_data_.pr.request_header;
   const size_t num_of_transfer_encoding = CountTransferEncoding(&rh);
   const size_t num_of_content_length = CountHeaderField(&rh, "content-length");
 
-  if (!IsNeededBody(fd_data->pr.m)) {
+  if (IsNeededBody(fd_data_.pr.m)) {
     if (num_of_transfer_encoding == 1 && num_of_content_length == 0) {
-      fd_data->is_chunked = true;
+      fd_data_.is_chunked = true;
     } else if (num_of_transfer_encoding == 0 && num_of_content_length == 1) {
-      fd_data->is_chunked = false;
+      fd_data_.is_chunked = false;
+      std::string str = GetValueByKey("content-length");
+      long l = utils::StrToLong(str);
+      if (l >= 0) {
+        content_size_ = l;
+      } else {
+        return false;
+      }
     } else {
-      fd_data->pr.status_code = 400;
+      fd_data_.pr.status_code = 400;
       return false;
     }
   }
   if (CountHeaderField(&rh, "host") != 1) {
-    fd_data->pr.status_code = 400;
+    fd_data_.pr.status_code = 400;
     return false;
   }
   return true;
 }
 
 ReceiveHttpRequest::ReceiveHttpRequest() {
+  content_size_ = 0;
   fd_data_.s = kUnread;
   fd_data_.pr.m = kError;
   fd_data_.pr.status_code = 0;
@@ -189,6 +199,9 @@ ReadStat ReceiveHttpRequest::ReadHttpRequest(const int &fd, ParsedRequest *pr,
   if (read_ret == -1) {
     return kReadError;
   }
+  if (read_ret == 0) {
+    return kReadNoRequest;
+  }
   buf[read_ret] = '\0';
   fd_data_.buf += buf;
   if (fd_data_.s == kUnread || fd_data_.s == kWaitRequest) {
@@ -197,9 +210,9 @@ ReadStat ReceiveHttpRequest::ReadHttpRequest(const int &fd, ParsedRequest *pr,
       fd_data_.request_line = TrimByPos(&fd_data_.buf, pos, 2);
       if (InputHttpRequestLine(fd_data_.request_line, &fd_data_.pr) == kError) {
         fd_data_.s = kErrorRequest;
-      } else {
-        fd_data_.s = kWaitHeader;
+        return kErrorRequest;
       }
+      fd_data_.s = kWaitHeader;
     } else {
       fd_data_.s = kWaitRequest;
       *pr = fd_data_.pr;
@@ -218,7 +231,7 @@ ReadStat ReceiveHttpRequest::ReadHttpRequest(const int &fd, ParsedRequest *pr,
         fd_data_.s = kErrorHeader;
         return kErrorHeader;
       }
-      if (IsValidHeader(&fd_data_)) {
+      if (IsValidHeader()) {
         sc_ = &SelectServerContext(&sc);
         fd_data_.s = kWaitBody;
       } else {
@@ -232,18 +245,19 @@ ReadStat ReceiveHttpRequest::ReadHttpRequest(const int &fd, ParsedRequest *pr,
     }
   }
 
-  if (fd_data_.s == kWaitBody) {
+  if (fd_data_.s == kWaitBody && IsNeededBody(fd_data_.pr.m)) {
     if (!fd_data_.is_chunked) {
-      pos = fd_data_.buf.find(NL);
-      if (std::string::npos != pos) {
-        fd_data_.pr.request_body = TrimByPos(&fd_data_.buf, pos, 2);
+      size_t size = fd_data_.buf.length();
+      if (size >= content_size_) {
+        fd_data_.pr.request_body = fd_data_.buf.substr(0, content_size_);
+        fd_data_.buf = "";
+        *pr = fd_data_.pr;
+        fd_data_.s = kReadComplete;
+        return kReadComplete;
       }
     } else {
-      pos = fd_data_.buf.find(NL);
-      if (std::string::npos != pos) {
-        ds_ = cb_.DecodeChunkedBody(&fd_data_.buf);
-        fd_data_.pr.request_body = cb_.GetDecodedBody();
-      }
+      ds_ = cb_.DecodeChunkedBody(&fd_data_.buf);
+      fd_data_.pr.request_body += cb_.GetDecodedBody();
     }
   }
   *pr = fd_data_.pr;
@@ -284,3 +298,9 @@ std::string &ReceiveHttpRequest::GetValueByKey(const std::string &key) const {
 }
 
 DecodeStat ReceiveHttpRequest::GetDecodeStat() const { return ds_; }
+
+ServerContext *ReceiveHttpRequest::GetSelectedSercerContext() const {
+  return sc_;
+}
+
+size_t ReceiveHttpRequest::GetContentLength() const { return content_size_; }

@@ -118,13 +118,34 @@ TEST(HttpResponseTest_Default, GetRawResponse_400) {
 TEST(HttpResponseTest_Default, SetHttPresponse_Default) {
   HttpResponse http_response;
 
-  http_response.SetHttpResponse(200, "Hello World");
+  http_response.SetHttpResponse(200, "Hello World",
+                                std::map<std::string, std::string>());
 
   std::string expected =
       "HTTP/1.1 200 OK\r\n"
       "Connection: close\r\n"
       "Content-Length: 11\r\n"
       "Content-Type: text/html\r\n"
+      "\r\n"
+      "Hello World";
+
+  std::string res = http_response.GetRawResponse();
+  EXPECT_EQ(expected, res);
+}
+
+TEST(HttpResponseTest_Default, SetHttPresponse_Redirect) {
+  HttpResponse http_response;
+
+  http_response.SetHttpResponse(302, "Hello World",
+                                std::map<std::string, std::string>(
+                                    {{"Location", "http://localhost:8080"}}));
+
+  std::string expected =
+      "HTTP/1.1 302 Found\r\n"
+      "Connection: close\r\n"
+      "Content-Length: 11\r\n"
+      "Content-Type: text/html\r\n"
+      "Location: http://localhost:8080\r\n"
       "\r\n"
       "Hello World";
 

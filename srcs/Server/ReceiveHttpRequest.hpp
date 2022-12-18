@@ -20,6 +20,7 @@ typedef std::vector<std::pair<std::string, std::string> > Header;
 
 enum ReadStat {
   kUnread,
+  kReadNoRequest,
   kWaitRequest,
   kErrorRequest,
   kWaitHeader,
@@ -53,6 +54,7 @@ struct HttpRequestData {
 class ReceiveHttpRequest {
  private:
   size_t next_chunked_size_;
+  size_t content_size_;
   HttpRequestData fd_data_;
   ServerContext *sc_;
   ChunkedBody cb_;
@@ -82,6 +84,9 @@ class ReceiveHttpRequest {
       std::vector<ServerContext> *contexts) const;
   std::string &GetValueByKey(const std::string &key) const;
   DecodeStat GetDecodeStat() const;
+  bool IsValidHeader();
+  ServerContext *GetSelectedSercerContext() const;
+  size_t GetContentLength() const;
 };
 
 #endif  // SRCS_SERVER_RECEIVEHTTPREQUEST_HPP_
