@@ -26,7 +26,8 @@ class HttpResponse {
   std::string GetRawResponse() const;
   void SetHttpResponse200();
   std::vector<std::string> GetResponseHeaders() const;
-  void SetHttpResponse(int status_code, std::string const &body);
+  void SetHttpResponse(int status_code, std::string const &body,
+                       const HttpHeaders &headers);
 
  private:
   static const char kCRLF[3];

@@ -59,7 +59,6 @@ struct CgiRes {
 };
 
 class Socket {
- private:
  public:
   static const int kBuffSize = 2048;
   std::vector<ServerContext> vec_context;
@@ -74,6 +73,9 @@ class Socket {
   bool can_write;
   std::string response_body;
   std::vector<CgiRes> cgi_res;
+
+  HttpResponse::HttpHeaders headers;
+
   std::string full_path;
   Socket(int fd, const std::vector<ServerContext>& context);
   ~Socket();

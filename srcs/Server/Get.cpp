@@ -52,7 +52,22 @@ void Get::SetErrorPage(const ResponseCode error_code, Socket *sock) {
   SetResponseCode(response.rescode);
   SetResponseBody(response.body);
 }
+
+void Get::Redirect(ResponseCode rescode, const std::string &path) {
+  AddResponseHeader("Location", path);
+  SetResponseCode(rescode);
+}
+
 void Get::Run(const std::string &path, Socket *sock) {
+  // redirect が存在する場合
+
+  if (sock->location_context.redirect.first != -1) {
+    //
+    Redirect(static_cast<ResponseCode>(sock->location_context.redirect.first),
+             sock->location_context.redirect.second);
+    return;
+  }
+
   // outindex_
   File file(path);
   if (!file.IsExist()) {
@@ -102,7 +117,11 @@ void Get::Run(const std::string &path, Socket *sock) {
 void Get::UpdateSocketData(Socket *sock) {
   sock->response_body = body_;
   sock->response_code = rescode_;
+  sock->headers = headers_;
 }
 
 void Get::SetResponseBody(const std::string &body) { body_ = body; }
 void Get::SetResponseCode(const ResponseCode &rescode) { rescode_ = rescode; }
+void Get::AddResponseHeader(const std::string &key, const std::string &value) {
+  headers_[key] = value;
+}
