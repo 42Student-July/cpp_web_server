@@ -112,7 +112,7 @@ std::vector<FileInfo> File::GetFileListInDir() const {
       FileInfo file_info;
 
       struct stat buf;
-      int exists = stat(filename_.c_str(), &buf);
+      int exists = stat((filename_ + file_name).c_str(), &buf);
       if (exists < 0) {
         std::cerr << "Could not stat file: " << file_name << std::endl;
         continue;
@@ -121,7 +121,13 @@ std::vector<FileInfo> File::GetFileListInDir() const {
       ctime_r(&buf.st_mtime, time_buf);
       file_info.timestamp = time_buf;
       file_info.size = buf.st_size;
-      file_info.name = file_name;
+      if (S_ISREG(buf.st_mode)) {
+        file_info.name = file_name;
+      } else if (S_ISDIR(buf.st_mode)) {
+        file_info.name = file_name + "/";
+      } else {
+        file_info.name = file_name;
+      }
 
       file_list.push_back(file_info);
     }
