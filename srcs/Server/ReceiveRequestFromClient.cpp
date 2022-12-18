@@ -9,10 +9,11 @@ void ReceiveRequestFromClient::Do() {
                                    socket_->vec_context);
   if (IsReadErr(stat_)) {
     std::cout << "stat_ err :" << stat_ << std::endl;
+    // socket_->server_context = *(request_.GetSelectedSercerContext());
     socket_->response_code = kKk400BadRequest;
   } else if (IsReadComplete(stat_)) {
     std::cout << "read complete" << std::endl;
-    stat_ = kReadComplete;
+    // stat_ = kReadComplete;
     cgi_ = socket_->PrepareNextEventProcess();
   }
 }
@@ -44,7 +45,7 @@ void ReceiveRequestFromClient::Handle(Epoll *epoll) {
 
 EventState ReceiveRequestFromClient::State() {
   if (cgi_ != NULL) return kDel;
-  if (stat_ == kUnread) return kRead;
+  if (stat_ == kReadNoRequest) return kReadDisconnect;
   if (IsReadComplete(stat_)) return kReadFinished;
   if (IsReadErr(stat_)) return kErr;
   return kReadAgain;

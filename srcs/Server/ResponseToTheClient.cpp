@@ -12,8 +12,8 @@ void ResponseToTheClient::Do() {
     sender_.Init(res.GetRawResponse());
   }
   sender_.Send(socket_->sock_fd);
-  if (!sender_.HasMoreToSend()) {
-    std::cout << "!HasMoreToSend static response del" << std::endl;
+  if (!sender_.HasMoreToSend() || sender_.ErrorOccured()) {
+    std::cout << "static response del" << std::endl;
     state_ = kDel;
   } else {
     state_ = kWriteAgain;
