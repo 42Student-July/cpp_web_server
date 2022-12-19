@@ -22,20 +22,30 @@ void SendChunked::Send(int fd, const std::string &str) {
       WriteAndSubStr(fd, &send_chunk_);
     }
   } catch (std::runtime_error &e) {
-    std::cout << e.what() << std::endl;
+    std::cerr << e.what() << std::endl;
     sent_last_chunked_ = true;
   }
 }
 
 void SendChunked::SendLastChunk(int fd) {
-  write(fd, last_chunk_.c_str(), last_chunk_.size());
-  sent_last_chunked_ = true;
+  try {
+    WriteAndSubStr(fd, &last_chunk_);
+    sent_last_chunked_ = true;
+  } catch (std::runtime_error &e) {
+    std::cerr << e.what() << std::endl;
+    sent_last_chunked_ = true;
+  }
 }
-
+#include <cerrno>
 ssize_t SendChunked::WriteAndSubStr(int fd, std::string *str) {
   // std::cout << *str << std::endl;
   ssize_t wrriten = write(fd, str->c_str(), str->size());
-  if (wrriten == -1) throw std::runtime_error("write err");
+  // if(wrriten <= 0){
+  //   std::cerr <<"fd :" <<fd << std::endl;
+  //   std::cerr << "wrriten :" << wrriten << std::endl;
+  //   std::cerr << "errno :" << errno << std::endl;
+  // }
+  if (wrriten <= 0) throw std::runtime_error("write err");
   if (static_cast<size_t>(wrriten) == str->size()) {
     str->clear();
     return wrriten;

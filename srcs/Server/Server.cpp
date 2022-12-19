@@ -32,7 +32,7 @@ void Server::Run() {
   signal(SIGPIPE, SIG_IGN);
   while (true) {
     int ready = epoll_.Wait();
-    std::cout << ready << std::endl;
+    // std::cout << "ready :" << ready << std::endl;
     EventExec(ready);
   }
 }
@@ -72,6 +72,11 @@ void Server::NextEvent(Event *event, epoll_event *epoll) {
     delete event_map_[epoll->data.fd];
     event_map_.erase(epoll->data.fd);
     event_map_[epoll->data.fd] = next_event;
+  } else if (event->State() == kReadDisconnect) {
+    epoll_.Del(epoll->data.fd, epoll);
+    delete event->GetSocket();
+    delete event_map_[epoll->data.fd];
+    event_map_.erase(epoll->data.fd);
   } else if (Event::IsDelete(event->State())) {
     epoll_.Del(epoll->data.fd, epoll);
     delete event_map_[epoll->data.fd];

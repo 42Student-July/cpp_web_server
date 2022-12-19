@@ -16,6 +16,7 @@ class Sender {
   int GetTotalBytes() const;
 
   bool HasMoreToSend() const;
+  bool ErrorOccured() const;
 
  private:
   Sender(Sender const &other);
@@ -24,6 +25,7 @@ class Sender {
   std::string buf_;
   size_t sended_bytes_;
   size_t total_bytes_;
+  bool err_;
 };
 
 #endif  // SRCS_SERVER_SENDER_HPP_

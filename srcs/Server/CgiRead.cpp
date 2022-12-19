@@ -11,7 +11,7 @@ void CgiRead::Do() {
     if (socket_->CgiReadAndStoreToBuf(cgi_pos_) == -1) return;
     cgi_parser_.Parse(socket_->cgi_res[cgi_pos_].buf);
     cgi_parser_.UpdateData(socket_, cgi_pos_);
-    std::cout << "cgi read ok" << std::endl;
+    // std::cout << "cgi read ok" << std::endl;
   } catch (ErrorResponse &e) {
     std::cout << e.Msg() << std::endl;
     socket_->response_code = e.GetErrResponseCode();

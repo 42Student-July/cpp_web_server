@@ -7,9 +7,7 @@
 #include "HttpMethod.hpp"
 #include "PrepareNextEventFromRequestAndConfig.hpp"
 Socket::Socket(const int fd, const std::vector<ServerContext>& context)
-    : vec_context(context), sock_fd(fd), response_code(kKkNotSet) {
-  server_context = context[0];
-}
+    : vec_context(context), sock_fd(fd), response_code(kKkNotSet) {}
 Socket::~Socket() {
   for (size_t i = 0; i < cgi_res.size(); i++) {
     if (!CgiFinished(i)) {

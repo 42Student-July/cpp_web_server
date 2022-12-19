@@ -194,7 +194,6 @@ ReadStat ReceiveHttpRequest::ReadHttpRequest(const int &fd, ParsedRequest *pr,
   size_t pos = 0;
   ssize_t read_ret = 0;
   char buf[BUFFER_SIZE];
-
   read_ret = read(fd, buf, BUFFER_SIZE);
   if (read_ret == -1) {
     return kReadError;
@@ -232,7 +231,7 @@ ReadStat ReceiveHttpRequest::ReadHttpRequest(const int &fd, ParsedRequest *pr,
         return kErrorHeader;
       }
       if (IsValidHeader()) {
-        sc_ = &SelectServerContext(&sc);
+        sc_ = SelectServerContext(&sc);
         fd_data_.s = kWaitBody;
       } else {
         fd_data_.s = kErrorHeader;
@@ -244,7 +243,6 @@ ReadStat ReceiveHttpRequest::ReadHttpRequest(const int &fd, ParsedRequest *pr,
       return kWaitHeader;
     }
   }
-
   if (fd_data_.s == kWaitBody && IsNeededBody(fd_data_.pr.m)) {
     if (!fd_data_.is_chunked) {
       size_t size = fd_data_.buf.length();
@@ -269,7 +267,7 @@ ParsedRequest ReceiveHttpRequest::GetParsedRequest() const {
   return fd_data_.pr;
 }
 
-ServerContext &ReceiveHttpRequest::SelectServerContext(
+ServerContext ReceiveHttpRequest::SelectServerContext(
     std::vector<ServerContext> *contexts) const {
   std::string hostname;
   if (contexts->size() > 1) {
@@ -299,7 +297,7 @@ std::string &ReceiveHttpRequest::GetValueByKey(const std::string &key) const {
 
 DecodeStat ReceiveHttpRequest::GetDecodeStat() const { return ds_; }
 
-ServerContext *ReceiveHttpRequest::GetSelectedSercerContext() const {
+ServerContext ReceiveHttpRequest::GetSelectedSercerContext() const {
   return sc_;
 }
 

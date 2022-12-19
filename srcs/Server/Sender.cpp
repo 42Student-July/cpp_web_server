@@ -2,9 +2,9 @@
 
 #include <unistd.h>
 
+#include <iostream>
 #include <stdexcept>
-
-Sender::Sender() : sended_bytes_(0), total_bytes_(0) {}
+Sender::Sender() : sended_bytes_(0), total_bytes_(0), err_(false) {}
 
 Sender::Sender(Sender const &other) { *this = other; }
 
@@ -33,11 +33,17 @@ int Sender::GetTotalBytes() const { return total_bytes_; }
 
 bool Sender::HasMoreToSend() const { return sended_bytes_ < total_bytes_; }
 
+bool Sender::ErrorOccured() const { return err_; }
 void Sender::Send(int fd) {
-  int bytes =
-      write(fd, buf_.c_str() + sended_bytes_, total_bytes_ - sended_bytes_);
-  if (bytes == -1) {
-    throw std::runtime_error("send() failed");
+  try {
+    int bytes =
+        write(fd, buf_.c_str() + sended_bytes_, total_bytes_ - sended_bytes_);
+    if (bytes <= 0) {
+      throw std::runtime_error("send() failed");
+    }
+    sended_bytes_ += bytes;
+  } catch (std::runtime_error &e) {
+    std::cout << e.what() << std::endl;
+    err_ = true;
   }
-  sended_bytes_ += bytes;
 }

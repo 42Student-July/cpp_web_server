@@ -52,11 +52,11 @@ nginx_down:
 test_compose_down: fclean
 	make down -C ./tests/docker
 
-N = 10
+N = 1000
 req:
-	bash -c 'for i in {1..${N}}; do telnet localhost 8087 ; done'
+	bash -c 'for i in {1..${N}}; do curl localhost:8087/cgi-bin/env.cgi; echo $${i} ; done'
 .PHONY: all fclean clean re bonus integration unit
-#curl localhost:8087/cgi-bin/document_res.cgi
+
 -include $(DEPS)
 
 # --------- sourcecodes ---------

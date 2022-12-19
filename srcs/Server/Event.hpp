@@ -15,6 +15,7 @@ enum EventState {
   kRead,
   kReadAgain,
   kReadFinished,
+  kReadDisconnect,
   kWrite,
   kWriteAgain,
   kWriteFinished,

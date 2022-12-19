@@ -56,7 +56,7 @@ class ReceiveHttpRequest {
   size_t next_chunked_size_;
   size_t content_size_;
   HttpRequestData fd_data_;
-  ServerContext *sc_;
+  ServerContext sc_;
   ChunkedBody cb_;
   DecodeStat ds_;
 
@@ -80,12 +80,11 @@ class ReceiveHttpRequest {
   void ShowParsedRequest(const int &fd);
   std::string GetBuf();
   ParsedRequest GetParsedRequest() const;
-  ServerContext &SelectServerContext(
-      std::vector<ServerContext> *contexts) const;
+  ServerContext SelectServerContext(std::vector<ServerContext> *contexts) const;
   std::string &GetValueByKey(const std::string &key) const;
   DecodeStat GetDecodeStat() const;
   bool IsValidHeader();
-  ServerContext *GetSelectedSercerContext() const;
+  ServerContext GetSelectedSercerContext() const;
   size_t GetContentLength() const;
 };
 
