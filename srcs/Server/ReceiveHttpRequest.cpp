@@ -231,7 +231,10 @@ ReadStat ReceiveHttpRequest::ReadHttpRequest(const int &fd, ParsedRequest *pr,
         return kErrorHeader;
       }
       if (IsValidHeader()) {
-        sc_ = SelectServerContext(&sc);
+        try {
+          sc_ = SelectServerContext(&sc);
+        } catch (...) {
+        }
         fd_data_.s = kWaitBody;
       } else {
         fd_data_.s = kErrorHeader;
@@ -270,7 +273,8 @@ ParsedRequest ReceiveHttpRequest::GetParsedRequest() const {
 ServerContext ReceiveHttpRequest::SelectServerContext(
     std::vector<ServerContext> *contexts) const {
   std::string hostname;
-  if (contexts->size() > 1) {
+  size_t size = contexts->size();
+  if (size > 1) {
     try {
       hostname = GetValueByKey("host");
     } catch (...) {
@@ -281,7 +285,8 @@ ServerContext ReceiveHttpRequest::SelectServerContext(
          it != contexts->end(); it++) {
       if (it->server_name == hostname) return *it;
     }
-  }
+  } else if (size == 0)
+    throw std::exception();
   return *contexts->begin();
 }
 
