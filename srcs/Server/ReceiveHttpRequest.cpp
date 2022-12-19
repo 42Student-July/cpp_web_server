@@ -299,8 +299,8 @@ std::string &ReceiveHttpRequest::GetValueByKey(const std::string &key) const {
 
 DecodeStat ReceiveHttpRequest::GetDecodeStat() const { return ds_; }
 
-ServerContext *ReceiveHttpRequest::GetSelectedSercerContext() const {
-  return sc_;
+ServerContext ReceiveHttpRequest::GetSelectedSercerContext() const {
+  return *sc_;
 }
 
 size_t ReceiveHttpRequest::GetContentLength() const { return content_size_; }
