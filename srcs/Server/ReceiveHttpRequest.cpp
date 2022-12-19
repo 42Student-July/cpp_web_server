@@ -285,8 +285,9 @@ ServerContext ReceiveHttpRequest::SelectServerContext(
          it != contexts->end(); it++) {
       if (it->server_name == hostname) return *it;
     }
-  } else if (size == 0)
+  } else if (size == 0) {
     throw std::exception();
+  }
   return *contexts->begin();
 }
 
