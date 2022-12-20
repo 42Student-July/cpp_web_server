@@ -16,26 +16,24 @@ Path::~Path() {}
 
 LocationPair Path::FindBestLocation(const Locationmap &locations,
                                     const std::string &request_uri) {
-  LocationPair selected_location;
+  LocationPair max_path_length_location;
   for (std::map<std::string, LocationContext>::const_iterator itr =
            locations.begin();
        itr != locations.end(); itr++) {
     std::string location_uri = itr->first;
-    std::string root = itr->second.root;
 
-    std::string request_directory = request_uri.substr(0, request_uri.size());
-    std::string request_filename = request_uri.substr(request_uri.size());
-
-    if (request_directory.size() >= location_uri.size() &&
+    if (request_uri.size() >= location_uri.size() &&
         utils::StartWith(request_uri, location_uri)) {
-      selected_location = *itr;
+      if (max_path_length_location.first.size() < location_uri.size()) {
+        max_path_length_location = *itr;
+      }
       continue;
     }
   }
-  if (selected_location.first.empty()) {
+  if (max_path_length_location.first.empty()) {
     throw LocationNotFound();
   }
-  return selected_location;
+  return max_path_length_location;
 }
 
 std::string Path::GetAliasPath(const LocationPair &location_pair,
