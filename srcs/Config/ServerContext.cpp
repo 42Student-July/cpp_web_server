@@ -1,4 +1,6 @@
 #include "ServerContext.hpp"
+
+#include <stdexcept>
 ServerContext::ServerContext() : client_body_size(false, 100000) {}
 ServerContext::~ServerContext() {}
 ServerContext::ServerContext(const ServerContext &sc) { *this = sc; }
@@ -20,6 +22,8 @@ ContextMap ServerContext::ToMap(const std::vector<ServerContext> &context) {
   for (size_t i = 0; i < context.size(); i++) {
     ContextMap::iterator it = cmap.find(context[i].listen);
     if (it == cmap.end()) {
+      if (context[i].GetPort().empty())
+        throw std::runtime_error("server context no port");
       std::vector<ServerContext> v;
       v.push_back(context[i]);
       cmap.insert(std::make_pair(context[i].listen, v));
