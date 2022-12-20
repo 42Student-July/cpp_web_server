@@ -198,6 +198,20 @@ TEST(ReceiveHttpRequest, invalid_request2) {
   close(fd);
 }
 
+TEST(ReceiveHttpRequest, invalid_request3) {
+  ReceiveHttpRequest rhr;
+  ParsedRequest pr;
+  ReadStat rs;
+  std::vector<ServerContext> sc;
+  int fd = open_pseudo_socket();
+  copy_fd(fd, "invalidrequest2");
+  rs = rhr.ReadHttpRequest(fd, &pr, sc);
+
+  EXPECT_EQ(kErrorHeader, rs);
+  EXPECT_EQ(0, rhr.GetContentLength());
+  close(fd);
+}
+
 TEST(ReceiveHttpRequest, request_then_nobody) {
   ReceiveHttpRequest rhr;
   ParsedRequest pr;
