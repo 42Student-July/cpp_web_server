@@ -81,7 +81,7 @@ class ReceiveHttpRequest {
   std::string GetBuf();
   ParsedRequest GetParsedRequest() const;
   ServerContext SelectServerContext(std::vector<ServerContext> *contexts) const;
-  std::string &GetValueByKey(const std::string &key) const;
+  std::string GetValueByKey(const std::string &key) const;
   DecodeStat GetDecodeStat() const;
   bool IsValidHeader();
   ServerContext GetSelectedSercerContext() const;

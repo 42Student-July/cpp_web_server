@@ -291,7 +291,7 @@ ServerContext ReceiveHttpRequest::SelectServerContext(
   return *contexts->begin();
 }
 
-std::string &ReceiveHttpRequest::GetValueByKey(const std::string &key) const {
+std::string ReceiveHttpRequest::GetValueByKey(const std::string &key) const {
   Header h = fd_data_.pr.request_header;
 
   Header::iterator it = std::find_if(h.begin(), h.end(), SearchValueByKey(key));
