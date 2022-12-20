@@ -23,25 +23,11 @@ LocationPair Path::FindBestLocation(const Locationmap &locations,
     std::string location_uri = itr->first;
     std::string root = itr->second.root;
 
-    // location_uri が / で終端していない場合は、完全一致でないとマッチしない
-    if (*location_uri.rbegin() != '/') {
-      if (location_uri == request_uri) {
-        selected_location = *itr;
-      }
-      continue;  // ?
-    }
+    std::string request_directory = request_uri.substr(0, request_uri.size());
+    std::string request_filename = request_uri.substr(request_uri.size());
 
-    // location_uri が / で終端している場合は、location_uri
-    // で始まる場合はマッチする
-    std::size_t last_slash = request_uri.find_last_of('/');
-    std::string request_directory, request_filename;
-    if (last_slash != std::string::npos) {
-      request_directory = request_uri.substr(0, last_slash + 1);
-      request_filename = request_uri.substr(last_slash + 1);
-    }
     if (request_directory.size() >= location_uri.size() &&
-        std::equal(location_uri.begin(), location_uri.end(),
-                   request_directory.begin())) {
+        utils::StartWith(request_uri, location_uri)) {
       selected_location = *itr;
       continue;
     }
@@ -56,13 +42,6 @@ std::string Path::GetAliasPath(const LocationPair &location_pair,
                                const std::string &request_uri) {
   std::string location_uri = location_pair.first;
   std::string root = location_pair.second.root;
-
-  std::size_t last_slash = request_uri.find_last_of('/');
-  std::string request_directory, request_filename;
-  if (last_slash != std::string::npos) {
-    request_directory = request_uri.substr(0, last_slash + 1);
-    request_filename = request_uri.substr(last_slash + 1);
-  }
 
   std::string alias_path = root + request_uri.substr(location_uri.size());
   return alias_path;
