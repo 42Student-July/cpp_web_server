@@ -1,0 +1,8 @@
+POST /a.html HTTP/1.1
+Host: localhost:8087
+User-Agent: curl/7.68.0
+Accept: */*
+Content-Length: 22
+Content-Type: application/x-www-form-urlencoded
+
+name=admin&shoesize=12

@@ -239,6 +239,20 @@ TEST(ReceiveHttpRequest, curl) {
   remove("./text/ReceiveHttpRequest/pseudo_socket.txt");
 }
 
+TEST(ReceiveHttpRequest, curl2) {
+  ReceiveHttpRequest rhr;
+  ParsedRequest pr;
+  ReadStat rs;
+  std::vector<ServerContext> sc;
+  int fd = open_pseudo_socket();
+  copy_fd(fd, "curl2");
+  rs = rhr.ReadHttpRequest(fd, &pr, sc);
+  EXPECT_EQ(kReadComplete, rs);
+  EXPECT_EQ(22, rhr.GetContentLength());
+  close(fd);
+  remove("./text/ReceiveHttpRequest/pseudo_socket.txt");
+}
+
 TEST(ReceiveHttpRequest, request_chunked) {
   ReceiveHttpRequest rhr;
   ParsedRequest pr;
