@@ -12,9 +12,12 @@ std::string CreateHttpAutoIndexHtml(const std::string &request_path,
                                     const std::string &full_path) {
   std::string body;
 
-  body += "<html><head><title>Index of ";
+  body += "<html>\n";
+  body += "<head><title>Index of ";
   body += request_path;
-  body += "</title></head><body bgcolor=\"white\"><h1>Index of ";
+  body += "</title></head>\n";
+  body += "<body>\n";
+  body += "<h1>Index of ";
   body += request_path;
   body += "</h1><hr><pre><a href=\"../\">../</a>\n";
 
@@ -30,7 +33,11 @@ std::string CreateHttpAutoIndexHtml(const std::string &request_path,
     body += "\t";
     body += file_info.timestamp;
     body += "\t";
-    body += utils::UIntToString(file_info.size);
+    if (file_info.name[file_info.name.size() - 1]== '/') {
+      body += "-";
+    } else {
+      body += utils::UIntToString(file_info.size);
+    }
     body += "</a>\n";
     std::cout << file_info.name;
     std::cout << file_info.timestamp;

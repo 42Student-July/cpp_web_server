@@ -119,7 +119,13 @@ std::vector<FileInfo> File::GetFileListInDir() const {
       }
       char time_buf[50];
       ctime_r(&buf.st_mtime, time_buf);
-      file_info.timestamp = time_buf;
+      {
+        file_info.timestamp = time_buf;
+        if (!file_info.timestamp.empty() &&
+            file_info.timestamp[file_info.timestamp.length() - 1] == '\n') {
+          file_info.timestamp.erase(file_info.timestamp.length() - 1);
+        }
+      }
       file_info.size = buf.st_size;
       if (S_ISREG(buf.st_mode)) {
         file_info.name = file_name;
