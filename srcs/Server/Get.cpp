@@ -12,14 +12,14 @@ std::string CreateHttpAutoIndexHtml(const std::string &request_path,
                                     const std::string &full_path) {
   std::string body;
 
-  body += "<html>\n";
+  body += "<html>\r\n";
   body += "<head><title>Index of ";
   body += request_path;
-  body += "</title></head>\n";
-  body += "<body>\n";
+  body += "</title></head>\r\n";
+  body += "<body>\r\n";
   body += "<h1>Index of ";
   body += request_path;
-  body += "</h1><hr><pre><a href=\"../\">../</a>\n";
+  body += "</h1><hr><pre><a href=\"../\">../</a>\r\n";
 
   File file(full_path);
   std::vector<FileInfo> file_list(file.GetFileListInDir());
@@ -33,12 +33,12 @@ std::string CreateHttpAutoIndexHtml(const std::string &request_path,
     body += "\t";
     body += file_info.timestamp;
     body += "\t";
-    if (file_info.name[file_info.name.size() - 1]== '/') {
+    if (file_info.name[file_info.name.size() - 1] == '/') {
       body += "-";
     } else {
       body += utils::UIntToString(file_info.size);
     }
-    body += "</a>\n";
+    body += "</a>\r\n";
     std::cout << file_info.name;
     std::cout << file_info.timestamp;
     std::cout << file_info.size << std::endl;
@@ -93,12 +93,6 @@ void Get::Run(const std::string &path, Socket *sock) {
 
   // fileがdirectoryの場合
   if (file.IsDir()) {
-    if (sock->location_context.auto_index == "on") {
-      body_ = CreateHttpAutoIndexHtml(sock->pr.request_path, path);
-      rescode_ = kKk200Ok;
-      return;
-    }
-
     std::string index_path;
     if (sock->location_context.index.empty()) {
       index_path = "index.html";
@@ -108,6 +102,11 @@ void Get::Run(const std::string &path, Socket *sock) {
     }
     File index_file(path + index_path);
     if (!index_file.IsExist()) {
+      if (sock->location_context.auto_index == "on") {
+        body_ = CreateHttpAutoIndexHtml(sock->pr.request_path, path);
+        rescode_ = kKk200Ok;
+        return;
+      }
       SetErrorPage(kKk403Forbidden, sock);
       return;
     }
