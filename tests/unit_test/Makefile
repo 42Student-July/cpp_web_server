@@ -8,7 +8,7 @@ TESTSRCS = $(wildcard *.cc)
 TESTOBJS = $(TESTSRCS:%.cc=%.o)
 UNIT_TEST_NAME = unit_test
 CXX	= g++
-CXXFLAGS = -std=c++11
+CXXFLAGS = -std=c++11 #t a-g -fsanitize=address
 NAME = unit_test
 RM = rm -f
 

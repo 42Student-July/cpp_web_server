@@ -37,8 +37,12 @@ TEST(Path, 3) {
       {"/a/bbb", lc},
   };
   std::string request = "/a/bbb/abc.html";
-  EXPECT_THROW(Path::FindBestLocation(mapList, request),
-               LocationNotFound);
+  std::string expected =
+      "/usr/local/www/nginx/"
+      "/abc.html";
+  std::string path =
+      Path::GetAliasPath(Path::FindBestLocation(mapList, request), request);
+  EXPECT_EQ(expected, path);
 }
 
 TEST(Path, 4) {
@@ -48,8 +52,12 @@ TEST(Path, 4) {
       {"/kapounet", lc},
   };
   std::string request = "/kapounet/pouic/toto/pounet.html";
-  EXPECT_THROW(Path::FindBestLocation(mapList, request),
-               LocationNotFound);
+  std::string expected =
+      "/tmp/www/"
+      "/pouic/toto/pounet.html";
+  std::string path =
+      Path::GetAliasPath(Path::FindBestLocation(mapList, request), request);
+  EXPECT_EQ(expected, path);
 }
 
 TEST(Path, 5) {
@@ -72,8 +80,12 @@ TEST(Path, 6) {
       {"/kapounet", lc},
   };
   std::string request = "/kapounet/pouic/toto/pounet.html";
-  EXPECT_THROW(Path::FindBestLocation(mapList, request),
-               LocationNotFound);
+  std::string expected =
+      "/tmp/www/"
+      "/pouic/toto/pounet.html";
+  std::string path =
+      Path::GetAliasPath(Path::FindBestLocation(mapList, request), request);
+  EXPECT_EQ(expected, path);
 }
 
 TEST(Path, 7) {
@@ -84,8 +96,12 @@ TEST(Path, 7) {
       {"/kapounet/pouic", lc},
   };
   std::string request = "/kapounet/pouic/toto/pounet.html";
-  EXPECT_THROW(Path::FindBestLocation(mapList, request),
-               LocationNotFound);
+  std::string expected =
+      "/tmp/www/"
+      "/toto/pounet.html";
+  std::string path =
+      Path::GetAliasPath(Path::FindBestLocation(mapList, request), request);
+  EXPECT_EQ(expected, path);
 }
 
 TEST(Path, 8) {
@@ -122,8 +138,8 @@ TEST(Path, exact_match) {
   lc1.root = "/ok";  // match
   lc2.root = "/ng";
   Locationmap mapList = {
-      {"/images", lc1},  // ok
-      {"/", lc2},        // ng
+      {"/images", lc1},  // ok(longest)
+      {"/", lc2},        // ok
   };
 
   std::string request_uri = "/images";
@@ -136,13 +152,13 @@ TEST(Path, exact_match2) {
   lc1.root = "/ng";
   lc2.root = "/ok";  // match
   Locationmap mapList = {
-      {"/images", lc1},  // ng
       {"/", lc2},        // ok
+      {"/images", lc1},  // ok(longest)
   };
 
   std::string request_uri = "/images/index.html";
   LocationPair lp = Path::FindBestLocation(mapList, request_uri);
-  EXPECT_EQ(lc2.root, lp.second.root);
+  EXPECT_EQ(lc1.root, lp.second.root);
 }
 
 TEST(Path, exact_match3) {
@@ -150,13 +166,13 @@ TEST(Path, exact_match3) {
   lc1.root = "/ok";  // match
   lc2.root = "/ng";
   Locationmap mapList = {
-      {"/images", lc1},  // ng
+      {"/images", lc1},  // ok(longest)
       {"/", lc2},        // ok
   };
 
   std::string request_uri = "/images/";
   LocationPair lp = Path::FindBestLocation(mapList, request_uri);
-  EXPECT_EQ(lc2.root, lp.second.root);
+  EXPECT_EQ(lc1.root, lp.second.root);
 }
 
 TEST(Path, exact_match4) {
@@ -194,9 +210,9 @@ TEST(PATH, exact_match5) {
 TEST(PATH, longest_match1) {
   LocationContext lc1, lc2, lc3;
   Locationmap mapList = {
+      {"/images/a", lc3},  // ng
       {"/", lc1},          // ng
       {"/images/", lc2},   // ok
-      {"/images/a", lc3},  // ng
   };
 
   std::string request_uri = "/images/abcdef";
@@ -207,9 +223,9 @@ TEST(PATH, longest_match1) {
 TEST(PATH, longest_match2) {
   LocationContext lc1, lc2, lc3;
   Locationmap mapList = {
+      {"/images/abcdefg", lc3},  // ng
       {"/", lc1},                // ng
       {"/images/", lc2},         // ok
-      {"/images/abcdefg", lc3},  // ng
   };
 
   std::string request_uri = "/images/abcdef";
@@ -220,10 +236,10 @@ TEST(PATH, longest_match2) {
 TEST(PATH, longest_match3) {
   LocationContext lc1, lc2, lc3, lc4;
   Locationmap mapList = {
+      {"/images/png/", lc4},  // ok
       {"/", lc1},             // ng
       {"/images/", lc2},      // ng
       {"/images/jpg/", lc3},  // ng
-      {"/images/png/", lc4},  // ok
   };
 
   std::string request_uri = "/images/png/abcdef";

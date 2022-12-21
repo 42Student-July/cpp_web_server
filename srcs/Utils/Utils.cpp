@@ -101,4 +101,8 @@ std::string ToStr(const Method &m) {
   if (m == kGet) return "GET";
   return "";
 }
+
+bool StartWith(const std::string &str, const std::string &prefix) {
+  return std::equal(prefix.begin(), prefix.end(), str.begin());
+}
 }  // namespace utils
