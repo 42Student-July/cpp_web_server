@@ -101,7 +101,7 @@ void Get::Run(const std::string &path, Socket *sock) {
     }
     File index_file(path + index_path);
     if (!index_file.IsExist()) {
-      SetErrorPage(kKk404NotFound, sock);
+      SetErrorPage(kKk403Forbidden, sock);
       return;
     }
     if (!index_file.CanRead()) {
