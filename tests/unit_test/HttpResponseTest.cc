@@ -1,6 +1,7 @@
 #include <gtest/gtest.h>
 
 #include "HttpResponse.hpp"
+#include "Utils.hpp"
 
 TEST(HttpResponseTest_Default, StatusCode) {
   HttpResponse res;
@@ -115,7 +116,7 @@ TEST(HttpResponseTest_Default, GetRawResponse_400) {
   EXPECT_EQ(expected, res);
 }
 
-TEST(HttpResponseTest_Default, SetHttPresponse_Default) {
+TEST(HttpResponseTest_Default, SetHttpResponse_Default) {
   HttpResponse http_response;
 
   http_response.SetHttpResponse(200, "Hello World",
@@ -125,15 +126,18 @@ TEST(HttpResponseTest_Default, SetHttPresponse_Default) {
       "HTTP/1.1 200 OK\r\n"
       "Connection: close\r\n"
       "Content-Length: 11\r\n"
-      "Content-Type: text/html\r\n"
-      "\r\n"
+      "Content-Type: text/html\r\n";
+  expected += "Date: ";
+  expected += utils::GetCurrentDate();
+  expected +=
+      "\r\n\r\n"
       "Hello World";
 
   std::string res = http_response.GetRawResponse();
   EXPECT_EQ(expected, res);
 }
 
-TEST(HttpResponseTest_Default, SetHttPresponse_Redirect) {
+TEST(HttpResponseTest_Default, SetHttpResponse_Redirect) {
   HttpResponse http_response;
 
   http_response.SetHttpResponse(302, "Hello World",
@@ -145,6 +149,10 @@ TEST(HttpResponseTest_Default, SetHttPresponse_Redirect) {
       "Connection: close\r\n"
       "Content-Length: 11\r\n"
       "Content-Type: text/html\r\n"
+      "Date: ";
+  expected += utils::GetCurrentDate();
+  expected +=
+      "\r\n"
       "Location: http://localhost:8080\r\n"
       "\r\n"
       "Hello World";

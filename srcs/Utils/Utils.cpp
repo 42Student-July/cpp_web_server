@@ -105,4 +105,27 @@ std::string ToStr(const Method &m) {
 bool StartWith(const std::string &str, const std::string &prefix) {
   return std::equal(prefix.begin(), prefix.end(), str.begin());
 }
+
+//   IMF-fixdate  = day-name "," SP date1 SP time-of-day SP GMT
+//  ; fixed length/zone/capitalization subset of the format
+//  ; see Section 3.3 of [RFC5322]
+std::string ConvertTimeToString(const time_t &time) {
+  struct tm timeinfo;
+  char buffer[80];
+
+  localtime_r(&time, &timeinfo);
+
+  strftime(buffer, 80, "%a, %d %b %Y %H:%M:%S GMT", &timeinfo);
+  std::string str(buffer);
+  return str;
+}
+
+std::string GetCurrentDate() {
+  time_t rawtime;
+
+  time(&rawtime);
+
+  return utils::ConvertTimeToString(rawtime);
+}
+
 }  // namespace utils
