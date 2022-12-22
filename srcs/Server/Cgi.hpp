@@ -12,6 +12,7 @@
 #include <vector>
 
 #include "Event.hpp"
+#include "LocationContext.hpp"
 #include "ReceiveHttpRequest.hpp"
 #include "ServerContext.hpp"
 #include "Socket.hpp"
@@ -21,6 +22,7 @@ class Cgi {
  private:
   int fd_[2];
   std::string path_info_;  // request parser
+  std::string file_path_;
   std::vector<std::string> argv_;
   std::map<std::string, std::string> env_map_;
   void SockPair();
@@ -31,8 +33,8 @@ class Cgi {
   void Fork(CgiRes *cgires);
 
  public:
-  Cgi();
+  Cgi(const LocationContext &lc, const std::string &str);
   ~Cgi();
-  void Run(const std::string &full_path, Socket *socket, CgiRes *cgires);
+  void Run(Socket *socket, CgiRes *cgires);
 };
 #endif  // SRCS_SERVER_CGI_HPP_
