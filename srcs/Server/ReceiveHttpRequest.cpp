@@ -254,7 +254,9 @@ ReadStat ReceiveHttpRequest::ReadHttpRequest(const int &fd, ParsedRequest *pr,
         fd_data_.buf = "";
         *pr = fd_data_.pr;
         fd_data_.s = kReadComplete;
-        return kReadComplete;
+      } else {
+        fd_data_.s = kWaitBody;
+        return kWaitBody;
       }
     } else {
       ds_ = cb_.DecodeChunkedBody(&fd_data_.buf);
