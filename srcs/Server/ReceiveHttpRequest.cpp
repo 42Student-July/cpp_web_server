@@ -150,16 +150,12 @@ std::pair<std::string, std::string> SplitRequestHeaderLine(
     throw std::exception();
   }
   val_pos = key_pos;
-  while (isspace(line[key_pos]) != 0 && key_pos > 0) {
-    key_pos--;
-  }
   while (isspace(line[val_pos + 1]) != 0) {
     val_pos++;
   }
   key = line.substr(0, key_pos);
   value = line.substr(val_pos + 1);
   std::transform(key.begin(), key.end(), key.begin(), ::tolower);
-  std::transform(value.begin(), value.end(), value.begin(), ::tolower);
   if (key.size() == 0 || value.size() == 0) throw std::exception();
   return std::make_pair(key, value);
 }
