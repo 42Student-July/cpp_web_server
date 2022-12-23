@@ -10,6 +10,7 @@
 #include <vector>
 
 #include "DecodeChunkedBody.hpp"
+#include "ResponseCode.hpp"
 #include "ServerContext.hpp"
 
 #define NL "\r\n"
@@ -34,7 +35,7 @@ enum ReadStat {
 struct ParsedRequest {
   Method m;
   std::string version;
-  int status_code;
+  ResponseCode status_code;
   std::string request_path;
   Header request_header;
   std::string request_body;
