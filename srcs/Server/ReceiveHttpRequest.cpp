@@ -155,6 +155,9 @@ std::pair<std::string, std::string> SplitRequestHeaderLine(
   }
   key = line.substr(0, key_pos);
   value = line.substr(val_pos + 1);
+  while (value.size() > 0 && isspace(value[value.size() - 1]) != 0) {
+    value.erase(value.size() - 1);
+  }
   std::transform(key.begin(), key.end(), key.begin(), ::tolower);
   if (key.size() == 0 || value.size() == 0) throw std::exception();
   return std::make_pair(key, value);
