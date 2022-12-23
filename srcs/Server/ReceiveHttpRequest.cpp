@@ -46,12 +46,12 @@ bool ReceiveHttpRequest::IsValidHeader() {
         return false;
       }
     } else {
-      fd_data_.pr.status_code = 400;
+      fd_data_.pr.status_code = kKk400BadRequest;
       return false;
     }
   }
   if (CountHeaderField(&rh, "host") != 1) {
-    fd_data_.pr.status_code = 400;
+    fd_data_.pr.status_code = kKk400BadRequest;
     return false;
   }
   return true;
@@ -61,7 +61,7 @@ ReceiveHttpRequest::ReceiveHttpRequest() {
   content_size_ = 0;
   fd_data_.s = kUnread;
   fd_data_.pr.m = kError;
-  fd_data_.pr.status_code = 0;
+  fd_data_.pr.status_code = kKkNotSet;
   fd_data_.is_chunked = false;
 }
 
@@ -127,7 +127,7 @@ Method InputHttpRequestLine(const std::string &line, ParsedRequest *pr) {
   if (v.size() != 3) return kError;
   pr->m = ConvertMethod(v.at(0));
   request_path_buf = v.at(1);
-  pos = request_path_buf.find(".cgi?");
+  pos = request_path_buf.find("?");
   if (pos == std::string::npos) {
     pr->request_path = request_path_buf;
   } else {
