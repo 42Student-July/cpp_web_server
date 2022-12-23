@@ -9,7 +9,7 @@ Cgi::Cgi(const LocationContext &lc, const std::string &full_path)
   File file(file_path_);
   if (file.IsDir()) {
     if (!lc.index.empty()) {
-      file_path_ += lc.index.back();
+      file_path_ += lc.index;
       file.SetFileName(file_path_);
     }
   }

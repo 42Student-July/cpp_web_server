@@ -2,6 +2,7 @@
 #define SRCS_SERVER_PATH_HPP_
 
 #include <algorithm>
+#include <deque>
 #include <map>
 #include <stack>
 #include <string>
@@ -28,6 +29,7 @@ class Path {
   static bool IsValidPath(const std::string &path);
   static bool IsFullPath(const std::string &path);
   static bool IsAbsoluteUri(const std::string &uri);
+  static std::string Normalize(const std::string &path);
 };
 
 class LocationNotFound : public std::exception {

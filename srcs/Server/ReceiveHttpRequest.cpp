@@ -233,8 +233,6 @@ ReadStat ReceiveHttpRequest::ReadHttpRequest(const int &fd, ParsedRequest *pr,
       if (IsValidHeader()) {
         try {
           sc_ = SelectServerContext(&sc);
-          std::cout << "body_size :" << sc_.client_body_size.second
-                    << std::endl;
         } catch (...) {
         }
         fd_data_.s = kWaitBody;

@@ -25,7 +25,7 @@ class LocationContext {
   std::pair<long, std::string> redirect;  // return
   std::string root;
   std::string auto_index;
-  std::vector<std::string> index;
+  std::string index;
   std::vector<std::string> cgi_extension;
   std::string upload_path;
 

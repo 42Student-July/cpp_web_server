@@ -51,7 +51,6 @@ const char *LocationNotFound::what() const throw() {
 
 bool Path::IsValidPath(const std::string &path) {
   std::vector<std::string> v = utils::SplitWithMultipleSpecifier(path, "/");
-  if (v.empty()) return false;
   std::stack<std::string> s;
   for (size_t i = 0; i < v.size(); i++) {
     if (v[i] == ".") continue;
@@ -77,4 +76,33 @@ bool Path::IsAbsoluteUri(const std::string &uri) {
   if (scheme != "https" && scheme != "http") return false;
   if (path.size() < 2 || (path[0] != '/' || path[1] != '/')) return false;
   return true;
+}
+
+std::string Path::Normalize(const std::string &path) {
+  bool last_slash = false;
+  if (path.find_last_of("/") != std::string::npos &&
+      path[path.size() - 1] == '/')
+    last_slash = true;
+  std::vector<std::string> v = utils::SplitWithMultipleSpecifier(path, "/");
+  std::deque<std::string> dque;
+  std::string normalize_path = "/";
+  for (size_t i = 0; i < v.size(); i++) {
+    if (v[i] == ".") continue;
+    if (v[i] == "..") {
+      if (dque.empty()) std::runtime_error("path normalize err");
+      dque.pop_back();
+    } else {
+      dque.push_back(v[i]);
+    }
+  }
+  while (!dque.empty()) {
+    std::string top = dque.front();
+    dque.pop_front();
+    if (dque.empty() && !last_slash) {
+      normalize_path += top;
+    } else {
+      normalize_path += top + "/";
+    }
+  }
+  return normalize_path;
 }

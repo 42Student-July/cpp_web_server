@@ -33,7 +33,7 @@ bool PrepareNextEventFromRequestAndConfig::IsRequestCgi() {
   File file(file_path);
   if (file.IsDir()) {
     if (!selected_location_context_.second.index.empty()) {
-      file_path += selected_location_context_.second.index.back();
+      file_path += selected_location_context_.second.index;
       file.SetFileName(file_path);
     }
   }

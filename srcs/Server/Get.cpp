@@ -98,7 +98,7 @@ void Get::Run(const std::string &path, Socket *sock) {
       index_path = "index.html";
     } else {
       // 一旦 indexには複数のindexが指定されていることは考えない
-      index_path = sock->location_context.index.back();
+      index_path = sock->location_context.index;
     }
     File index_file(path + index_path);
     if (!index_file.IsExist()) {

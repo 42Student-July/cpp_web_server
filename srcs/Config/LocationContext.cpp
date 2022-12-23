@@ -39,8 +39,10 @@ bool LocationContext::IsAllowExtensionCgi(const std::string &file_name) {
 }
 bool LocationContext::IsUploadPath(const std::string &path) const {
   if (upload_path.empty()) return false;
+  std::string uppath = upload_path;
+  if (uppath[upload_path.size() - 1] != '/') uppath += "/";
   return path.substr(0, path.find_last_of("/")) ==
-         upload_path.substr(0, path.find_last_of("/"));
+         uppath.substr(0, uppath.find_last_of("/"));
 }
 
 std::string MethodToStr(Method m) {
