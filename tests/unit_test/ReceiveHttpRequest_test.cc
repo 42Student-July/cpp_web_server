@@ -18,7 +18,7 @@ Header expected_full = {{"host", "hoge.com"},
                          "xml;q=0.9,image/webp,image/apng,*/*;q=0.8"},
                         {"referer", "http://hoge.com/index.html"},
                         {"accept-encoding", "gzip, deflate"},
-                        {"accept-language", "ja,en-us;q=0.8,en;q=0.6"}};
+                        {"accept-language", "ja,en-US;q=0.8,en;q=0.6"}};
 
 Header expected_full2 = {{"host", "hoge.com"},
                          {"connection", "keep-alive"},
@@ -33,7 +33,7 @@ Header expected_full2 = {{"host", "hoge.com"},
                           "xml;q=0.9,image/webp,image/apng,*/*;q=0.8"},
                          {"referer", "http://hoge.com/index.html"},
                          {"accept-encoding", "gzip, deflate"},
-                         {"accept-language", "ja,en-us;q=0.8,en;q=0.6"}};
+                         {"accept-language", "ja,en-US;q=0.8,en;q=0.6"}};
 
 void copy_fd(int dst, const char *src) {
   char buf[BUFFER_SIZE];
@@ -302,3 +302,16 @@ TEST(ReceiveHttpRequest, request_chunked_error) {
   EXPECT_EQ(0, rhr.GetContentLength());
   close(fd);
 }
+
+// TEST(ReceiveHttpRequest, test1) {
+//   ReceiveHttpRequest rhr;
+//   ParsedRequest pr;
+//   ReadStat rs;
+//   std::vector<ServerContext> sc;
+
+//   int fd = open_pseudo_socket();
+//   copy_fd(fd, "ChunkedRequestError");
+//   rs = rhr.ReadHttpRequest(fd, &pr, sc);
+//   Header h = rhr.GetParsedRequest().request_header;
+//   close(fd);
+// }
