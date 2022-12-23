@@ -4,8 +4,12 @@
 Delete::Delete() {}
 Delete::~Delete() {}
 void Delete::Run(const std::string &path, Socket *sock) {
-  File f(path);
-  (void)sock;
+  std::string file_path = path + sock->location_context.index;
+  File f(file_path);
+  if (f.IsDir()) {
+    rescode_ = kKk403Forbidden;
+    return;
+  }
   if (f.DelFile() == -1) {
     rescode_ = kKk403Forbidden;
   } else {

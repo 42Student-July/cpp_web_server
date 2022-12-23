@@ -34,6 +34,7 @@ class Cgi {
 
  public:
   Cgi(const LocationContext &lc, const std::string &str);
+  Cgi();
   ~Cgi();
   void Run(Socket *socket, CgiRes *cgires);
 };

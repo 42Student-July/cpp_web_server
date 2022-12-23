@@ -10,9 +10,11 @@ PrepareNextEventFromRequestAndConfig::PrepareNextEventFromRequestAndConfig(
   try {
     selected_location_context_ =
         Path::FindBestLocation(sc.locations, pr.request_path);
-    full_path_ =
+    std::string alias =
         Path::GetAliasPath(selected_location_context_, pr.request_path);
+    full_path_ = Path::Normalize(alias);
     f_.SetFileName(full_path_);
+    std::cout << "normalize :" << full_path_ << std::endl;
   } catch (...) {
     throw ErrorResponse("best location err", kKk404NotFound);
   }

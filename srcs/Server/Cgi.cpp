@@ -15,7 +15,7 @@ Cgi::Cgi(const LocationContext &lc, const std::string &full_path)
   }
   if (!file.CanExec()) throw ErrorResponse("cgi permission", kKk403Forbidden);
 }
-
+Cgi::Cgi() {}
 Cgi::~Cgi() {}
 
 void Cgi::ParseArgv(Socket *socket) {

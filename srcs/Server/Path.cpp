@@ -89,7 +89,7 @@ std::string Path::Normalize(const std::string &path) {
   for (size_t i = 0; i < v.size(); i++) {
     if (v[i] == ".") continue;
     if (v[i] == "..") {
-      if (dque.empty()) std::runtime_error("path normalize err");
+      if (dque.empty()) throw std::runtime_error("path normalize err");
       dque.pop_back();
     } else {
       dque.push_back(v[i]);

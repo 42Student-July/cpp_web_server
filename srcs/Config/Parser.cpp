@@ -13,7 +13,7 @@ Parser::Parser(const Lexer &lexer) : tkns_(lexer.GetTokens()) {
   location_directive_case_["autoindex"] = &Parser::StoreAutoIndex;
   location_directive_case_["index"] = &Parser::StoreIndex;
   location_directive_case_["cgi_extension"] = &Parser::StoreCgiExtension;
-  location_directive_case_["upload_path"] = &Parser::StoreUploadPath;
+  // location_directive_case_["upload_path"] = &Parser::StoreUploadPath;
 }
 Parser::~Parser() {}
 const std::vector<ServerContext> &Parser::GetConfig() const {
@@ -216,18 +216,18 @@ void Parser::StoreCgiExtension(LocationContext *lc) {
   }
   ThrowExceptionIfNotMatch(tkns_.Current(), ";", "semicolon `;` not found");
 }
-void Parser::StoreUploadPath(LocationContext *lc) {
-  ThrowExceptionIfMatch(tkns_.Next(), ";{}",
-                        "invalid arguments in `upload_path` directive");
-  if (!Path::IsFullPath(tkns_.Data()) || !Path::IsValidPath(tkns_.Data()))
-    throw ConfigErrException("invalid arguments in `Upload_path` directive",
-                             tkns_.Current());
-  if (!lc->upload_path.empty())
-    throw ConfigErrException("duplicate `upload_path` directive",
-                             tkns_.Current());
-  lc->upload_path = Path::Normalize(tkns_.Current().GetData());
-  ThrowExceptionIfNotMatch(tkns_.Next(), ";", "semicolon `;` not found");
-}
+// void Parser::StoreUploadPath(LocationContext *lc) {
+//   ThrowExceptionIfMatch(tkns_.Next(), ";{}",
+//                         "invalid arguments in `upload_path` directive");
+//   if (!Path::IsFullPath(tkns_.Data()) || !Path::IsValidPath(tkns_.Data()))
+//     throw ConfigErrException("invalid arguments in `Upload_path` directive",
+//                              tkns_.Current());
+//   if (!lc->upload_path.empty())
+//     throw ConfigErrException("duplicate `upload_path` directive",
+//                              tkns_.Current());
+//   lc->upload_path = Path::Normalize(tkns_.Current().GetData());
+//   ThrowExceptionIfNotMatch(tkns_.Next(), ";", "semicolon `;` not found");
+// }
 void Parser::ThrowExceptionIfMatch(Token tkn, std::string str,
                                    std::string err_msg) {
   if (tkns_.Data().find_first_of(str) != std::string::npos)
