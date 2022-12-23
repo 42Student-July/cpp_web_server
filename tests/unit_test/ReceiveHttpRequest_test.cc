@@ -212,6 +212,18 @@ TEST(ReceiveHttpRequest, invalid_request3) {
   close(fd);
 }
 
+TEST(ReceiveHttpRequest, invalid_request4) {
+  ReceiveHttpRequest rhr;
+  ParsedRequest pr;
+  ReadStat rs;
+  std::vector<ServerContext> sc;
+  int fd = open_pseudo_socket();
+  copy_fd(fd, "invalidrequest3");
+  rs = rhr.ReadHttpRequest(fd, &pr, sc);
+  EXPECT_EQ(kErrorHeader, rs);
+  close(fd);
+}
+
 TEST(ReceiveHttpRequest, request_then_nobody) {
   ReceiveHttpRequest rhr;
   ParsedRequest pr;
@@ -246,6 +258,20 @@ TEST(ReceiveHttpRequest, curl2) {
   std::vector<ServerContext> sc;
   int fd = open_pseudo_socket();
   copy_fd(fd, "curl2");
+  rs = rhr.ReadHttpRequest(fd, &pr, sc);
+  EXPECT_EQ(kReadComplete, rs);
+  EXPECT_EQ(22, rhr.GetContentLength());
+  close(fd);
+  remove("./text/ReceiveHttpRequest/pseudo_socket.txt");
+}
+
+TEST(ReceiveHttpRequest, many_ws) {
+  ReceiveHttpRequest rhr;
+  ParsedRequest pr;
+  ReadStat rs;
+  std::vector<ServerContext> sc;
+  int fd = open_pseudo_socket();
+  copy_fd(fd, "request_many_ws");
   rs = rhr.ReadHttpRequest(fd, &pr, sc);
   EXPECT_EQ(kReadComplete, rs);
   EXPECT_EQ(22, rhr.GetContentLength());
