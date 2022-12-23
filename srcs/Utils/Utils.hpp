@@ -27,6 +27,9 @@ char **MapToCharDoublePtr(const std::map<std::string, std::string> &m);
 char **VecToCharDoublePtr(const std::vector<std::string> &vec);
 std::string ToStr(const Method &m);
 bool StartWith(const std::string &str, const std::string &prefix);
+
+std::string ConvertTimeToString(const time_t &time);
+std::string GetCurrentDate();
 }  // namespace utils
 
 #endif  // SRCS_UTILS_UTILS_HPP_

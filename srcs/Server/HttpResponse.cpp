@@ -139,5 +139,6 @@ void HttpResponse::SetHttpResponse(int status_code, std::string const &body,
   this->headers_.insert(headers.begin(), headers.end());
   this->SetHeader("Content-Type", "text/html");
   this->SetHeader("Connection", "close");
+  this->SetHeader("Date", utils::GetCurrentDate());
   this->SetHeader("Content-Length", this->GetBody().size());
 }
