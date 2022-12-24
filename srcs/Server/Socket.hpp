@@ -82,6 +82,7 @@ class Socket {
   int CgiReadAndStoreToBuf(size_t pos);
   bool CgiFinished(size_t pos);
   Event* PrepareNextEventProcess();
+  void SetErrorPage(const ResponseCode error_code);
 };
 class ErrorResponse {
  private:

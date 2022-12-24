@@ -84,6 +84,7 @@ void Get::Run(const std::string &path, Socket *sock) {
   // fileがfileの場合
   if (file.IsFile()) {
     if (!file.CanRead()) {
+      SetErrorPage(kKk403Forbidden, sock);
       return;
     }
     body_ = file.ReadFileLines();
