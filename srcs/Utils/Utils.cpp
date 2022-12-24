@@ -121,7 +121,7 @@ std::string ConvertTimeToString(const time_t &time) {
 }
 
 std::string GetCurrentDate() {
-  time_t rawtime;
+  time_t rawtime = 0;
 
   time(&rawtime);
 
