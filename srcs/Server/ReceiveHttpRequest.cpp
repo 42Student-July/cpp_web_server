@@ -80,11 +80,12 @@ ReceiveHttpRequest &ReceiveHttpRequest::operator=(
 
 ReceiveHttpRequest::~ReceiveHttpRequest() {}
 
-static std::string TrimByPos(std::string *buf, const size_t &pos,
-                             const size_t &size) {
+static std::string TrimByCRLF(std::string *buf, const size_t &pos) {
+  size_t crlf_size = 2;
+
   std::string trim;
   trim = buf->substr(0, pos);
-  *buf = buf->substr(pos + size);
+  *buf = buf->substr(pos + crlf_size);
   return trim;
 }
 
@@ -203,7 +204,7 @@ ReadStat ReceiveHttpRequest::ReadHttpRequest(const int &fd, ParsedRequest *pr,
   if (fd_data_.s == kUnread || fd_data_.s == kWaitRequest) {
     pos = fd_data_.buf.find(NL);
     if (std::string::npos != pos) {
-      fd_data_.request_line = TrimByPos(&fd_data_.buf, pos, 2);
+      fd_data_.request_line = TrimByCRLF(&fd_data_.buf, pos);
       InputHttpRequestLine(fd_data_.request_line, &fd_data_.pr);
       fd_data_.s = kWaitHeader;
     } else {
@@ -217,7 +218,7 @@ ReadStat ReceiveHttpRequest::ReadHttpRequest(const int &fd, ParsedRequest *pr,
     for (;;) {
       pos = fd_data_.buf.find(NL);
       if (std::string::npos != pos) {
-        fd_data_.request_header = TrimByPos(&fd_data_.buf, pos, 2);
+        fd_data_.request_header = TrimByCRLF(&fd_data_.buf, pos);
 
         if (fd_data_.request_header.length() == 0) {
           if (IsValidHeader()) {
