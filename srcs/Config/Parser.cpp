@@ -146,8 +146,8 @@ void Parser::StoreLocation(ServerContext *sc) {
 void Parser::StoreLimitExcept(LocationContext *lc) {
   Token tkn = tkns_.Next();
   do {
-    if (tkn.GetData() == "kDelete" || tkn.GetData() == "kGet" ||
-        tkn.GetData() == "kPost") {
+    if (tkn.GetData() == "DELETE" || tkn.GetData() == "GET" ||
+        tkn.GetData() == "POST") {
       if (lc->limit_except.find(tkn.GetData()) != lc->limit_except.end())
         throw ConfigErrException("`limit_except` directive is duplicate", tkn);
       lc->limit_except.insert(tkn.GetData());
