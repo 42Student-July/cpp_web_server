@@ -26,7 +26,7 @@ static size_t CountHeaderField(Header *rh, const std::string &key) {
 }
 
 static bool IsBodyRequired(const Method &m) {
-  return (!(m == kGet || m == kHead || m == kDelete));
+  return (!(m == kGet || m == kDelete));
 }
 
 bool ReceiveHttpRequest::IsValidHeader() {
