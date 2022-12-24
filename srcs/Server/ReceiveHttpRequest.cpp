@@ -89,31 +89,16 @@ static std::string TrimByPos(std::string *buf, const size_t &pos,
 }
 
 Method ConvertMethod(const std::string &method) {
-  int i = static_cast<int>(method == "CONNECT") |
-          static_cast<int>(method == "DELETE") * 2 |
-          static_cast<int>(method == "GET") * 3 |
-          static_cast<int>(method == "HEAD") * 4 |
-          static_cast<int>(method == "OPTIONS") * 5 |
-          static_cast<int>(method == "POST") * 6 |
-          static_cast<int>(method == "PUT") * 7 |
-          static_cast<int>(method == "TRACE") * 8;
+  int i = static_cast<int>(method == "DELETE") |
+          static_cast<int>(method == "GET") * 2 |
+          static_cast<int>(method == "POST") * 3;
   switch (i) {
     case 1:
-      return (kConnect);
-    case 2:
       return (kDelete);
-    case 3:
+    case 2:
       return (kGet);
-    case 4:
-      return (kHead);
-    case 5:
-      return (kOptions);
-    case 6:
+    case 3:
       return (kPost);
-    case 7:
-      return (kPut);
-    case 8:
-      return (kTrace);
     default:
       return (kError);
   }
