@@ -247,7 +247,10 @@ ReadStat ReceiveHttpRequest::ReadHttpRequest(const int &fd, ParsedRequest *pr,
 
         if (fd_data_.request_header.length() == 0) {
           if (IsValidHeader()) {
-            sc_ = SelectServerContext(&sc);
+            try {
+              sc_ = SelectServerContext(&sc);
+            } catch (...) {
+            }
             fd_data_.s = kWaitBody;
             break;
           }
@@ -270,13 +273,16 @@ ReadStat ReceiveHttpRequest::ReadHttpRequest(const int &fd, ParsedRequest *pr,
         }
 
         TrimLR(&value);
+
         std::transform(key.begin(), key.end(), key.begin(), ::tolower);
+
         fd_data_.pr.request_header.push_back(p);
       } else {
         fd_data_.s = kWaitHeader;
         *pr = fd_data_.pr;
         return kWaitHeader;
       }
+
       *pr = fd_data_.pr;
     }
   }
