@@ -4,7 +4,8 @@
 Delete::Delete() {}
 Delete::~Delete() {}
 void Delete::Run(const std::string &path, Socket *sock) {
-  std::string file_path = path + sock->location_context.index;
+  std::string file_path = path;
+  if (path[path.size() - 1] == '/') file_path + sock->location_context.index;
   File f(file_path);
   if (f.IsDir()) {
     rescode_ = kKk403Forbidden;
