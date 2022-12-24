@@ -127,7 +127,7 @@ Method InputHttpRequestLine(const std::string &line, ParsedRequest *pr) {
   v = utils::SplitWithMultipleSpecifier(line, " ");
   if (v.size() != 3) {
     throw ErrorResponse("Invalid request line", kKkNotSet);
-  };
+  }
   pr->m = ConvertMethod(v.at(0));
   request_path_buf = v.at(1);
   pos = request_path_buf.find("?");
@@ -196,7 +196,7 @@ Header ParseRequestHeader(const std::string &header_line) {
 }
 
 void TrimLR(std::string *str) {
-  while (str->length() > 0 && isspace((*str)[0])) {
+  while (str->length() > 0 && (isspace((*str)[0])) != 0) {
     str->erase(0, 1);
   }
   while (str->size() > 0 && isspace((*str)[str->size() - 1]) != 0) {
@@ -247,6 +247,7 @@ ReadStat ReceiveHttpRequest::ReadHttpRequest(const int &fd, ParsedRequest *pr,
 
         if (fd_data_.request_header.length() == 0) {
           if (IsValidHeader()) {
+            sc_ = SelectServerContext(&sc);
             fd_data_.s = kWaitBody;
             break;
           }
@@ -264,7 +265,7 @@ ReadStat ReceiveHttpRequest::ReadHttpRequest(const int &fd, ParsedRequest *pr,
         std::string &key = p.first;
         std::string &value = p.second;
         if (key.length() == 0 || value.length() == 0) {
-          fd_data_.s == kErrorHeader;
+          fd_data_.s = kErrorHeader;
           return kErrorHeader;
         }
 
