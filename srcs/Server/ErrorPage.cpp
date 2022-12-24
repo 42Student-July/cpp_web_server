@@ -88,7 +88,7 @@ HttpResponseTmp ErrorPage::DefaultErrorPage(const ResponseCode error_code) {
   std::string content;
 
   content += "<html><head>";
-  content += "<titile>" + utils::UIntToString(error_code) + " " +
+  content += "<title>" + utils::UIntToString(error_code) + " " +
              GetStatusMessage(error_code) + "</title>";
   content += "</head>";
 
