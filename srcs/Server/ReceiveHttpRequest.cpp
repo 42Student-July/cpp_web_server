@@ -25,7 +25,7 @@ static size_t CountHeaderField(Header *rh, const std::string &key) {
   return count;
 }
 
-static bool IsNeededBody(const Method &m) {
+static bool IsBodyRequired(const Method &m) {
   return (!(m == kGet || m == kHead || m == kDelete));
 }
 
@@ -34,7 +34,7 @@ bool ReceiveHttpRequest::IsValidHeader() {
   const size_t num_of_transfer_encoding = CountTransferEncoding(&rh);
   const size_t num_of_content_length = CountHeaderField(&rh, "content-length");
 
-  if (IsNeededBody(fd_data_.pr.m)) {
+  if (IsBodyRequired(fd_data_.pr.m)) {
     if (num_of_transfer_encoding == 1 && num_of_content_length == 0) {
       fd_data_.is_chunked = true;
     } else if (num_of_transfer_encoding == 0 && num_of_content_length == 1) {
@@ -125,7 +125,9 @@ Method InputHttpRequestLine(const std::string &line, ParsedRequest *pr) {
   size_t pos = 0;
 
   v = utils::SplitWithMultipleSpecifier(line, " ");
-  if (v.size() != 3) return kError;
+  if (v.size() != 3) {
+    throw ErrorResponse("Invalid request line", kKkNotSet);
+  };
   pr->m = ConvertMethod(v.at(0));
   request_path_buf = v.at(1);
   pos = request_path_buf.find("?");
@@ -136,6 +138,9 @@ Method InputHttpRequestLine(const std::string &line, ParsedRequest *pr) {
     pr->query_string = request_path_buf.substr(pos + 5);
   }
   pr->version = v.at(2);
+  if (pr->version != "HTTP/1.1")
+    throw ErrorResponse("HTTP Version Not Supported",
+                        kKk505HTTPVersionNotSupported);
   return pr->m;
 }
 
@@ -190,6 +195,15 @@ Header ParseRequestHeader(const std::string &header_line) {
   return header;
 }
 
+void TrimLR(std::string *str) {
+  while (str->length() > 0 && isspace((*str)[0])) {
+    str->erase(0, 1);
+  }
+  while (str->size() > 0 && isspace((*str)[str->size() - 1]) != 0) {
+    str->erase(str->size() - 1);
+  }
+}
+
 ReadStat ReceiveHttpRequest::ReadHttpRequest(const int &fd, ParsedRequest *pr,
                                              std::vector<ServerContext> sc) {
   size_t pos = 0;
@@ -202,13 +216,18 @@ ReadStat ReceiveHttpRequest::ReadHttpRequest(const int &fd, ParsedRequest *pr,
   if (read_ret == 0) {
     return kReadNoRequest;
   }
+
   buf[read_ret] = '\0';
   fd_data_.buf += buf;
   if (fd_data_.s == kUnread || fd_data_.s == kWaitRequest) {
     pos = fd_data_.buf.find(NL);
     if (std::string::npos != pos) {
       fd_data_.request_line = TrimByPos(&fd_data_.buf, pos, 2);
-      if (InputHttpRequestLine(fd_data_.request_line, &fd_data_.pr) == kError) {
+      try {
+        InputHttpRequestLine(fd_data_.request_line, &fd_data_.pr);
+      } catch (ErrorResponse &e) {
+        std::cout << e.Msg() << std::endl;
+        fd_data_.pr.status_code = e.GetErrResponseCode();
         fd_data_.s = kErrorRequest;
         return kErrorRequest;
       }
@@ -221,34 +240,47 @@ ReadStat ReceiveHttpRequest::ReadHttpRequest(const int &fd, ParsedRequest *pr,
   }
 
   if (fd_data_.s == kWaitHeader) {
-    pos = fd_data_.buf.find(NLNL);
-    if (std::string::npos != pos) {
-      fd_data_.request_header = TrimByPos(&fd_data_.buf, pos, 4);
-      try {
-        fd_data_.pr.request_header =
-            ParseRequestHeader(fd_data_.request_header);
-      } catch (ErrorResponse &e) {
-        std::cout << e.Msg() << std::endl;
-        fd_data_.s = kErrorHeader;
-        return kErrorHeader;
-      }
-      if (IsValidHeader()) {
-        try {
-          sc_ = SelectServerContext(&sc);
-        } catch (...) {
+    for (;;) {
+      pos = fd_data_.buf.find(NL);
+      if (std::string::npos != pos) {
+        fd_data_.request_header = TrimByPos(&fd_data_.buf, pos, 2);
+
+        if (fd_data_.request_header.length() == 0) {
+          if (IsValidHeader()) {
+            fd_data_.s = kWaitBody;
+            break;
+          }
         }
-        fd_data_.s = kWaitBody;
+
+        std::pair<std::string, std::string> p;
+        try {
+          p = SplitRequestHeaderLine(fd_data_.request_header);
+        } catch (ErrorResponse &e) {
+          *pr = fd_data_.pr;
+          fd_data_.s = kErrorHeader;
+          return kErrorHeader;
+        }
+
+        std::string &key = p.first;
+        std::string &value = p.second;
+        if (key.length() == 0 || value.length() == 0) {
+          fd_data_.s == kErrorHeader;
+          return kErrorHeader;
+        }
+
+        TrimLR(&value);
+        std::transform(key.begin(), key.end(), key.begin(), ::tolower);
+        fd_data_.pr.request_header.push_back(p);
       } else {
-        fd_data_.s = kErrorHeader;
-        return kErrorHeader;
+        fd_data_.s = kWaitHeader;
+        *pr = fd_data_.pr;
+        return kWaitHeader;
       }
-    } else {
-      fd_data_.s = kWaitHeader;
       *pr = fd_data_.pr;
-      return kWaitHeader;
     }
   }
-  if (fd_data_.s == kWaitBody && IsNeededBody(fd_data_.pr.m)) {
+
+  if (fd_data_.s == kWaitBody && IsBodyRequired(fd_data_.pr.m)) {
     if (!fd_data_.is_chunked) {
       size_t size = fd_data_.buf.length();
       if (size >= content_size_) {
