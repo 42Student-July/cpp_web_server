@@ -3,6 +3,8 @@
 #include "Socket.hpp"
 #include "Utils.hpp"
 
+#define CRLF_SIZE 2
+
 static size_t CountTransferEncoding(Header *rh) {
   size_t count = 0;
 
@@ -81,11 +83,9 @@ ReceiveHttpRequest &ReceiveHttpRequest::operator=(
 ReceiveHttpRequest::~ReceiveHttpRequest() {}
 
 static std::string TrimByCRLF(std::string *buf, const size_t &pos) {
-  size_t crlf_size = 2;
-
   std::string trim;
   trim = buf->substr(0, pos);
-  *buf = buf->substr(pos + crlf_size);
+  *buf = buf->substr(pos + CRLF_SIZE);
   return trim;
 }
 
@@ -112,7 +112,7 @@ Method InputHttpRequestLine(const std::string &line, ParsedRequest *pr) {
 
   v = utils::SplitWithMultipleSpecifier(line, " ");
   if (v.size() != 3) {
-    throw ErrorResponse("Invalid request line", kKkNotSet);
+    throw ErrorResponse("Invalid request line", kKk400BadRequest);
   }
   pr->m = ConvertMethod(v.at(0));
   request_path_buf = v.at(1);
@@ -139,7 +139,7 @@ std::pair<std::string, std::string> SplitRequestHeaderLine(
 
   key_pos = line.find(':');
   if (key_pos == std::string::npos) {
-    throw ErrorResponse("Invalid header", kKkNotSet);
+    throw ErrorResponse("Invalid header", kKk400BadRequest);
   }
   val_pos = key_pos;
   while (isspace(line[val_pos + 1]) != 0) {
@@ -152,7 +152,7 @@ std::pair<std::string, std::string> SplitRequestHeaderLine(
   }
   std::transform(key.begin(), key.end(), key.begin(), ::tolower);
   if (key.size() == 0 || value.size() == 0)
-    throw ErrorResponse("Invalid header", kKkNotSet);
+    throw ErrorResponse("Invalid header", kKk400BadRequest);
   return std::make_pair(key, value);
 }
 
@@ -294,7 +294,7 @@ ServerContext ReceiveHttpRequest::SelectServerContext(
       if (it->server_name == hostname) return *it;
     }
   } else if (size == 0) {
-    throw ErrorResponse("Missing Server Context", kKkNotSet);
+    throw ErrorResponse("Missing Server Context", kKk400BadRequest);
   }
   return *contexts->begin();
 }
