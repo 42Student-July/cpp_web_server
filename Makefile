@@ -1,7 +1,7 @@
 NAME = webserv
 NAME_BONUS = webserv_bonus
 CXX = c++
-CXXFLAGS = -Wall -Wextra -Werror -Wshadow -std=c++98 -pedantic -MMD -MP
+CXXFLAGS = -Wall -Wextra -Werror -Wshadow -std=c++98 -pedantic -MMD -MP -g3
 SRCS = $(wildcard srcs/*/*.cpp)
 OBJS = $(SRCS:%.cpp=%.o)
 DEPS = $(OBJS:%.o=%.d)
@@ -53,8 +53,16 @@ test_compose_down: fclean
 	make down -C ./tests/docker
 
 N = 100
-req:
-	bash -c 'for i in {1..${N}}; do curl localhost:8088/cgi-bin/env.cgi; echo $${i} ; done'
+req_d:
+	bash -c 'for i in {1..${N}}; do curl localhost:8088/cgi-bin/document_res.cgi; echo $${i} ; done'
+req_h:
+	bash -c 'for i in {1..${N}}; do curl localhost:8088/cgi-bin/hello.py; echo $${i} ; done'
+req_e:
+	bash -c 'for i in {1..${N}}; do curl localhost:8088/cgi-bin/err.cgi; echo $${i} ; done'
+req_ed:
+	bash -c 'for i in {1..${N}}; do curl localhost:8088/cgi-bin/err.cgi; localhost:8088/cgi-bin/document_res.cgi;echo $${i} ; done'
+req_a:
+	bash -c 'for i in {1..${N}}; do curl localhost:8088/cgi-bin/a.py& echo $${i} ; done'
 .PHONY: all fclean clean re bonus integration unit
 
 -include $(DEPS)

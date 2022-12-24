@@ -4,6 +4,7 @@
 #include "CgiRead.hpp"
 #include "CgiResponse.hpp"
 #include "CgiWrite.hpp"
+#include "ErrorPage.hpp"
 #include "HttpMethod.hpp"
 #include "PrepareNextEventFromRequestAndConfig.hpp"
 Socket::Socket(const int fd, const std::vector<ServerContext>& context)
@@ -18,7 +19,7 @@ Socket::~Socket() {
   close(sock_fd);
 }
 int Socket::CgiReadAndStoreToBuf(size_t pos) {
-  char read_buf[kBuffSize];
+  char read_buf[kBuffSize + 1];
   if ((cgi_res[pos].read_size =
            read(cgi_res[pos].cgi_fd, read_buf, kBuffSize)) == -1) {
     std::cerr << "cgi read err" << std::endl;
@@ -58,7 +59,10 @@ Event* Socket::PrepareNextEventProcess() {
     delete m;
   } catch (ErrorResponse& e) {
     std::cout << e.Msg() << std::endl;
-    response_code = e.GetErrResponseCode();
+    HttpResponseTmp res = ErrorPage::GetErrorPage(e.GetErrResponseCode(),
+                                                  server_context.error_page);
+    response_code = res.rescode;
+    response_body = res.body;
   }
   return NULL;
 }

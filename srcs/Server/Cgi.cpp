@@ -108,12 +108,12 @@ void Cgi::Run(Socket *socket, CgiRes *cgires) {
     close(fd_[0]);
     char **argv = utils::VecToCharDoublePtr(argv_);
     char **env = utils::MapToCharDoublePtr(env_map_);
-    if (dup2(fd_[1], STDIN_FILENO) == -1 || dup2(fd_[1], STDOUT_FILENO) == -1)
+    if (dup2(fd_[1], STDIN_FILENO) == -1 || dup2(fd_[1], STDOUT_FILENO) == -1) {
       exit(1);
+    }
     execve(file_path_.c_str(), argv, env);
-    utils::DelPtr(argv);
-    utils::DelPtr(env);
-    std::cout << "cgi sippai" << std::endl;
+    // utils::DelPtr(argv);
+    // utils::DelPtr(env);
     exit(1);
   }
   close(fd_[1]);

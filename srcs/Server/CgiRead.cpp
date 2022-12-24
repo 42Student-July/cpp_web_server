@@ -1,6 +1,7 @@
 #include "CgiRead.hpp"
 
 #include "CgiResponse.hpp"
+#include "ErrorPage.hpp"
 #include "ResponseToTheClient.hpp"
 CgiRead::CgiRead(Socket *socket, size_t cgi_pos)
     : created_next_event_(false), socket_(socket), cgi_pos_(cgi_pos) {}
@@ -14,7 +15,10 @@ void CgiRead::Do() {
     // std::cout << "cgi read ok" << std::endl;
   } catch (ErrorResponse &e) {
     std::cout << e.Msg() << std::endl;
-    socket_->response_code = e.GetErrResponseCode();
+    HttpResponseTmp res = ErrorPage::GetErrorPage(
+        e.GetErrResponseCode(), socket_->server_context.error_page);
+    socket_->response_code = res.rescode;
+    socket_->response_body = res.body;
   }
 }
 Event *CgiRead::NextEvent() { return NULL; }
@@ -31,7 +35,10 @@ std::pair<Event *, epoll_event> CgiRead::PublishNewEvent() {
   if (socket_->cgi_res[cgi_pos_].read_size <= 0 && !created_next_event_ &&
       cgi_parser_.GetResponseType() == kToBeDetermined) {
     created_next_event_ = true;
-    socket_->response_code = kKk500internalServerError;
+    HttpResponseTmp res = ErrorPage::GetErrorPage(
+        kKk500internalServerError, socket_->server_context.error_page);
+    socket_->response_code = res.rescode;
+    socket_->response_body = res.body;
     return std::make_pair(new ResponseToTheClient(socket_),
                           Epoll::Create(socket_->sock_fd, EPOLLOUT));
   }
@@ -56,7 +63,6 @@ std::pair<Event *, epoll_event> CgiRead::CreateLocalRedirEvent() {
   if (new_ev == NULL) {
     new_ev = new ResponseToTheClient(socket_);
   } else {
-    std::cout << "localredirevent cgi" << std::endl;
     new_epo = Epoll::Create(
         socket_->cgi_res[socket_->cgi_res.size() - 1].cgi_fd, EPOLLIN);
   }
@@ -71,7 +77,7 @@ void CgiRead::Handle(Epoll *epoll) {
   static_cast<void>(epoll);
   // if(created_next_event_ == false)
   //   return ;
-  // if (socket_->cgi_res.read_size >= 0) {
+  // if (socket_->cgi_res[cgi_pos_].read_size >= 0) {
   //   epoll->Mod(socket_->sock_fd, EPOLLOUT);
   // }
 }

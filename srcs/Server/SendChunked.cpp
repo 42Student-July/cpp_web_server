@@ -1,29 +1,28 @@
 #include "SendChunked.hpp"
 static const char *crlf = "\r\n";
-SendChunked::SendChunked() : sent_byte_(0), sent_last_chunked_(false) {
+SendChunked::SendChunked()
+    : sent_byte_(0),
+      sent_last_chunked_(false),
+      err_(false),
+      size_other_than_body_(0) {
   last_chunk_ = "0\r\n\r\n";
 }
 SendChunked::~SendChunked() {}
 void SendChunked::Send(int fd, const std::string &str) {
   try {
     if (!send_chunk_.empty()) {
-      WriteAndSubStr(fd, &send_chunk_);
+      sent_byte_ += WriteAndSubStr(fd, &send_chunk_);
     } else {
-      size_t length = 0;
-      if (sent_byte_ + 15 < str.size()) {
-        length = 15;
-      } else {
-        length = str.size() - sent_byte_;
-      }
       std::stringstream ss;
-      ss << std::hex << length;
-      send_chunk_ = ss.str() + crlf + str.substr(sent_byte_, length) + crlf;
-      sent_byte_ += length;
-      WriteAndSubStr(fd, &send_chunk_);
+      std::string send_str = str.substr(sent_byte_ - size_other_than_body_);
+      ss << std::hex << send_str.size();
+      send_chunk_ = ss.str() + crlf + send_str + crlf;
+      sent_byte_ += WriteAndSubStr(fd, &send_chunk_);
+      size_other_than_body_ += ss.str().size() + 4;
     }
   } catch (std::runtime_error &e) {
     std::cerr << e.what() << std::endl;
-    sent_last_chunked_ = true;
+    err_ = true;
   }
 }
 
@@ -33,10 +32,10 @@ void SendChunked::SendLastChunk(int fd) {
     sent_last_chunked_ = true;
   } catch (std::runtime_error &e) {
     std::cerr << e.what() << std::endl;
+    err_ = true;
     sent_last_chunked_ = true;
   }
 }
-#include <cerrno>
 ssize_t SendChunked::WriteAndSubStr(int fd, std::string *str) {
   // std::cout << *str << std::endl;
   ssize_t wrriten = write(fd, str->c_str(), str->size());
@@ -45,7 +44,7 @@ ssize_t SendChunked::WriteAndSubStr(int fd, std::string *str) {
   //   std::cerr << "wrriten :" << wrriten << std::endl;
   //   std::cerr << "errno :" << errno << std::endl;
   // }
-  if (wrriten <= 0) throw std::runtime_error("write err");
+  if (wrriten == -1) throw std::runtime_error("write err");
   if (static_cast<size_t>(wrriten) == str->size()) {
     str->clear();
     return wrriten;
@@ -55,4 +54,9 @@ ssize_t SendChunked::WriteAndSubStr(int fd, std::string *str) {
 }
 bool SendChunked::SentLastChunk() const { return sent_last_chunked_; }
 
-size_t SendChunked::SentByte() const { return sent_byte_; }
+size_t SendChunked::SentByte() const {
+  size_t res = sent_byte_ - size_other_than_body_;
+  if (res > sent_byte_) return 0;
+  return sent_byte_ - size_other_than_body_;
+}
+bool SendChunked::WriteErr() const { return err_; }
