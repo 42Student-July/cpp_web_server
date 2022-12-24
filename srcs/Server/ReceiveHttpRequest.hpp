@@ -16,7 +16,7 @@
 #define NL "\r\n"
 #define NLNL "\r\n\r\n"
 #define BUFFER_SIZE 8192
-
+class ErrorResponse;
 typedef std::vector<std::pair<std::string, std::string> > Header;
 
 enum ReadStat {

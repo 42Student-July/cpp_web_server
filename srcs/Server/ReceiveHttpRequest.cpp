@@ -1,5 +1,6 @@
 #include "ReceiveHttpRequest.hpp"
 
+#include "Socket.hpp"
 #include "Utils.hpp"
 
 static size_t CountTransferEncoding(Header *rh) {
@@ -147,7 +148,7 @@ std::pair<std::string, std::string> SplitRequestHeaderLine(
 
   key_pos = line.find(':');
   if (key_pos == std::string::npos) {
-    throw std::exception();
+    throw ErrorResponse("Invalid header", kKkNotSet);
   }
   val_pos = key_pos;
   while (isspace(line[val_pos + 1]) != 0) {
@@ -159,7 +160,8 @@ std::pair<std::string, std::string> SplitRequestHeaderLine(
     value.erase(value.size() - 1);
   }
   std::transform(key.begin(), key.end(), key.begin(), ::tolower);
-  if (key.size() == 0 || value.size() == 0) throw std::exception();
+  if (key.size() == 0 || value.size() == 0)
+    throw ErrorResponse("Invalid header", kKkNotSet);
   return std::make_pair(key, value);
 }
 
@@ -178,8 +180,8 @@ Header ParseRequestHeader(const std::string &header_line) {
     trim = header_line.substr(top, pos - top);
     try {
       p = SplitRequestHeaderLine(trim);
-    } catch (...) {
-      throw std::exception();
+    } catch (ErrorResponse &e) {
+      throw ErrorResponse("Invalid header", kKkNotSet);
     }
     header.push_back(p);
     top = pos + 2;
@@ -225,7 +227,8 @@ ReadStat ReceiveHttpRequest::ReadHttpRequest(const int &fd, ParsedRequest *pr,
       try {
         fd_data_.pr.request_header =
             ParseRequestHeader(fd_data_.request_header);
-      } catch (...) {
+      } catch (ErrorResponse &e) {
+        std::cout << e.Msg() << std::endl;
         fd_data_.s = kErrorHeader;
         return kErrorHeader;
       }

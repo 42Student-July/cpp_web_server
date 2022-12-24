@@ -329,15 +329,18 @@ TEST(ReceiveHttpRequest, request_chunked_error) {
   close(fd);
 }
 
-// TEST(ReceiveHttpRequest, test1) {
-//   ReceiveHttpRequest rhr;
-//   ParsedRequest pr;
-//   ReadStat rs;
-//   std::vector<ServerContext> sc;
+TEST(ReceiveHttpRequest, invalidheader) {
+  ReceiveHttpRequest rhr;
+  ParsedRequest pr;
+  ReadStat rs;
+  std::vector<ServerContext> sc;
+  int fd = open_pseudo_socket();
+  copy_fd(fd, "invalid_request2");
+  rs = rhr.ReadHttpRequest(fd, &pr, sc);
 
-//   int fd = open_pseudo_socket();
-//   copy_fd(fd, "ChunkedRequestError");
-//   rs = rhr.ReadHttpRequest(fd, &pr, sc);
-//   Header h = rhr.GetParsedRequest().request_header;
-//   close(fd);
-// }
+  EXPECT_EQ(kErrorHeader, rs);
+  EXPECT_EQ(kPost, pr.m);
+  EXPECT_EQ("/p", pr.request_path);
+  EXPECT_EQ("HTTP/1.1", pr.version);
+  close(fd);
+}
