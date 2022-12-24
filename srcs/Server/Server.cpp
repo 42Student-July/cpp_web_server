@@ -42,6 +42,7 @@ void Server::EventExec(int ready) {
       // usleep(5000);
       epoll_event epoll = epoll_.Find(i);
       Event *event = event_map_[epoll.data.fd];
+      std::cerr << "fd :" << epoll.data.fd << std::endl;
       event->Do();
       event->Handle(&epoll_);
       RegisterNewEvent(event);

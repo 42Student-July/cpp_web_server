@@ -70,7 +70,7 @@ void CgiResponse::Handle(Epoll *epoll) {
 EventState CgiResponse::State() {
   if ((chunked_.SentLastChunk() && socket_->cgi_res[cgi_pos_].read_size == 0) ||
       socket_->cgi_res[cgi_pos_].type == kClientRedirResponse ||
-      sender_.ErrorOccured()) {
+      sender_.ErrorOccured() || chunked_.WriteErr()) {
     return kDel;
   }
   return kWrite;

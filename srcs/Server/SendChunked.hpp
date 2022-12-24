@@ -11,6 +11,7 @@ class SendChunked {
   bool sent_last_chunked_;
   std::string last_chunk_;
   std::string send_chunk_;
+  bool err_;
   static ssize_t WriteAndSubStr(int fd, std::string *str);
 
  public:
@@ -19,6 +20,7 @@ class SendChunked {
   void Send(int fd, const std::string &str);
   void SendLastChunk(int fd);
   bool SentLastChunk() const;
+  bool WriteErr() const;
   size_t SentByte() const;
 };
 

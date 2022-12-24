@@ -1,6 +1,7 @@
 #include "SendChunked.hpp"
 static const char *crlf = "\r\n";
-SendChunked::SendChunked() : sent_byte_(0), sent_last_chunked_(false) {
+SendChunked::SendChunked()
+    : sent_byte_(0), sent_last_chunked_(false), err_(false) {
   last_chunk_ = "0\r\n\r\n";
 }
 SendChunked::~SendChunked() {}
@@ -23,7 +24,7 @@ void SendChunked::Send(int fd, const std::string &str) {
     }
   } catch (std::runtime_error &e) {
     std::cerr << e.what() << std::endl;
-    sent_last_chunked_ = true;
+    err_ = true;
   }
 }
 
@@ -33,10 +34,9 @@ void SendChunked::SendLastChunk(int fd) {
     sent_last_chunked_ = true;
   } catch (std::runtime_error &e) {
     std::cerr << e.what() << std::endl;
-    sent_last_chunked_ = true;
+    err_ = true;
   }
 }
-#include <cerrno>
 ssize_t SendChunked::WriteAndSubStr(int fd, std::string *str) {
   // std::cout << *str << std::endl;
   ssize_t wrriten = write(fd, str->c_str(), str->size());
@@ -56,3 +56,4 @@ ssize_t SendChunked::WriteAndSubStr(int fd, std::string *str) {
 bool SendChunked::SentLastChunk() const { return sent_last_chunked_; }
 
 size_t SendChunked::SentByte() const { return sent_byte_; }
+bool SendChunked::WriteErr() const { return err_; }

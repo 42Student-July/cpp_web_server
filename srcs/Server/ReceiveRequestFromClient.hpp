@@ -11,6 +11,7 @@ class ReceiveRequestFromClient : public Event {
   ReceiveHttpRequest request_;
   ReadStat stat_;
   Event *cgi_;
+  bool del_;
   static bool IsReadErr(const ReadStat &st);
   static bool IsReadAgain(const ReadStat &st);
   static bool IsReadFinished(const ReadStat &st);
