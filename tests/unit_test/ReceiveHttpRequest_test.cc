@@ -293,6 +293,7 @@ TEST(ReceiveHttpRequest, request_chunked) {
   EXPECT_EQ(kDecodeComplete, rhr.GetDecodeStat());
   EXPECT_EQ(0, rhr.GetContentLength());
   close(fd);
+  remove("./text/ReceiveHttpRequest/pseudo_socket.txt");
 }
 
 TEST(ReceiveHttpRequest, request_chunked2) {
@@ -313,6 +314,7 @@ TEST(ReceiveHttpRequest, request_chunked2) {
   EXPECT_EQ(kDecodeComplete, rhr.GetDecodeStat());
   EXPECT_EQ(0, rhr.GetContentLength());
   close(fd);
+  remove("./text/ReceiveHttpRequest/pseudo_socket.txt");
 }
 
 TEST(ReceiveHttpRequest, request_chunked_error) {
@@ -327,6 +329,7 @@ TEST(ReceiveHttpRequest, request_chunked_error) {
   EXPECT_EQ(kChunkError, rhr.GetDecodeStat());
   EXPECT_EQ(0, rhr.GetContentLength());
   close(fd);
+  remove("./text/ReceiveHttpRequest/pseudo_socket.txt");
 }
 
 TEST(ReceiveHttpRequest, invalidheader) {
@@ -343,4 +346,5 @@ TEST(ReceiveHttpRequest, invalidheader) {
   EXPECT_EQ("/p", pr.request_path);
   EXPECT_EQ("HTTP/1.1", pr.version);
   close(fd);
+  remove("./text/ReceiveHttpRequest/pseudo_socket.txt");
 }

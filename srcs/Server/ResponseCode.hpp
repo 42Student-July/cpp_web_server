@@ -14,6 +14,7 @@ enum ResponseCode {
   kKk500internalServerError = 500,
   kKk501NotImplemented = 501,
   kKk503ServerUnavailable = 503,
+  kKk505HTTPVersionNotSupported = 505,
   kKkNotSet = 0
 };
 #endif  // SRCS_SERVER_RESPONSECODE_HPP_
