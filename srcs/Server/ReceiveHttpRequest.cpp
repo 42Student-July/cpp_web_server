@@ -168,11 +168,7 @@ Header ParseRequestHeader(const std::string &header_line) {
       pos = header_line.length();
     }
     trim = header_line.substr(top, pos - top);
-    try {
-      p = SplitRequestHeaderLine(trim);
-    } catch (ErrorResponse &e) {
-      throw ErrorResponse("Invalid header", kKkNotSet);
-    }
+    p = SplitRequestHeaderLine(trim);
     header.push_back(p);
     top = pos + 2;
     if (top >= header_line.length()) break;
@@ -208,14 +204,7 @@ ReadStat ReceiveHttpRequest::ReadHttpRequest(const int &fd, ParsedRequest *pr,
     pos = fd_data_.buf.find(NL);
     if (std::string::npos != pos) {
       fd_data_.request_line = TrimByPos(&fd_data_.buf, pos, 2);
-      try {
-        InputHttpRequestLine(fd_data_.request_line, &fd_data_.pr);
-      } catch (ErrorResponse &e) {
-        std::cout << e.Msg() << std::endl;
-        fd_data_.pr.status_code = e.GetErrResponseCode();
-        fd_data_.s = kErrorRequest;
-        return kErrorRequest;
-      }
+      InputHttpRequestLine(fd_data_.request_line, &fd_data_.pr);
       fd_data_.s = kWaitHeader;
     } else {
       fd_data_.s = kWaitRequest;
@@ -232,29 +221,19 @@ ReadStat ReceiveHttpRequest::ReadHttpRequest(const int &fd, ParsedRequest *pr,
 
         if (fd_data_.request_header.length() == 0) {
           if (IsValidHeader()) {
-            try {
-              sc_ = SelectServerContext(&sc);
-            } catch (...) {
-            }
+            sc_ = SelectServerContext(&sc);
             fd_data_.s = kWaitBody;
             break;
           }
         }
 
         std::pair<std::string, std::string> p;
-        try {
-          p = SplitRequestHeaderLine(fd_data_.request_header);
-        } catch (ErrorResponse &e) {
-          *pr = fd_data_.pr;
-          fd_data_.s = kErrorHeader;
-          return kErrorHeader;
-        }
+        p = SplitRequestHeaderLine(fd_data_.request_header);
 
         std::string &key = p.first;
         std::string &value = p.second;
         if (key.length() == 0 || value.length() == 0) {
-          fd_data_.s = kErrorHeader;
-          return kErrorHeader;
+          throw ErrorResponse("Invalid header", kKk400BadRequest);
         }
 
         TrimLR(&value);
@@ -314,7 +293,7 @@ ServerContext ReceiveHttpRequest::SelectServerContext(
       if (it->server_name == hostname) return *it;
     }
   } else if (size == 0) {
-    throw std::exception();
+    throw ErrorResponse("Missing Server Context", kKkNotSet);
   }
   return *contexts->begin();
 }
@@ -324,7 +303,7 @@ std::string ReceiveHttpRequest::GetValueByKey(const std::string &key) const {
 
   Header::iterator it = std::find_if(h.begin(), h.end(), SearchValueByKey(key));
   if (it == h.end()) {
-    throw std::exception();
+    throw ErrorResponse("Missing key", kKkNotSet);
   }
   return it->second;
 }
