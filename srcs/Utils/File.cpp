@@ -87,7 +87,7 @@ int File::Replace(const std::string &str) {
   if (fd == -1) return -1;
   ssize_t byte = 0;
   size_t writen_size = 0;
-  while (writen_size >= str.size()) {
+  while (writen_size != str.size()) {
     if ((byte = write(fd, str.c_str() + writen_size,
                       str.size() - writen_size)) <= 0) {
       return -1;

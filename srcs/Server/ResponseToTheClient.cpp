@@ -4,7 +4,7 @@ ResponseToTheClient::ResponseToTheClient(Socket *sock)
     : socket_(sock), state_(kWrite) {}
 ResponseToTheClient::~ResponseToTheClient() { delete socket_; }
 void ResponseToTheClient::Do() {
-  std::cout << "response" << std::endl;
+  // std::cout << "response" << std::endl;
   if (state_ == kWrite) {
     HttpResponse res;
     res.SetHttpResponse(socket_->response_code, socket_->response_body,
