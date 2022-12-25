@@ -121,7 +121,7 @@ Method ConvertMethod(const std::string &method) {
     case 3:
       return (kPost);
     default:
-      return (kError);
+      throw ErrorResponse("Invalid request method: ", kKk400BadRequest);
   }
 }
 
