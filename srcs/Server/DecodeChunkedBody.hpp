@@ -5,7 +5,6 @@
 
 #define NL "\r\n"
 enum DecodeStat { kWaitSize, kChunkError, kWaitChunkedBody, kDecodeComplete };
-
 class ChunkedBody {
  private:
   DecodeStat stat_;
@@ -13,6 +12,7 @@ class ChunkedBody {
   std::string decoded_body_;
   size_t str_head_;
   long next_size_;
+  size_t max_body_size_;
 
  public:
   ChunkedBody();
@@ -20,6 +20,7 @@ class ChunkedBody {
   DecodeStat DecodeChunkedBody(std::string *request_buf);
   std::string GetDecodedBody();
   DecodeStat GetDecodedStat();
+  void SetMaxSize(size_t size);
 };
 
 #endif  // SRCS_SERVER_DECODECHUNKEDBODY_HPP_

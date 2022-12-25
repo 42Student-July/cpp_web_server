@@ -55,11 +55,12 @@ struct HttpRequestData {
 class ReceiveHttpRequest {
  private:
   size_t next_chunked_size_;
-  size_t content_size_;
+  long content_length_value_;
   HttpRequestData fd_data_;
   ServerContext sc_;
   ChunkedBody cb_;
   DecodeStat ds_;
+  size_t body_size_;
 
   class SearchValueByKey {
     std::string Key_;
