@@ -30,6 +30,12 @@ bool StartWith(const std::string &str, const std::string &prefix);
 
 std::string ConvertTimeToString(const time_t &time);
 std::string GetCurrentDate();
+struct Connection {
+  std::string hostname;
+  std::string port;
+};
+Connection ParseHostHeader(const std::string &host_header);
+
 }  // namespace utils
 
 #endif  // SRCS_UTILS_UTILS_HPP_
