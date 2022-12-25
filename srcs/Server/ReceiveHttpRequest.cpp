@@ -110,7 +110,7 @@ Method InputHttpRequestLine(const std::string &line, ParsedRequest *pr) {
   std::string request_path_buf;
   v = utils::SplitWithMultipleSpecifier(line, " ");
   if (v.size() != 3) {
-    throw ErrorResponse("Invalid request line", kKk400BadRequest);
+    throw ErrorResponse("Invalid request line: " + line, kKk400BadRequest);
   }
   pr->m = ConvertMethod(v.at(0));
   request_path_buf = v.at(1);
@@ -138,7 +138,7 @@ std::pair<std::string, std::string> SplitRequestHeaderLine(
 
   key_pos = line.find(':');
   if (key_pos == std::string::npos) {
-    throw ErrorResponse("Invalid header", kKk400BadRequest);
+    throw ErrorResponse("Invalid header: " + line, kKk400BadRequest);
   }
   val_pos = key_pos;
   while (isspace(line[val_pos + 1]) != 0) {
@@ -151,7 +151,7 @@ std::pair<std::string, std::string> SplitRequestHeaderLine(
   }
   std::transform(key.begin(), key.end(), key.begin(), ::tolower);
   if (key.size() == 0 || value.size() == 0)
-    throw ErrorResponse("Invalid header", kKk400BadRequest);
+    throw ErrorResponse("Invalid header: " + line, kKk400BadRequest);
   return std::make_pair(key, value);
 }
 
@@ -192,7 +192,7 @@ ReadStat ReceiveHttpRequest::ReadHttpRequest(const int &fd, ParsedRequest *pr,
   char buf[BUFFER_SIZE + 1];
   read_ret = read(fd, buf, BUFFER_SIZE);
   if (read_ret == -1) {
-    return kReadError;
+    throw ErrorResponse("read() error", kKk500internalServerError);
   }
   if (read_ret == 0) {
     return kReadNoRequest;
@@ -233,7 +233,8 @@ ReadStat ReceiveHttpRequest::ReadHttpRequest(const int &fd, ParsedRequest *pr,
         std::string &key = p.first;
         std::string &value = p.second;
         if (key.length() == 0 || value.length() == 0) {
-          throw ErrorResponse("Invalid header", kKk400BadRequest);
+          throw ErrorResponse("Invalid header: " + key + ':' + value,
+                              kKk400BadRequest);
         }
 
         TrimLR(&value);
@@ -316,7 +317,7 @@ std::string ReceiveHttpRequest::GetValueByKey(const std::string &key) const {
 
 DecodeStat ReceiveHttpRequest::GetDecodeStat() const { return ds_; }
 
-ServerContext ReceiveHttpRequest::GetSelectedSercerContext() const {
+ServerContext ReceiveHttpRequest::GetSelectedServerContext() const {
   return sc_;
 }
 
