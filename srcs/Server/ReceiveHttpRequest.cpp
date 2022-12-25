@@ -4,6 +4,29 @@
 #include "Utils.hpp"
 
 #define CRLF_SIZE 2
+namespace {
+/*
+    HTTP-version  = HTTP-name "/" DIGIT "." DIGIT
+    HTTP-name     = %s"HTTP"
+*/
+bool IsValidHttpVersionFormat(const std::string &version) {
+  if (!utils::StartWith(version, "HTTP/")) {
+    return false;
+  }
+  if (!static_cast<bool>(std::isdigit(version[5]))) {
+    return false;
+  }
+  if (version.size() == 6) {
+    return true;
+  }
+  if (version[6] == '.') {
+    if (!static_cast<bool>(std::isdigit(version[7]))) {
+      return false;
+    }
+  }
+  return true;
+}
+}  // namespace
 
 static size_t CountTransferEncoding(Header *rh) {
   size_t count = 0;
@@ -124,9 +147,13 @@ Method InputHttpRequestLine(const std::string &line, ParsedRequest *pr) {
     pr->query_string = request_path_buf.substr(pos + 5);
   }
   pr->version = v.at(2);
-  if (pr->version != "HTTP/1.1")
+  if (!IsValidHttpVersionFormat(pr->version)) {
+    throw ErrorResponse("Bad Request", kKk400BadRequest);
+  }
+  if (pr->version != "HTTP/1.1") {
     throw ErrorResponse("HTTP Version Not Supported",
                         kKk505HTTPVersionNotSupported);
+  }
   return pr->m;
 }
 
