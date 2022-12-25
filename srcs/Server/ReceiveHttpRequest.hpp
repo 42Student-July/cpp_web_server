@@ -85,7 +85,7 @@ class ReceiveHttpRequest {
   std::string GetValueByKey(const std::string &key) const;
   DecodeStat GetDecodeStat() const;
   bool IsValidHeader();
-  ServerContext GetSelectedSercerContext() const;
+  ServerContext GetSelectedServerContext() const;
   size_t GetContentLength() const;
 };
 
