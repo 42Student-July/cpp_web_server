@@ -8,17 +8,7 @@
 #include <utility>
 #include <vector>
 
-enum Method {
-  kError,
-  kConnect,
-  kDelete,
-  kGet,
-  kHead,
-  kOptions,
-  kPost,
-  kPut,
-  kTrace
-};
+enum Method { kError, kDelete, kGet, kPost };
 class LocationContext {
  public:
   std::set<std::string> limit_except;
