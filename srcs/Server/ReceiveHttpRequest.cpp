@@ -44,7 +44,7 @@ bool ReceiveHttpRequest::IsValidHeader() {
       std::string str = GetValueByKey("content-length");
       long l = utils::StrToLong(str);
       if (l >= 0) {
-        content_size_ = l;
+        content_length_value_ = l;
       } else {
         return false;
       }
@@ -61,7 +61,7 @@ bool ReceiveHttpRequest::IsValidHeader() {
 }
 
 ReceiveHttpRequest::ReceiveHttpRequest() {
-  content_size_ = 0;
+  content_length_value_ = 0;
   fd_data_.s = kUnread;
   fd_data_.pr.m = kError;
   fd_data_.pr.status_code = kKkNotSet;
@@ -223,6 +223,14 @@ ReadStat ReceiveHttpRequest::ReadHttpRequest(const int &fd, ParsedRequest *pr,
         if (fd_data_.request_header.length() == 0) {
           if (IsValidHeader()) {
             sc_ = SelectServerContext(&sc);
+            if (!fd_data_.is_chunked) {
+              if (content_length_value_ > sc_.client_body_size.second) {
+                throw ErrorResponse("Payload Too Large",
+                                    kKk413RequestEntityTooLarge);
+              }
+            }
+            body_size_ = sc_.client_body_size.second;
+            cb_.SetMaxSize(body_size_);
             fd_data_.s = kWaitBody;
             break;
           }
@@ -254,9 +262,10 @@ ReadStat ReceiveHttpRequest::ReadHttpRequest(const int &fd, ParsedRequest *pr,
 
   if (fd_data_.s == kWaitBody && IsBodyRequired(fd_data_.pr.m)) {
     if (!fd_data_.is_chunked) {
-      size_t size = fd_data_.buf.length();
-      if (size >= content_size_) {
-        fd_data_.pr.request_body = fd_data_.buf.substr(0, content_size_);
+      long size = fd_data_.buf.length();
+      if (size >= content_length_value_) {
+        fd_data_.pr.request_body =
+            fd_data_.buf.substr(0, content_length_value_);
         fd_data_.buf = "";
         *pr = fd_data_.pr;
         fd_data_.s = kReadComplete;
@@ -321,4 +330,6 @@ ServerContext ReceiveHttpRequest::GetSelectedServerContext() const {
   return sc_;
 }
 
-size_t ReceiveHttpRequest::GetContentLength() const { return content_size_; }
+size_t ReceiveHttpRequest::GetContentLength() const {
+  return content_length_value_;
+}

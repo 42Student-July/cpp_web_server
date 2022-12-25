@@ -59,3 +59,5 @@ DecodeStat ChunkedBody::DecodeChunkedBody(std::string *request_buf) {
 
 std::string ChunkedBody::GetDecodedBody() { return decoded_body_; }
 DecodeStat ChunkedBody::GetDecodedStat() { return stat_; }
+
+void ChunkedBody::SetMaxSize(size_t size) { max_body_size_ = size; }
