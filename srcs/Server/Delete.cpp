@@ -30,7 +30,7 @@ void Delete::Run(const std::string &path, Socket *sock) {
   if (f.DelFile() == -1) {
     SetErrorPage(kKk403Forbidden, sock);
   } else {
-    rescode_ = kKk200Ok;
+    rescode_ = kKk204NoContent;
   }
 }
 void Delete::UpdateSocketData(Socket *sock) { sock->response_code = rescode_; }
