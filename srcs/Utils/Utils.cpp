@@ -128,4 +128,18 @@ std::string GetCurrentDate() {
   return utils::ConvertTimeToString(rawtime);
 }
 
+utils::Connection ParseHostHeader(const std::string &host_header) {
+  std::vector<std::string> host_header_split =
+      utils::SplitWithMultipleSpecifier(host_header, ":");
+  utils::Connection conn;
+  if (host_header_split.size() == 1) {
+    conn.hostname = host_header_split[0];
+    conn.port = "";
+  } else if (host_header_split.size() == 2) {
+    conn.hostname = host_header_split[0];
+    conn.port = host_header_split[1];
+  }
+  return conn;
+}
+
 }  // namespace utils

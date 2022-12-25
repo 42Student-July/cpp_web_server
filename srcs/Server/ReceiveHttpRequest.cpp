@@ -271,17 +271,23 @@ ParsedRequest ReceiveHttpRequest::GetParsedRequest() const {
 ServerContext ReceiveHttpRequest::SelectServerContext(
     std::vector<ServerContext> *contexts) const {
   std::string hostname;
+  std::string port;
   size_t size = contexts->size();
   if (size > 1) {
     try {
       hostname = GetValueByKey("host");
+      utils::Connection conn = utils::ParseHostHeader(hostname);
+      hostname = conn.hostname;
+      port = conn.port;
     } catch (...) {
       return *contexts->begin();
     }
 
     for (std::vector<ServerContext>::iterator it = contexts->begin();
          it != contexts->end(); it++) {
-      if (it->server_name == hostname) return *it;
+      if (it->server_name == hostname &&
+          (port.empty() || it->listen.second == port))
+        return *it;
     }
   } else if (size == 0) {
     throw std::exception();
