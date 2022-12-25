@@ -3,7 +3,7 @@
 #include "ErrorPage.hpp"
 #include "ResponseToTheClient.hpp"
 ReceiveRequestFromClient::ReceiveRequestFromClient(Socket *sock)
-    : socket_(sock), cgi_(NULL), del_(false) {}
+    : socket_(sock), stat_(kUnread), cgi_(NULL), del_(false) {}
 ReceiveRequestFromClient::~ReceiveRequestFromClient() {}
 void ReceiveRequestFromClient::Do() {
   try {
