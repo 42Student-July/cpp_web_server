@@ -11,7 +11,7 @@ LocationContext &LocationContext::operator=(const LocationContext &lc) {
   index = lc.index;
   redirect = lc.redirect;
   cgi_extension = lc.cgi_extension;
-  upload_path = lc.upload_path;
+  // upload_path = lc.upload_path;
   return *this;
 }
 bool LocationContext::IsAllowMethod(const Method &m) {
@@ -37,11 +37,14 @@ bool LocationContext::IsAllowExtensionCgi(const std::string &file_name) {
   }
   return false;
 }
-bool LocationContext::IsUploadPath(const std::string &path) const {
-  if (upload_path.empty()) return false;
-  return path.substr(0, path.find_last_of("/")) ==
-         upload_path.substr(0, path.find_last_of("/"));
-}
+// bool LocationContext::IsUploadPath(const std::string &path) const {
+//   if (upload_path.empty()) return false;
+//   std::string uppath = upload_path;
+//   if (uppath[upload_path.size() - 1] != '/') uppath += "/";
+
+//   return path.substr(0, path.find_last_of("/")) ==
+//          uppath.substr(0, uppath.find_last_of("/"));
+// }
 
 std::string MethodToStr(Method m) {
   switch (m) {

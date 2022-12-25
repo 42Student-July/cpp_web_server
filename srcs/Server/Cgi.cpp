@@ -4,8 +4,18 @@
 
 #include "CgiParser.hpp"
 #include "File.hpp"
+Cgi::Cgi(const LocationContext &lc, const std::string &full_path)
+    : file_path_(full_path) {
+  File file(file_path_);
+  if (file.IsDir()) {
+    if (!lc.index.empty()) {
+      file_path_ += lc.index;
+      file.SetFileName(file_path_);
+    }
+  }
+  if (!file.CanExec()) throw ErrorResponse("cgi permission", kKk403Forbidden);
+}
 Cgi::Cgi() {}
-
 Cgi::~Cgi() {}
 
 void Cgi::ParseArgv(Socket *socket) {
@@ -38,7 +48,7 @@ void Cgi::SetEnv(Socket *socket) {
   }
   env_map_["PATH_INFO"] =
       std::string("PATH_INFO= ") +
-      path_info_;  // request line cgiファイル名の後ろにつくあれ
+      file_path_;  // request line cgiファイル名の後ろにつくあれ
   env_map_["QUERY_STRING"] = std::string("QUERY_STRING=") +
                              socket->pr.query_string;  // ?の後に=があったら
   env_map_["REMOTE_ADDR"] = std::string("REMOTE_ADDR=127.0.0.1");  // host addr
@@ -88,10 +98,7 @@ void Cgi::SetSockopt() {
     throw ErrorResponse("fcntl", kKk500internalServerError);
   }
 }
-void Cgi::Run(const std::string &full_path, Socket *socket, CgiRes *cgires) {
-  File f(full_path);
-  if (!f.CanExec()) throw ErrorResponse("cgi permission", kKk403Forbidden);
-  path_info_ = full_path;
+void Cgi::Run(Socket *socket, CgiRes *cgires) {
   SockPair();
   cgires->cgi_fd = fd_[0];
   Fork(cgires);
@@ -101,12 +108,12 @@ void Cgi::Run(const std::string &full_path, Socket *socket, CgiRes *cgires) {
     close(fd_[0]);
     char **argv = utils::VecToCharDoublePtr(argv_);
     char **env = utils::MapToCharDoublePtr(env_map_);
-    if (dup2(fd_[1], STDIN_FILENO) == -1 || dup2(fd_[1], STDOUT_FILENO) == -1)
+    if (dup2(fd_[1], STDIN_FILENO) == -1 || dup2(fd_[1], STDOUT_FILENO) == -1) {
       exit(1);
-    execve(full_path.c_str(), argv, env);
-    utils::DelPtr(argv);
-    utils::DelPtr(env);
-    std::cout << "cgi sippai" << std::endl;
+    }
+    execve(file_path_.c_str(), argv, env);
+    // utils::DelPtr(argv);
+    // utils::DelPtr(env);
     exit(1);
   }
   close(fd_[1]);

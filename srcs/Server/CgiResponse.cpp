@@ -48,11 +48,9 @@ void CgiResponse::Do() {
   } else if (socket_->cgi_res[cgi_pos_].type != kClientRedirResponse) {
     if (chunked_.SentByte() == socket_->response_body.size() &&
         socket_->cgi_res[cgi_pos_].read_size == 0) {
-      // std::cout << "last chunk" << std::endl;
       chunked_.SendLastChunk(socket_->sock_fd);
     } else {
-      // std::cout << "send body" << std::endl;
-      // std::cout << socket_->response << std::endl;
+      if (chunked_.SentByte() >= socket_->response_body.size()) return;
       chunked_.Send(socket_->sock_fd, socket_->response_body);
     }
   }
@@ -63,14 +61,15 @@ std::pair<Event *, epoll_event> CgiResponse::PublishNewEvent() {
 }
 void CgiResponse::Handle(Epoll *epoll) {
   static_cast<void>(epoll);
-  // if (chunked_.SentByte() == socket_->response_body.size()) {
-  //   epoll->Mod(socket_->sock_fd, 0);
+  // if (chunked_.SentByte() >= socket_->response_body.size()) {
+  //    epoll->Mod(socket_->sock_fd, 0);
   // }
 }
 EventState CgiResponse::State() {
   if ((chunked_.SentLastChunk() && socket_->cgi_res[cgi_pos_].read_size == 0) ||
       socket_->cgi_res[cgi_pos_].type == kClientRedirResponse ||
-      sender_.ErrorOccured()) {
+      ((sender_.ErrorOccured() || chunked_.WriteErr()) &&
+       socket_->cgi_res[cgi_pos_].read_size == 0)) {
     return kDel;
   }
   return kWrite;

@@ -15,9 +15,9 @@ class LocationContext {
   std::pair<long, std::string> redirect;  // return
   std::string root;
   std::string auto_index;
-  std::vector<std::string> index;
+  std::string index;
   std::vector<std::string> cgi_extension;
-  std::string upload_path;
+  // std::string upload_path;
 
  public:
   LocationContext();
@@ -26,7 +26,7 @@ class LocationContext {
   LocationContext &operator=(const LocationContext &lc);
   bool IsAllowMethod(const Method &m);
   bool IsAllowExtensionCgi(const std::string &file_nmae);
-  bool IsUploadPath(const std::string &path) const;
+  // bool IsUploadPath(const std::string &path) const;
   static std::string MethodToStr(Method m);
 };
 

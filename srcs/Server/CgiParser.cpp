@@ -132,22 +132,14 @@ std::pair<std::string, std::string> CgiParser::MakeHeader(
   size_t header_key_end_pos = 0;
   size_t val_start_pos = str.find(':');
   size_t val_end_pos = 0;
-  if (val_start_pos == std::string::npos)
-    throw ErrorResponse("header no clon", kKk500internalServerError);
-  for (; header_key_end_pos < str.size(); header_key_end_pos++) {
-    if (std::isalpha(str[header_key_end_pos]) != 0 ||
-        str[header_key_end_pos] == '-' || str[header_key_end_pos] == '_')
-      continue;
-    break;
+  if (val_start_pos == std::string::npos || val_start_pos <= 1)
+    throw ErrorResponse("header no colon", kKk500internalServerError);
+  for (header_key_end_pos = val_start_pos; header_key_end_pos > 0;
+       header_key_end_pos--) {
+    if (std::isspace(str[header_key_end_pos]) == 0) break;
   }
   if (header_key_end_pos == 0)
-    throw ErrorResponse("header no key", kKk500internalServerError);
-  for (size_t colon_pos = header_key_end_pos; colon_pos < str.size();
-       colon_pos++) {
-    if (isspace(str[colon_pos]) != 0) continue;
-    if (str[colon_pos] == ':') break;
-    throw ErrorResponse("header two key", kKk500internalServerError);
-  }
+    throw ErrorResponse("header key err", kKk500internalServerError);
   val_start_pos++;
   for (; val_start_pos < str.size(); val_start_pos++) {
     if (isspace(str[val_start_pos]) == 0) break;
@@ -165,7 +157,6 @@ std::pair<std::string, std::string> CgiParser::MakeHeader(
   transform(key.begin(), key.end(), key.begin(), ::toupper);
   return std::make_pair(
       key, str.substr(val_start_pos, substr_end_pos + 1 - val_start_pos));
-  // oomozini
 }
 ResponseType CgiParser::GetResponseType() const { return restype_; }
 void CgiParser::UpdateData(Socket *socket, size_t cgi_pos) {

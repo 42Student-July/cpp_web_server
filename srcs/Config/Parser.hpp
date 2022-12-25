@@ -54,7 +54,7 @@ class Parser {
   void StoreAutoIndex(LocationContext *lc);
   void StoreIndex(LocationContext *lc);
   void StoreCgiExtension(LocationContext *lc);
-  void StoreUploadPath(LocationContext *lc);
+  // void StoreUploadPath(LocationContext *lc);
 
   static std::string ParseListen(Token tkn);
   static std::string ParseHost(Token tkn);
