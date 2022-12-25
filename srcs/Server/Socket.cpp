@@ -19,7 +19,7 @@ Socket::~Socket() {
   close(sock_fd);
 }
 int Socket::CgiReadAndStoreToBuf(size_t pos) {
-  char read_buf[kBuffSize];
+  char read_buf[kBuffSize + 1];
   if ((cgi_res[pos].read_size =
            read(cgi_res[pos].cgi_fd, read_buf, kBuffSize)) == -1) {
     std::cerr << "cgi read err" << std::endl;
@@ -42,9 +42,9 @@ Event* Socket::PrepareNextEventProcess() {
       throw ErrorResponse("method not allowed", kKk405MethodNotAllowed);
     }
     if (pre.IsRequestCgi()) {
-      Cgi c;
+      Cgi c(location_context, full_path);
       CgiRes cres;
-      c.Run(pre.GetFullPath(), this, &cres);
+      c.Run(this, &cres);
       std::cout << "cgi run" << std::endl;
       cgi_res.push_back(cres);
       if (pr.request_body.empty()) {

@@ -6,6 +6,10 @@
 class Post : public HttpMethod {
  private:
   ResponseCode rescode_;
+  std::string body_;
+  void SetErrorPage(const ResponseCode error_code, Socket *sock);
+  void SetResponseBody(const std::string &body);
+  void SetResponseCode(const ResponseCode &rescode);
 
  public:
   Post();
