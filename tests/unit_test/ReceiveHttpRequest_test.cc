@@ -188,7 +188,7 @@ TEST(ReceiveHttpRequest, invalid_request1) {
   std::vector<ServerContext> sc;
   int fd = open_pseudo_socket();
   copy_fd(fd, "invalidrequest1");
-  rs = do_test(fd, rhr, pr, "Invalid request line");
+  rs = do_test(fd, rhr, pr, "Invalid request line: aaaaaaaaa");
   close(fd);
   remove("./text/ReceiveHttpRequest/pseudo_socket.txt");
 }
@@ -200,7 +200,7 @@ TEST(ReceiveHttpRequest, invalid_request2) {
   std::vector<ServerContext> sc;
   int fd = open_pseudo_socket();
   copy_fd(fd, "InvalidHeader_NoValue");
-  rs = do_test(fd, rhr, pr, "Invalid header");
+  rs = do_test(fd, rhr, pr, "Invalid header: User-Agent:");
 
   EXPECT_EQ(0, rhr.GetContentLength());
   close(fd);
@@ -213,7 +213,7 @@ TEST(ReceiveHttpRequest, invalid_request3) {
   std::vector<ServerContext> sc;
   int fd = open_pseudo_socket();
   copy_fd(fd, "invalidrequest2");
-  rs = do_test(fd, rhr, pr, "Invalid header");
+  rs = do_test(fd, rhr, pr, "Invalid header: ho");
   close(fd);
 }
 
@@ -224,7 +224,7 @@ TEST(ReceiveHttpRequest, invalid_request4) {
   std::vector<ServerContext> sc;
   int fd = open_pseudo_socket();
   copy_fd(fd, "invalidrequest3");
-  rs = do_test(fd, rhr, pr, "Invalid header");
+  rs = do_test(fd, rhr, pr, "Invalid header: host:                        ");
   close(fd);
 }
 
@@ -235,7 +235,7 @@ TEST(ReceiveHttpRequest, request_then_nobody) {
   std::vector<ServerContext> sc;
   int fd = open_pseudo_socket();
   copy_fd(fd, "request_then_nobody");
-  rs = do_test(fd, rhr, pr, "Invalid header");
+  rs = do_test(fd, rhr, pr, "Invalid header: host a");
   EXPECT_EQ(0, rhr.GetContentLength());
   close(fd);
   remove("./text/ReceiveHttpRequest/pseudo_socket.txt");
@@ -342,7 +342,7 @@ TEST(ReceiveHttpRequest, invalidheader) {
   std::vector<ServerContext> sc;
   int fd = open_pseudo_socket();
   copy_fd(fd, "invalid_request2");
-  rs = do_test(fd, rhr, pr, "Invalid header");
+  rs = do_test(fd, rhr, pr, "Invalid header: aaaa");
 
   EXPECT_EQ(kPost, pr.m);
   EXPECT_EQ("/p", pr.request_path);
