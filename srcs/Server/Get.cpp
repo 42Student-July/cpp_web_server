@@ -47,6 +47,25 @@ std::string CreateHttpAutoIndexHtml(const std::string &request_path,
   return body;
 }
 
+std::string RedirectBody(ResponseCode rescode, const std::string &path) {
+  std::string body;
+
+  if (rescode == kKk201Created) {
+    return path;
+  }
+  body += "<html><head>";
+  body += "<title>" + utils::UIntToString(rescode) + " " +
+          http::GetStatusMessage(rescode) + "</title>";
+  body += "</head>";
+
+  body += "<body><center>";
+  body += "<h1>" + utils::UIntToString(rescode) + " " +
+          http::GetStatusMessage(rescode) + "</h1>";
+  body += "<a href=\"" + path + "\">" + path + "</a>";
+  body += "</center></body></html>";
+  return body;
+}
+
 }  // namespace
 
 Get::Get() {}
@@ -61,13 +80,15 @@ void Get::SetErrorPage(const ResponseCode error_code, Socket *sock) {
 }
 
 void Get::Redirect(ResponseCode rescode, const std::string &path) {
-  AddResponseHeader("Location", path);
+  if (rescode != kKk201Created) {
+    AddResponseHeader("Location", path);
+  }
   SetResponseCode(rescode);
+  SetResponseBody(RedirectBody(rescode, path));
 }
 
 void Get::Run(const std::string &path, Socket *sock) {
   // redirect が存在する場合
-
   if (sock->location_context.redirect.first != -1) {
     Redirect(static_cast<ResponseCode>(sock->location_context.redirect.first),
              sock->location_context.redirect.second);
@@ -84,6 +105,7 @@ void Get::Run(const std::string &path, Socket *sock) {
   // fileがfileの場合
   if (file.IsFile()) {
     if (!file.CanRead()) {
+      SetErrorPage(kKk403Forbidden, sock);
       return;
     }
     body_ = file.ReadFileLines();

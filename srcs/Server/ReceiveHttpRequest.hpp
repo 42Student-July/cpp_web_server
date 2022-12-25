@@ -10,12 +10,13 @@
 #include <vector>
 
 #include "DecodeChunkedBody.hpp"
+#include "ResponseCode.hpp"
 #include "ServerContext.hpp"
 
 #define NL "\r\n"
 #define NLNL "\r\n\r\n"
 #define BUFFER_SIZE 8192
-
+class ErrorResponse;
 typedef std::vector<std::pair<std::string, std::string> > Header;
 
 enum ReadStat {
@@ -34,7 +35,7 @@ enum ReadStat {
 struct ParsedRequest {
   Method m;
   std::string version;
-  int status_code;
+  ResponseCode status_code;
   std::string request_path;
   Header request_header;
   std::string request_body;
@@ -84,7 +85,7 @@ class ReceiveHttpRequest {
   std::string GetValueByKey(const std::string &key) const;
   DecodeStat GetDecodeStat() const;
   bool IsValidHeader();
-  ServerContext GetSelectedSercerContext() const;
+  ServerContext GetSelectedServerContext() const;
   size_t GetContentLength() const;
 };
 

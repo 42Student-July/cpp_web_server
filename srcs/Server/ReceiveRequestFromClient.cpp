@@ -10,7 +10,7 @@ void ReceiveRequestFromClient::Do() {
     stat_ = request_.ReadHttpRequest(socket_->sock_fd, &socket_->pr,
                                      socket_->vec_context);
     if (IsReadComplete(stat_)) {
-      socket_->server_context = request_.GetSelectedSercerContext();
+      socket_->server_context = request_.GetSelectedServerContext();
       std::cout << "read complete" << std::endl;
       cgi_ = socket_->PrepareNextEventProcess();
     }

@@ -59,10 +59,8 @@ Event* Socket::PrepareNextEventProcess() {
     delete m;
   } catch (ErrorResponse& e) {
     std::cout << e.Msg() << std::endl;
-    HttpResponseTmp res = ErrorPage::GetErrorPage(e.GetErrResponseCode(),
-                                                  server_context.error_page);
-    response_code = res.rescode;
-    response_body = res.body;
+    response_code = e.GetErrResponseCode();
+    SetErrorPage(response_code);
   }
   return NULL;
 }
@@ -70,6 +68,13 @@ Event* Socket::PrepareNextEventProcess() {
 bool Socket::CgiFinished(size_t pos) {
   return waitpid(cgi_res[pos].process_id, &(cgi_res[pos].pid_exit_status),
                  WNOHANG) > 0;
+}
+
+void Socket::SetErrorPage(const ResponseCode error_code) {
+  HttpResponseTmp response_tmp;
+  response_tmp = ErrorPage::GetErrorPage(error_code, server_context.error_page);
+  response_body = response_tmp.body;
+  response_code = response_tmp.rescode;
 }
 
 ErrorResponse::ErrorResponse(const std::string& errmsg, ResponseCode rescode)

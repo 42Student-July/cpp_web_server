@@ -3,33 +3,6 @@
 #include "File.hpp"
 #include "Utils.hpp"
 
-namespace {
-std::string GetStatusMessage(const int error_code) {
-  switch (error_code) {
-    case 200:
-      return "OK";
-    case 400:
-      return "Bad Request";
-    case 403:
-      return "Forbidden";
-    case 404:
-      return "Not Found";
-    case 405:
-      return "Method Not Allowed";
-    case 413:
-      return "Payload Too Large";
-    case 500:
-      return "Internal Server Error";
-    case 501:
-      return "Not Implemented";
-    case 505:
-      return "HTTP Version Not Supported";
-    default:
-      return "";
-  }
-}
-}  // namespace
-
 ErrorPage::ErrorPage() {}
 
 ErrorPage::ErrorPage(ErrorPage const &other) { *this = other; }
@@ -88,13 +61,13 @@ HttpResponseTmp ErrorPage::DefaultErrorPage(const ResponseCode error_code) {
   std::string content;
 
   content += "<html><head>";
-  content += "<titile>" + utils::UIntToString(error_code) + " " +
-             GetStatusMessage(error_code) + "</title>";
+  content += "<title>" + utils::UIntToString(error_code) + " " +
+             http::GetStatusMessage(error_code) + "</title>";
   content += "</head>";
 
   content += "<body><center>";
   content += "<h1> " + utils::UIntToString(error_code) + " " +
-             GetStatusMessage(error_code) + "</h1>";
+             http::GetStatusMessage(error_code) + "</h1>";
   content += "</center></body></html>";
 
   response.body = content;
