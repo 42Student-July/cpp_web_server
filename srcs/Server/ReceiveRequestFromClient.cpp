@@ -9,10 +9,10 @@ void ReceiveRequestFromClient::Do() {
                                    socket_->vec_context);
   if (IsReadErr(stat_)) {
     std::cout << "stat_ err :" << stat_ << std::endl;
-    socket_->server_context = request_.GetSelectedSercerContext();
+    socket_->server_context = request_.GetSelectedServerContext();
     socket_->response_code = kKk400BadRequest;
   } else if (IsReadComplete(stat_)) {
-    socket_->server_context = request_.GetSelectedSercerContext();
+    socket_->server_context = request_.GetSelectedServerContext();
     std::cout << "read complete" << std::endl;
     // stat_ = kReadComplete;
     cgi_ = socket_->PrepareNextEventProcess();
