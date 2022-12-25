@@ -190,7 +190,7 @@ ReadStat ReceiveHttpRequest::ReadHttpRequest(const int &fd, ParsedRequest *pr,
                                              std::vector<ServerContext> sc) {
   size_t pos = 0;
   ssize_t read_ret = 0;
-  char buf[BUFFER_SIZE];
+  char buf[BUFFER_SIZE + 1];
   read_ret = read(fd, buf, BUFFER_SIZE);
   if (read_ret == -1) {
     return kReadError;
