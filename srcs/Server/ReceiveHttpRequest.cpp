@@ -150,8 +150,9 @@ std::pair<std::string, std::string> SplitRequestHeaderLine(
     value.erase(value.size() - 1);
   }
   std::transform(key.begin(), key.end(), key.begin(), ::tolower);
-  if (key.size() == 0 || value.size() == 0)
+  if (key.size() == 0 || value.size() == 0) {
     throw ErrorResponse("Invalid header: " + line, kKk400BadRequest);
+  }
   return std::make_pair(key, value);
 }
 

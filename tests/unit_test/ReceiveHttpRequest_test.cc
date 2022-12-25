@@ -65,7 +65,6 @@ ReadStat do_test(int &fd, ReceiveHttpRequest &rhr, ParsedRequest &pr,
     rs = rhr.ReadHttpRequest(fd, &pr, sc);
   } catch (ErrorResponse &e) {
     EXPECT_EQ(msg, e.Msg());
-    std::cout << e.Msg() << std::endl;
   }
   return rs;
 }
@@ -363,7 +362,34 @@ TEST(ReceiveHttpRequest, over_length) {
   remove("./text/ReceiveHttpRequest/pseudo_socket.txt");
 }
 
+TEST(ReceiveHttpRequest, over_length_chunked) {
+  ReceiveHttpRequest rhr;
+  ParsedRequest pr;
+  ReadStat rs;
+  std::vector<ServerContext> sc;
+  int fd = open_pseudo_socket();
+  copy_fd(fd, "over_content_length_chunked");
+  rs = do_test(fd, rhr, pr, "Payload Too Large");
+  close(fd);
+  remove("./text/ReceiveHttpRequest/pseudo_socket.txt");
+}
+
 TEST(ReceiveHttpRequest, length_eq) {
+  ReceiveHttpRequest rhr;
+  ParsedRequest pr;
+  ReadStat rs;
+  std::vector<ServerContext> sc;
+  int fd = open_pseudo_socket();
+  copy_fd(fd, "over_content_length_chunked_eq");
+  rs = do_test(fd, rhr, pr, "Payload Too Large");
+  EXPECT_EQ(kPost, pr.m);
+  EXPECT_EQ("/", pr.request_path);
+  EXPECT_EQ("HTTP/1.1", pr.version);
+  close(fd);
+  remove("./text/ReceiveHttpRequest/pseudo_socket.txt");
+}
+
+TEST(ReceiveHttpRequest, length_chunked_eq) {
   ReceiveHttpRequest rhr;
   ParsedRequest pr;
   ReadStat rs;
