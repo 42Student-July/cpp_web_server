@@ -13,18 +13,14 @@ bool IsValidHttpVersionFormat(const std::string &version) {
   if (!utils::StartWith(version, "HTTP/")) {
     return false;
   }
-  if (!static_cast<bool>(std::isdigit(version[5]))) {
+  if (version.size() == 6) {  // HTTP/2  is 6
+    return static_cast<bool>(std::isdigit(version[5]));
+  } else if (version.size() == 8) {  // HTTP/1.1  is 8
+    return static_cast<bool>(std::isdigit(version[5])) && version[6] == '.' &&
+           static_cast<bool>(std::isdigit(version[7]));
+  } else {
     return false;
   }
-  if (version.size() == 6) {
-    return true;
-  }
-  if (version[6] == '.') {
-    if (!static_cast<bool>(std::isdigit(version[7]))) {
-      return false;
-    }
-  }
-  return true;
 }
 }  // namespace
 
