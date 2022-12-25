@@ -54,7 +54,7 @@ test_compose_down: fclean
 
 N = 100
 req_d:
-	bash -c 'for i in {1..${N}}; do curl localhost:8088/cgi-bin/document_res.cgi; echo $${i} ; done'
+	bash -c 'for i in {1..${N}}; do curl localhost:8088/cgi-bin/local_redir_res.cgi; echo $${i} ; done'
 req_h:
 	bash -c 'for i in {1..${N}}; do curl localhost:8088/cgi-bin/hello.py; echo $${i} ; done'
 req_e:
@@ -63,6 +63,7 @@ req_ed:
 	bash -c 'for i in {1..${N}}; do curl localhost:8088/cgi-bin/err.cgi; localhost:8088/cgi-bin/document_res.cgi;echo $${i} ; done'
 req_a:
 	bash -c 'for i in {1..${N}}; do curl localhost:8088/cgi-bin/a.py& echo $${i} ; done'
+
 .PHONY: all fclean clean re bonus integration unit
 
 -include $(DEPS)

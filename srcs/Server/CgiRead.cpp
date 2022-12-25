@@ -82,7 +82,7 @@ void CgiRead::Handle(Epoll *epoll) {
   // }
 }
 EventState CgiRead::State() {
-  if (socket_->cgi_res[cgi_pos_].read_size <= 0 ||
+  if (socket_->cgi_res[cgi_pos_].read_size == 0 ||
       socket_->response_code != kKkNotSet) {
     return kDel;
   }

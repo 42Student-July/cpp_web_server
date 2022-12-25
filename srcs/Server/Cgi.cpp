@@ -58,7 +58,8 @@ void Cgi::SetEnv(Socket *socket) {
   env_map_["SCRIPT_NAME"] = std::string("SCRIPT_NAME=") +
                             socket->pr.request_path;  // encode してないuri
   env_map_["SERVER_NAME"] =
-      std::string("SERVER_NAME=") + socket->server_context.server_name;  // 必須
+      std::string("SERVER_NAME=") +
+      CgiParser::FindByKey(socket->pr.request_header, "host").second;  // 必須
   env_map_["SERVER_PORT"] =
       std::string("SERVER_PORT=") + socket->server_context.GetPort();  // 必須
   env_map_["SERVER_PROTOCOL"] =
