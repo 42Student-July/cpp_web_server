@@ -6,6 +6,10 @@
 #include <utility>
 #include <vector>
 
+namespace http {
+std::string GetStatusMessage(const int error_code);
+}  // namespace http
+
 class HttpResponse {
  public:
   typedef std::map<std::string, std::string> HttpHeaders;

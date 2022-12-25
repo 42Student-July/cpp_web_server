@@ -72,6 +72,13 @@ bool Socket::CgiFinished(size_t pos) {
                  WNOHANG) > 0;
 }
 
+void Socket::SetErrorPage(const ResponseCode error_code) {
+  HttpResponseTmp response_tmp;
+  response_tmp = ErrorPage::GetErrorPage(error_code, server_context.error_page);
+  response_body = response_tmp.body;
+  response_code = response_tmp.rescode;
+}
+
 ErrorResponse::ErrorResponse(const std::string& errmsg, ResponseCode rescode)
     : err_msg_(errmsg), rescode_(rescode) {}
 ErrorResponse::~ErrorResponse() {}
