@@ -1,5 +1,6 @@
 #include "DecodeChunkedBody.hpp"
 
+#include "Socket.hpp"
 #include "Utils.hpp"
 
 ChunkedBody::ChunkedBody() {
@@ -40,6 +41,8 @@ DecodeStat ChunkedBody::DecodeChunkedBody(std::string *request_buf) {
       }
       if (buf_.size() >= str_head_) {
         decoded_body_ += buf_.substr(str_head_, next_size_);
+        if (decoded_body_.length() > max_body_size_)
+          throw ErrorResponse("Payload Too Large", kKk413RequestEntityTooLarge);
         str_head_ += next_size_;
         stat_ = kWaitSize;
         if (buf_.size() + 2 >= str_head_ &&

@@ -5,7 +5,6 @@
 
 #define NL "\r\n"
 enum DecodeStat { kWaitSize, kChunkError, kWaitChunkedBody, kDecodeComplete };
-
 class ChunkedBody {
  private:
   DecodeStat stat_;
