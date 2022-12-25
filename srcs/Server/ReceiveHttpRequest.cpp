@@ -46,16 +46,17 @@ bool ReceiveHttpRequest::IsValidHeader() {
       if (l >= 0) {
         content_size_ = l;
       } else {
-        return false;
+        throw ErrorResponse("Invalid header: content-length" + str,
+                            kKk400BadRequest);
       }
     } else {
       fd_data_.pr.status_code = kKk400BadRequest;
-      return false;
+      throw ErrorResponse("Invalid header", kKk400BadRequest);
     }
   }
   if (CountHeaderField(&rh, "host") != 1) {
     fd_data_.pr.status_code = kKk400BadRequest;
-    return false;
+    throw ErrorResponse("Invalid header", kKk400BadRequest);
   }
   return true;
 }
